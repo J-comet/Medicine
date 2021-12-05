@@ -68,9 +68,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         init();
-
-//        entpName = etSearchCompany.getText().toString();
-//        itemName = etSearchMedicine.getText().toString();
     }
 
     private void init() {
@@ -116,8 +113,7 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
                     Log.e("hs", "제일하단");
-//                    pageNo++;
-//                    numOfRows = numOfRows + 20;
+
                     pbPaging.setVisibility(View.VISIBLE);
 
                     if (numOfRows < 100) {
@@ -261,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                         medicineAdapter.addAll(itemArrayList);
                         pbPaging.setVisibility(View.GONE);
 
-                        tvCurrentSearch.setText("업체명 : " + searchCompany + "\n제품명 : " + searchMedicine + "\n(" + itemArrayList.size() + "/" + displaySearchTotalCnt + ")");
+                        tvCurrentSearch.setText("업체 검색명 : " + searchCompany + "\n제품 검색명 : " + searchMedicine + "\n조회 데이터 갯수(" + itemArrayList.size() + "/" + displaySearchTotalCnt + ")");
 
                         Log.e("current_list", itemArrayList.size() + "");
                     }
