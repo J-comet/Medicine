@@ -5,6 +5,7 @@ import static hs.project.medicine.HttpRequest.getRequest;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -39,9 +42,12 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout btnSearch;
     private EditText etSearchMedicine, etSearchCompany;
     private RecyclerView rvMedicine;
+    private NestedScrollView nestedScrollView;
+    private ProgressBar pbPaging;
+    private TextView tvCurrentSearch;
 
     private String url = "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList";
-    private String key = "";
+    private String key = "9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D";
     private int pageNo = 1;   // pageNum
     private int numOfRows = 20;  // 몇개씩 보여줄지
     private String type = "json";  // 전달 받을 type
@@ -73,12 +79,18 @@ public class MainActivity extends AppCompatActivity {
         etSearchCompany = findViewById(R.id.et_search_company);
         rvMedicine = findViewById(R.id.rv_medicine);
         clLoading = findViewById(R.id.cl_loading);
+        nestedScrollView = findViewById(R.id.nested_scroll_view);
+        pbPaging = findViewById(R.id.paging_progress_bar);
+        tvCurrentSearch = findViewById(R.id.tv_current_search);
 
         itemArrayList = new ArrayList<>();
         medicineAdapter = new MedicineAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvMedicine.setLayoutManager(layoutManager);
         rvMedicine.setAdapter(medicineAdapter);
+
+        clLoading.setVisibility(View.VISIBLE);
+        getData("", "", pageNo, numOfRows);
 
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -94,9 +106,40 @@ public class MainActivity extends AppCompatActivity {
                 itemArrayList = new ArrayList<>();
 
                 clLoading.setVisibility(View.VISIBLE);
-                new Thread(runnable).start();
+                getData(etSearchCompany.getText().toString(), etSearchMedicine.getText().toString(), pageNo, numOfRows);
             }
         });
+
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
+                    Log.e("hs", "제일하단");
+//                    pageNo++;
+//                    numOfRows = numOfRows + 20;
+                    pbPaging.setVisibility(View.VISIBLE);
+
+                    if (numOfRows < 100) {
+                        numOfRows = numOfRows + 20;
+                    } else {
+                        pageNo++;
+                        numOfRows = 20;
+                    }
+
+                    if (etSearchCompany.getText().length() > 0 || etSearchMedicine.getText().length() > 0) {
+                        getData(etSearchCompany.getText().toString(), etSearchMedicine.getText().toString(), pageNo, numOfRows);
+                    } else {
+                        getData("", "", pageNo, numOfRows);
+                    }
+
+                }
+            }
+        });
+
+
+    }
+
+    private void getData(String searchCompany, String searchMedicine, int pageNo, int numOfRows) {
 
         runnable = new Runnable() {
             @Override
@@ -109,8 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 parameter.put("pageNo", pageNo);
                 parameter.put("numOfRows", numOfRows);
                 parameter.put("type", type);
-                parameter.put("entpName", etSearchCompany.getText().toString());
-                parameter.put("itemName", etSearchMedicine.getText().toString());
+                parameter.put("entpName", searchCompany);
+                parameter.put("itemName", searchMedicine);
 
                 String response = getRequest(url, HttpRequest.HttpType.GET, parameter);
                 Log.e("result", response);
@@ -161,15 +204,13 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.e("body", body.toString());
 
-                    /**
-                     * total_count 로 해야됨.
-                     * 아니면 다른 값들도 같이 출력
-                     *
-                     * 만약 total_count 가 많다면
-                     *
-                     */
-                    if (body.getTotalCount() > 0) {
-                        for (int i = 0; i < body.getTotalCount(); i++) {
+                    // totalCnt - 현재리스트 > 0 클 때만 데이터 가져오도록
+                    totalCnt = totalCnt - itemArrayList.size();
+
+                    Log.e("totalCnt", totalCnt+"");
+
+                    if (totalCnt > 0) {
+                        for (int i = 0; i < 20; i++) {
                             JSONObject item = itemArray.getJSONObject(i);
                             Item arrItem = new Item();
                             arrItem.setEntpName(item.getString("entpName"));
@@ -190,6 +231,17 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("arrItem", arrItem.toString());
                             itemArrayList.add(arrItem);
                         }
+                    } else {
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("검색결과")
+                                .setMessage("더이상 검색할 데이터가 없습니다")
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+
                     }
 
 
@@ -202,12 +254,13 @@ public class MainActivity extends AppCompatActivity {
                         // UI 변경이 필요할 때 메인스레드 사용.
                         clLoading.setVisibility(View.GONE);
                         medicineAdapter.addAll(itemArrayList);
+                        pbPaging.setVisibility(View.GONE);
+                        Log.e("current_list", itemArrayList.size()+"");
                     }
                 });
 
             }
-        }
-
-        ;
+        };
+        new Thread(runnable).start();
     }
 }
