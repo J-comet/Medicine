@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 //    private String itemName = "";  // 약 이름
 
     private int totalCnt = -1;  // total 조회 값
+    private String displaySearchTotalCnt = ""; // 화면에 표시될 현재 데이터 총 갯수
 
     private Runnable runnable;
 
@@ -201,16 +202,17 @@ public class MainActivity extends AppCompatActivity {
                     body.setPageNo(Integer.valueOf(bodyObject.getString("pageNo")));
 
                     totalCnt = body.getTotalCount();
+                    displaySearchTotalCnt = String.valueOf(totalCnt);
 
                     Log.e("body", body.toString());
 
                     // totalCnt - 현재리스트 > 0 클 때만 데이터 가져오도록
                     totalCnt = totalCnt - itemArrayList.size();
 
-                    Log.e("totalCnt", totalCnt+"");
+                    Log.e("totalCnt", totalCnt + "");
 
                     if (totalCnt > 0) {
-                        for (int i = 0; i < 20; i++) {
+                        for (int i = 0; i < totalCnt; i++) {
                             JSONObject item = itemArray.getJSONObject(i);
                             Item arrItem = new Item();
                             arrItem.setEntpName(item.getString("entpName"));
@@ -222,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
                             arrItem.setIntrcQesitm(item.getString("intrcQesitm"));
                             arrItem.setSeQesitm(item.getString("seQesitm"));
                             arrItem.setDepositMethodQesitm(item.getString("depositMethodQesitm"));
-
                             arrItem.setOpenDe(item.getString("openDe"));
                             arrItem.setUpdateDe(item.getString("updateDe"));
                             arrItem.setAtpnWarnQesitm(item.getString("atpnWarnQesitm"));
@@ -232,18 +233,22 @@ public class MainActivity extends AppCompatActivity {
                             itemArrayList.add(arrItem);
                         }
                     } else {
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("검색결과")
-                                .setMessage("더이상 검색할 데이터가 없습니다")
-                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                }).show();
 
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle("검색결과")
+                                        .setMessage("더이상 검색할 데이터가 없습니다")
+                                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+                            }
+                        });
                     }
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -255,7 +260,10 @@ public class MainActivity extends AppCompatActivity {
                         clLoading.setVisibility(View.GONE);
                         medicineAdapter.addAll(itemArrayList);
                         pbPaging.setVisibility(View.GONE);
-                        Log.e("current_list", itemArrayList.size()+"");
+
+                        tvCurrentSearch.setText("업체명 : " + searchCompany + "\n제품명 : " + searchMedicine + "\n(" + itemArrayList.size() + "/" + displaySearchTotalCnt + ")");
+
+                        Log.e("current_list", itemArrayList.size() + "");
                     }
                 });
 
