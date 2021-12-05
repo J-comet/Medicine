@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvMedicine;
 
     private String url = "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList";
-    private String key = "9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D";
+    private String key = "";
     private int pageNo = 1;   // pageNum
     private int numOfRows = 20;  // 몇개씩 보여줄지
     private String type = "json";  // 전달 받을 type
