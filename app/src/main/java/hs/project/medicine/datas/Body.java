@@ -1,0 +1,44 @@
+package hs.project.medicine.datas;
+
+import java.util.List;
+
+public class Body {
+
+    private Integer pageNo;
+    private Integer totalCount;
+    private Integer numOfRows;
+    private List<Item> items = null;
+
+    public Integer getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public Integer getNumOfRows() {
+        return numOfRows;
+    }
+
+    public void setNumOfRows(Integer numOfRows) {
+        this.numOfRows = numOfRows;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+}
