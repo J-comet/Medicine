@@ -14,10 +14,10 @@
         android:theme="@style/Theme.Medicine"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".SettingAlarmActivity"
+            android:name=".activitys.SettingAlarmActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".activitys.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,13 +26,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MedicineDetailActivity"
+            android:name=".activitys.MedicineDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".SearchMedicineActivity"
+            android:name=".activitys.SearchMedicineActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activitys.MainActivity"
             android:exported="false" />
     </application>
 

@@ -1,4 +1,4 @@
-package hs.project.medicine;
+package hs.project.medicine.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import hs.project.medicine.R;
+import hs.project.medicine.activitys.MedicineDetailActivity;
 import hs.project.medicine.datas.Item;
 
 public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHolder> {

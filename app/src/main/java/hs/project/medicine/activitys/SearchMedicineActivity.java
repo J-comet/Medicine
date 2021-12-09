@@ -1,4 +1,4 @@
-package hs.project.medicine;
+package hs.project.medicine.activitys;
 
 import static hs.project.medicine.HttpRequest.getRequest;
 
@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import hs.project.medicine.HttpRequest;
+import hs.project.medicine.adapter.MedicineAdapter;
+import hs.project.medicine.R;
 import hs.project.medicine.datas.Body;
 import hs.project.medicine.datas.Header;
 import hs.project.medicine.datas.Item;

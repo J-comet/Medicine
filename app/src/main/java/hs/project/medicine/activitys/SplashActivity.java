@@ -1,4 +1,4 @@
-package hs.project.medicine;
+package hs.project.medicine.activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
+import hs.project.medicine.R;
 import hs.project.medicine.util.NetworkUtil;
 
 public class SplashActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package hs.project.medicine;
+package hs.project.medicine.activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -21,6 +21,7 @@ import com.bumptech.glide.request.RequestOptions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import hs.project.medicine.R;
 import hs.project.medicine.datas.Item;
 
 public class MedicineDetailActivity extends AppCompatActivity {
