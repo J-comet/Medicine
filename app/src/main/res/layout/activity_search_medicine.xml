@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="전체 데이터 결과"
-                android:textColor="@color/red"
+                android:textColor="@color/color_main_red"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/btn_search"

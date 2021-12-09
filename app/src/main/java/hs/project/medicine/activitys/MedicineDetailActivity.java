@@ -161,7 +161,7 @@ public class MedicineDetailActivity extends AppCompatActivity {
                     .into(ivImg);
         } else {
             ivImg.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_medication, null));
-            ivImg.setColorFilter(getResources().getColor(R.color.red), PorterDuff.Mode.SRC_IN);
+            ivImg.setColorFilter(getResources().getColor(R.color.color_main_red), PorterDuff.Mode.SRC_IN);
         }
 
 

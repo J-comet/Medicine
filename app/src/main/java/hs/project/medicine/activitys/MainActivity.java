@@ -12,8 +12,8 @@ import hs.project.medicine.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ConstraintLayout clSearchMedic;
-    private TextView tvAlert;
+//    private ConstraintLayout clSearchMedic;
+//    private TextView tvAlert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +25,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
-        clSearchMedic = findViewById(R.id.cl_search_medic);
+        /*clSearchMedic = findViewById(R.id.cl_search_medic);
         clSearchMedic.setOnClickListener(this);
         tvAlert = findViewById(R.id.tv_alert);
-        tvAlert.setOnClickListener(this);
+        tvAlert.setOnClickListener(this);*/
     }
 
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.cl_search_medic:
+           /* case R.id.cl_search_medic:
                 Intent intentMoveSearchMedic = new Intent(MainActivity.this, SearchMedicineActivity.class);
                 intentMoveSearchMedic.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intentMoveSearchMedic);
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intentMoveSetting = new Intent(MainActivity.this, SettingAlarmActivity.class);
                 intentMoveSetting.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intentMoveSetting);
-                break;
+                break;*/
         }
     }
 
