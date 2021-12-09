@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import hs.project.medicine.Config;
 import hs.project.medicine.HttpRequest;
 import hs.project.medicine.adapter.MedicineAdapter;
 import hs.project.medicine.R;
@@ -43,8 +44,6 @@ public class SearchMedicineActivity extends AppCompatActivity {
     private ProgressBar pbPaging;
     private TextView tvCurrentSearch;
 
-    private String url = "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList";
-    private String key = "9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D";
     private int pageNo = 1;   // pageNum
     private int numOfRows = 20;  // 몇개씩 보여줄지
     private String type = "json";  // 전달 받을 type
@@ -142,14 +141,14 @@ public class SearchMedicineActivity extends AppCompatActivity {
                 Log.e("hs", "current pageNo:" + pageNo + "current numOfRows" + numOfRows);
 
                 Map<String, Object> parameter = new HashMap<>();
-                parameter.put("serviceKey", key);
+                parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
                 parameter.put("pageNo", pageNo);
                 parameter.put("numOfRows", numOfRows);
                 parameter.put("type", type);
                 parameter.put("entpName", searchCompany);
                 parameter.put("itemName", searchMedicine);
 
-                String response = getRequest(url, HttpRequest.HttpType.GET, parameter);
+                String response = getRequest(Config.URL_GET_EASY_DRUG, HttpRequest.HttpType.GET, parameter);
                 Log.e("result", response);
 
                 try {
