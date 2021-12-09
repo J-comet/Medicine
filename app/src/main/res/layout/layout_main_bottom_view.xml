@@ -87,7 +87,7 @@
             android:id="@+id/iv_tv"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/ic_search"
+            android:src="@drawable/ic_tv"
             app:layout_constraintBottom_toTopOf="@+id/tv_telev"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
