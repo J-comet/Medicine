@@ -33,10 +33,14 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_name"
         style="@style/textInputLayoutStyle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:hint="이름"
-        app:hintTextColor="@color/color_e2e2e2"
+        app:hintTextColor="@color/color_main_red"
+        android:textColorHint="@color/selector_text_input_hint"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
@@ -47,6 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:inputType="textPersonName"
+            android:maxLength="10"
+            android:maxLines="1"
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/black_cursor" />
 
