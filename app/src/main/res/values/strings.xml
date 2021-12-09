@@ -2,4 +2,8 @@
     <string name="app_name">Medicine</string>
     <string name="api_key_easy_drug">9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D</string>
 
+
+    <string name="str_bottom_menu_home">홈</string>
+    <string name="str_bottom_menu_search">검색</string>
+    <string name="str_bottom_menu_tv">메디tv</string>
 </resources>

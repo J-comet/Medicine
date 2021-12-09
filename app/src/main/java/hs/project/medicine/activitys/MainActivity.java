@@ -9,11 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import hs.project.medicine.R;
+import hs.project.medicine.custom_view.MainBottomView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-//    private ConstraintLayout clSearchMedic;
-//    private TextView tvAlert;
+    private MainBottomView mainBottomView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
-        /*clSearchMedic = findViewById(R.id.cl_search_medic);
-        clSearchMedic.setOnClickListener(this);
-        tvAlert = findViewById(R.id.tv_alert);
-        tvAlert.setOnClickListener(this);*/
+        mainBottomView = findViewById(R.id.main_bottom_view);
     }
 
     @Override
