@@ -1,9 +1,12 @@
 package hs.project.medicine.activitys;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,8 +19,9 @@ import org.w3c.dom.Text;
 
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.util.LogUtil;
 
-public class AddUserActivity extends AppCompatActivity implements View.OnClickListener{
+public class AddUserActivity extends AppCompatActivity implements View.OnClickListener {
 
 //    private TextInputLayout tilName;
 
@@ -26,6 +30,9 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
     private TextView tvAge;
     private LinearLayout liBack;
     private LinearLayout liComplete;
+
+    private boolean isGender = false;
+    private boolean isAge = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +59,67 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
 //        tilName.setStartIconTintList(ContextCompat.getColorStateList(MediApplication.ApplicationContext(), R.color.selector_starticon));
     }
 
+    private void complete() {
+        Toast.makeText(this, "등록완료", Toast.LENGTH_SHORT).show();
+    }
+
+    private void displayGenderDialog() {
+
+        String[] genderList = getResources().getStringArray(R.array.arr_gender);
+
+        new AlertDialog.Builder(this)
+                .setTitle("성별 선택")
+                .setItems(genderList, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                tvGender.setText(genderList[which]);
+                tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                isGender = true;
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    private void displayAgeDialog() {
+
+        String[] ageList = getResources().getStringArray(R.array.arr_age);
+
+        new AlertDialog.Builder(this)
+                .setTitle("연령대 선택")
+                .setItems(ageList, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tvAge.setText(ageList[which]);
+                        tvAge.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        isAge = true;
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_gender:
-                Toast.makeText(this, "성별", Toast.LENGTH_SHORT).show();
+                displayGenderDialog();
                 break;
             case R.id.tv_age:
-                Toast.makeText(this, "나이", Toast.LENGTH_SHORT).show();
+                displayAgeDialog();
                 break;
             case R.id.li_back:
                 finish();
                 break;
             case R.id.li_complete:
-                Toast.makeText(this, "등록하기", Toast.LENGTH_SHORT).show();
+
+                /**
+                 * 모든 정보 입력 완료했을 때 실행할 수 있도록
+                 */
+                if (etName.getText().toString().length() > 0 && isGender && isAge) {
+                    complete();
+                } else {
+                    Toast.makeText(this, "모든 정보를 입력해주세요", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
         }
     }
