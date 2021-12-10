@@ -19,6 +19,7 @@ import org.w3c.dom.Text;
 
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 
 public class AddUserActivity extends AppCompatActivity implements View.OnClickListener {
@@ -60,6 +61,28 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void complete() {
+        /**
+         * 사용자 정보 JSON String 으로 저장 후 Preference 에 저장
+         *
+         * 사용자 정보를 등록하면 방금 등록한 사용자를 현재 사용자로 설정
+         */
+        User user = new User();
+        user.setName(etName.getText().toString());
+        user.setGender(tvGender.getText().toString());
+        user.setAge(tvAge.getText().toString());
+        user.setCurrent(true);
+
+        LogUtil.d("user /"+ user.getName());
+        LogUtil.d("user /"+ user.getGender());
+        LogUtil.d("user /"+ user.getAge());
+        LogUtil.d("user /"+ user.isCurrent());
+
+        /**
+         * JSON 스트링으로 변환
+         */
+
+        LogUtil.d("user /"+ user.toJSON());
+
         Toast.makeText(this, "등록완료", Toast.LENGTH_SHORT).show();
     }
 
