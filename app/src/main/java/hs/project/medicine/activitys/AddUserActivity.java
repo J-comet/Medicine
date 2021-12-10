@@ -53,6 +53,7 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
 
     private void init() {
         // userList 초기화
+        // 다음 해야할 일
         // Preference 에 저장된 UserList 가 있다면 불러와서 저장시키는 코드 필요
         userList = new ArrayList<>();
 
