@@ -15,12 +15,17 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONArray;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
+import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
+import hs.project.medicine.util.PreferenceUtil;
 
 public class AddUserActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,6 +40,8 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
     private boolean isGender = false;
     private boolean isAge = false;
 
+    private ArrayList<String> userList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +52,10 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void init() {
+        // userList 초기화
+        // Preference 에 저장된 UserList 가 있다면 불러와서 저장시키는 코드 필요
+        userList = new ArrayList<>();
+
         etName = findViewById(R.id.et_name);
         tvGender = findViewById(R.id.tv_gender);
         tvAge = findViewById(R.id.tv_age);
@@ -62,26 +73,32 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
 
     private void complete() {
         /**
-         * 사용자 정보 JSON String 으로 저장 후 Preference 에 저장
-         *
-         * 사용자 정보를 등록하면 방금 등록한 사용자를 현재 사용자로 설정
+         * 1. 사용자 정보 JSON String 으로 저장 후 ArrayList<String> 에 저장
+         * 2. 만약 Preference 에 저장된 User List 가 없다면 setCurrent = true 로 변경하는 코드 추가 필요
          */
         User user = new User();
         user.setName(etName.getText().toString());
         user.setGender(tvGender.getText().toString());
         user.setAge(tvAge.getText().toString());
-        user.setCurrent(true);
+        user.setCurrent(false);
 
         LogUtil.d("user /"+ user.getName());
         LogUtil.d("user /"+ user.getGender());
         LogUtil.d("user /"+ user.getAge());
         LogUtil.d("user /"+ user.isCurrent());
 
-        /**
-         * JSON 스트링으로 변환
-         */
 
+        /**
+         * userList 에 user 를 JSON String 으로 변환 후 추가
+         */
         LogUtil.d("user /"+ user.toJSON());
+        userList.add(user.toJSON());
+
+        // Preference 에 저장
+        PreferenceUtil.setJSONArrayPreference(this, Config.PREFERENCE_KEY.USER_LIST, userList);
+
+
+//        PreferenceUtil.putSharedPreference();
 
         Toast.makeText(this, "등록완료", Toast.LENGTH_SHORT).show();
     }

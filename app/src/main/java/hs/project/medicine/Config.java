@@ -9,4 +9,9 @@ public class Config {
         String SEARCH = "search";
         String TV = "tv";
     }
+
+    public interface PREFERENCE_KEY {
+        String USER_LIST = "user_list";
+
+    }
 }

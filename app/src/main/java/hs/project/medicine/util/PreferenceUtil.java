@@ -5,6 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
 public class PreferenceUtil {
 
     /**
@@ -111,6 +116,47 @@ public class PreferenceUtil {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(key, defaultVal);
     }
+
+
+    public static void setJSONArrayPreference(Context context, String key, ArrayList<String> list) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        JSONArray jsonArray = new JSONArray();
+
+        for (int i = 0; i < list.size(); i++) {
+            jsonArray.put(list.get(i));
+        }
+
+        if (!list.isEmpty()) {
+            editor.putString(key, jsonArray.toString());
+        } else {
+            editor.putString(key, null);
+        }
+
+        editor.apply();
+    }
+
+    public static ArrayList  getJSONArrayPreference(Context context, String key) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String json = prefs.getString(key, null);
+        ArrayList list = new ArrayList();
+
+        if (json != null) {
+            try {
+                JSONArray jsonArray = new JSONArray(json);
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    String url = jsonArray.optString(i);
+                    list.add(url);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+
 
     /*public static void setUserInfo(Context context, String key, User user) {
         if (context == null) return;
