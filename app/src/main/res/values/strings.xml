@@ -7,4 +7,11 @@
     <string name="str_bottom_menu_home">홈</string>
     <string name="str_bottom_menu_search">검색</string>
     <string name="str_bottom_menu_tv">메디tv</string>
+
+
+    <string name="str_common_01">사용자 정보 등록</string>
+
+    <string name="str_name">이름</string>
+    <string name="str_gender">성별</string>
+    <string name="str_age">연령대</string>
 </resources>

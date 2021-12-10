@@ -16,10 +16,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
+        <LinearLayout
+            android:id="@+id/li_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_back"
+                app:tint="@color/white" />
+
+
+        </LinearLayout>
+
+
+
+
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="사용자 정보 등록"
+            android:text="@string/str_common_01"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:textStyle="bold"
@@ -30,7 +52,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <!--<com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_name"
         style="@style/textInputLayoutStyle"
         android:layout_width="0dp"
@@ -38,7 +60,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:hint="이름"
+        android:hint="@string/str_name"
         app:hintTextColor="@color/color_main_red"
         android:textColorHint="@color/selector_text_input_hint"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -53,10 +75,157 @@
             android:inputType="textPersonName"
             android:maxLength="10"
             android:maxLines="1"
+            android:textSize="16dp"
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/black_cursor" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>-->
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/str_name"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/et_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/et_name" />
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:gravity="right|center_vertical"
+        android:hint="@string/str_name"
+        android:letterSpacing="0.05"
+        android:maxLength="10"
+        android:maxLines="1"
+        android:textSize="16dp"
+        android:paddingRight="16dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/color_a09d9d"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="0dp"
+        android:layout_height="0.7dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="@+id/et_name"
+        app:layout_constraintStart_toStartOf="@+id/et_name"
+        app:layout_constraintTop_toBottomOf="@+id/et_name" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/str_gender"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_gender"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_gender" />
+
+    <TextView
+        android:id="@+id/tv_gender"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
+        android:paddingRight="16dp"
+        android:text="@string/str_gender"
+        android:textColor="@color/color_a09d9d"
+        android:gravity="right|center_vertical"
+        android:letterSpacing="0.01"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/et_name"
+        app:layout_constraintStart_toEndOf="@+id/textView1"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="0dp"
+        android:layout_height="0.7dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_gender" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/str_age"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_age"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_age" />
+
+    <TextView
+        android:id="@+id/tv_age"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
+        android:paddingRight="16dp"
+        android:text="@string/str_age"
+        android:textColor="@color/color_a09d9d"
+        android:gravity="right|center_vertical"
+        android:letterSpacing="0.01"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_gender"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/view3" />
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="0dp"
+        android:layout_height="0.7dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_age" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ff5232"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:text="등록하기" />
+
+    </LinearLayout>
+
 
 
 

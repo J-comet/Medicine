@@ -24,7 +24,7 @@ public class AddUserActivity extends AppCompatActivity {
     }
 
     private void init() {
-        tilName = findViewById(R.id.til_name);
-        tilName.setStartIconTintList(ContextCompat.getColorStateList(MediApplication.ApplicationContext(), R.color.selector_starticon));
+//        tilName = findViewById(R.id.til_name);
+//        tilName.setStartIconTintList(ContextCompat.getColorStateList(MediApplication.ApplicationContext(), R.color.selector_starticon));
     }
 }
