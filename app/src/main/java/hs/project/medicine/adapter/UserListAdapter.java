@@ -11,10 +11,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.MedicineDetailActivity;
 import hs.project.medicine.datas.Item;
@@ -58,8 +60,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
          */
         switch (userModel.getGender()) {
             case "남자":
+                holder.ivGender.setImageResource(R.drawable.male);
+                holder.ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.blue));
                 break;
             case "여자":
+                holder.ivGender.setImageResource(R.drawable.female);
+                holder.ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.red));
                 break;
         }
 
