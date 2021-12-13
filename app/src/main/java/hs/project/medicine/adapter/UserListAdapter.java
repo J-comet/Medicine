@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +40,37 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User userModel = items.get(position);
+        holder.tvName.setText(userModel.getName());
+        holder.tvAge.setText(userModel.getAge());
 
+        /**
+         *  남자 or 여자에 따라 다른 이미지 출력하기
+         */
+        switch (userModel.getGender()) {
+            case "남자":
+                break;
+            case "여자":
+                break;
+        }
+
+
+        if (userModel.isCurrent()) {
+            holder.ivSelected.setVisibility(View.VISIBLE);
+        } else {
+            holder.ivSelected.setVisibility(View.GONE);
+        }
+
+        /**
+         * 누르면 현재 선택된 유저로 저장하기
+         */
+        holder.clContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // 저장된 Preference 값 가져와서
+
+            }
+        });
     }
 
     @Override
@@ -58,16 +89,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ConstraintLayout clContent;
-        TextView tvEntpName;  // 업체 이름
-        TextView tvItemName; // 약 이름
-        TextView tvItemSeq; // 품목코드
+        ImageView ivGender;
+        ImageView ivSelected;
+        TextView tvName;
+        TextView tvAge;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             clContent = itemView.findViewById(R.id.cl_content);
-            tvEntpName = itemView.findViewById(R.id.tv_entp_name);
-            tvItemName = itemView.findViewById(R.id.tv_item_name);
-            tvItemSeq = itemView.findViewById(R.id.tv_item_seq);
+            ivGender = itemView.findViewById(R.id.iv_gender);
+            ivSelected = itemView.findViewById(R.id.iv_selected);
+            tvName = itemView.findViewById(R.id.tv_name);
+            tvAge = itemView.findViewById(R.id.tv_age);
         }
     }
 }
