@@ -208,7 +208,7 @@
         android:id="@+id/li_complete"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#ff5232"
+        android:background="@color/color_ff5232"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

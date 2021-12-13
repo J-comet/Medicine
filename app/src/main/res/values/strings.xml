@@ -10,6 +10,7 @@
 
 
     <string name="str_common_01">사용자 정보 등록</string>
+    <string name="str_common_02">사용자 정보</string>
 
     <string name="str_name">이름</string>
     <string name="str_gender">성별</string>
