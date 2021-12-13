@@ -53,9 +53,15 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
 
     private void init() {
         // userList 초기화
-        // 다음 해야할 일
-        // Preference 에 저장된 UserList 가 있다면 불러와서 저장시키는 코드 필요
-        userList = new ArrayList<>();
+        // Preference 에 저장된 UserList 가 있다면 불러옴
+
+        if (PreferenceUtil.getJSONArrayPreference(AddUserActivity.this,Config.PREFERENCE_KEY.USER_LIST) != null) {
+            userList = PreferenceUtil.getJSONArrayPreference(AddUserActivity.this,Config.PREFERENCE_KEY.USER_LIST);
+        } else {
+            userList = new ArrayList<>();
+        }
+
+        LogUtil.d("userList.size()="+userList.size());
 
         etName = findViewById(R.id.et_name);
         tvGender = findViewById(R.id.tv_gender);

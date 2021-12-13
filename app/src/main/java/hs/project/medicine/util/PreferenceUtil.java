@@ -118,6 +118,9 @@ public class PreferenceUtil {
     }
 
 
+    /**
+     * ArrayList 를 받아서 JSONArray 로 변환 후 JSONArray String 으로 Preference 에 저장
+     */
     public static void setJSONArrayPreference(Context context, String key, ArrayList<String> list) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
@@ -136,7 +139,10 @@ public class PreferenceUtil {
         editor.apply();
     }
 
-    public static ArrayList  getJSONArrayPreference(Context context, String key) {
+    /**
+     * JSONArray 를 받아서 ArrayList 로 출력
+     */
+    public static ArrayList getJSONArrayPreference(Context context, String key) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String json = prefs.getString(key, null);
         ArrayList list = new ArrayList();
