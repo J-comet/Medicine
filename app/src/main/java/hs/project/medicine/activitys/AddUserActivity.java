@@ -42,6 +42,8 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
 
     private ArrayList<String> userList;
 
+    private boolean isCurrent = false;  // 현재 선택된 유저인지 확인용 플래그
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,7 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
 
         if (PreferenceUtil.getJSONArrayPreference(AddUserActivity.this,Config.PREFERENCE_KEY.USER_LIST) != null) {
             userList = PreferenceUtil.getJSONArrayPreference(AddUserActivity.this,Config.PREFERENCE_KEY.USER_LIST);
+            isCurrent = true;
         } else {
             userList = new ArrayList<>();
         }
@@ -87,7 +90,7 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
         user.setName(etName.getText().toString());
         user.setGender(tvGender.getText().toString());
         user.setAge(tvAge.getText().toString());
-        user.setCurrent(false);
+        user.setCurrent(isCurrent);
 
         LogUtil.d("user /"+ user.getName());
         LogUtil.d("user /"+ user.getGender());
