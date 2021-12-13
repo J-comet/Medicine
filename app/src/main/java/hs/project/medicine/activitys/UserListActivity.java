@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +27,10 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
     private LinearLayout liBack;
     private RecyclerView rvUserList;
     private ArrayList<User> userArrayList;
+    private ArrayList<User> newUserList;
+
+    private ArrayList<String> strUserList;
+
     private UserListAdapter userListAdapter;
 
     @Override
@@ -44,10 +49,12 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
 
         userArrayList = new ArrayList<>();
         userListAdapter = new UserListAdapter(this);
+
         rvUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvUserList.setAdapter(userListAdapter);
 
-        if (PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST) != null) {
+        if (PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST).size() > 0) {
 //            userArrayList = PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST);
 
             JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST));
@@ -62,10 +69,10 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
                     user.setGender(object.getString("gender"));
                     user.setCurrent(object.getBoolean("isCurrent"));
 
-                    LogUtil.d("user /"+ user.getName());
-                    LogUtil.d("user /"+ user.getGender());
-                    LogUtil.d("user /"+ user.getAge());
-                    LogUtil.d("user /"+ user.isCurrent());
+                    LogUtil.d("user /" + user.getName());
+                    LogUtil.d("user /" + user.getGender());
+                    LogUtil.d("user /" + user.getAge());
+                    LogUtil.d("user /" + user.isCurrent());
 
                     userArrayList.add(user);
                 }
@@ -75,10 +82,36 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
-//            userListAdapter.addAll(userArrayList);
         }
+
+        userListAdapter.setOnMemberClickListener(new UserListAdapter.OnUserListClickListener() {
+            @Override
+            public void onUserClick(View v, int pos) {
+                Toast.makeText(UserListActivity.this, userArrayList.get(pos).getName(), Toast.LENGTH_SHORT).show();
+                LogUtil.d("selected user :" + userArrayList.get(pos).getName());
+
+                strUserList = new ArrayList<>();
+                newUserList = new ArrayList<>();
+
+                for (int i = 0; i < userArrayList.size(); i++) {
+                    User user = new User();
+                    user.setName(userArrayList.get(i).getName());
+                    user.setAge(userArrayList.get(i).getAge());
+                    user.setGender(userArrayList.get(i).getGender());
+                    user.setCurrent(false);
+
+                    // 현재 선택한 위치의 값만 true 로 설정
+                    if (i == pos) {
+                        user.setCurrent(true);
+                    }
+                    newUserList.add(user);  // adapter 와 연결시킬 ArrayList
+                    strUserList.add(user.toJSON());  // Preference 에 저장시킬 ArrayList
+                }
+
+                userListAdapter.addAll(newUserList);
+                PreferenceUtil.setJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST, strUserList);
+            }
+        });
 
 
     }

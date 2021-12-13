@@ -29,6 +29,16 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         this.context = context;
     }
 
+    private OnUserListClickListener userListClickListener = null;
+
+    public interface OnUserListClickListener {
+        void onUserClick(View v, int pos);
+    }
+
+    public void setOnMemberClickListener(OnUserListClickListener listener) {
+        this.userListClickListener = listener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,17 +70,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             holder.ivSelected.setVisibility(View.GONE);
         }
 
-        /**
-         * 누르면 현재 선택된 유저로 저장하기
-         */
-        holder.clContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                // 저장된 Preference 값 가져와서
-
-            }
-        });
     }
 
     @Override
@@ -101,6 +101,18 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             ivSelected = itemView.findViewById(R.id.iv_selected);
             tvName = itemView.findViewById(R.id.tv_name);
             tvAge = itemView.findViewById(R.id.tv_age);
+
+            clContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        if (userListClickListener != null) {
+                            userListClickListener.onUserClick(v,position);
+                        }
+                    }
+                }
+            });
         }
     }
 }
