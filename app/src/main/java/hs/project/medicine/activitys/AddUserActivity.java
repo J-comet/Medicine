@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -166,6 +167,9 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                  */
                 if (etName.getText().toString().length() > 0 && isGender && isAge) {
                     complete();
+                    Intent intent = new Intent(AddUserActivity.this, UserListActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(this, "모든 정보를 입력해주세요", Toast.LENGTH_SHORT).show();
                 }
