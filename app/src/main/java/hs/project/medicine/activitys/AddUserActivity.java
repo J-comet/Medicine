@@ -58,14 +58,15 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
         // userList 초기화
         // Preference 에 저장된 UserList 가 있다면 불러옴
 
-        if (PreferenceUtil.getJSONArrayPreference(AddUserActivity.this,Config.PREFERENCE_KEY.USER_LIST) != null) {
-            userList = PreferenceUtil.getJSONArrayPreference(AddUserActivity.this,Config.PREFERENCE_KEY.USER_LIST);
-            isCurrent = true;
+        if (PreferenceUtil.getJSONArrayPreference(AddUserActivity.this, Config.PREFERENCE_KEY.USER_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(AddUserActivity.this, Config.PREFERENCE_KEY.USER_LIST).size() > 0) {
+            userList = PreferenceUtil.getJSONArrayPreference(AddUserActivity.this, Config.PREFERENCE_KEY.USER_LIST);
         } else {
             userList = new ArrayList<>();
+            isCurrent = true;
         }
 
-        LogUtil.d("userList.size()="+userList.size());
+        LogUtil.d("userList.size()=" + userList.size());
 
         etName = findViewById(R.id.et_name);
         tvGender = findViewById(R.id.tv_gender);
@@ -93,16 +94,16 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
         user.setAge(tvAge.getText().toString());
         user.setCurrent(isCurrent);
 
-        LogUtil.d("user /"+ user.getName());
-        LogUtil.d("user /"+ user.getGender());
-        LogUtil.d("user /"+ user.getAge());
-        LogUtil.d("user /"+ user.isCurrent());
+        LogUtil.d("user /" + user.getName());
+        LogUtil.d("user /" + user.getGender());
+        LogUtil.d("user /" + user.getAge());
+        LogUtil.d("user /" + user.isCurrent());
 
 
         /**
          * userList 에 user 를 JSON String 으로 변환 후 추가
          */
-        LogUtil.d("user /"+ user.toJSON());
+        LogUtil.d("user /" + user.toJSON());
         userList.add(user.toJSON());
 
         // Preference 에 저장
@@ -121,14 +122,14 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
         new AlertDialog.Builder(this)
                 .setTitle("성별 선택")
                 .setItems(genderList, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                tvGender.setText(genderList[which]);
-                tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
-                isGender = true;
-                dialog.dismiss();
-            }
-        }).show();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tvGender.setText(genderList[which]);
+                        tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        isGender = true;
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     private void displayAgeDialog() {
