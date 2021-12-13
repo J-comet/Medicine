@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ import hs.project.medicine.util.PreferenceUtil;
 public class UserListActivity extends AppCompatActivity implements View.OnClickListener {
 
     private LinearLayout liBack;
+    private LinearLayout liAdd;
     private RecyclerView rvUserList;
     private ArrayList<User> userArrayList;
     private ArrayList<User> newUserList;
@@ -41,21 +43,12 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
         init();
     }
 
-    private void init() {
-        liBack = findViewById(R.id.li_back);
-        liBack.setOnClickListener(this);
-
-        rvUserList = findViewById(R.id.rv_user_list);
-
-        userArrayList = new ArrayList<>();
-        userListAdapter = new UserListAdapter(this);
-
-        rvUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvUserList.setAdapter(userListAdapter);
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         if (PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST) != null
                 && PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST).size() > 0) {
-//            userArrayList = PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST);
 
             JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST));
 
@@ -112,14 +105,32 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
                 PreferenceUtil.setJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST, strUserList);
             }
         });
+    }
 
+    private void init() {
+        liBack = findViewById(R.id.li_back);
+        liAdd = findViewById(R.id.li_add);
+        liBack.setOnClickListener(this);
+        liAdd.setOnClickListener(this);
 
+        rvUserList = findViewById(R.id.rv_user_list);
+
+        userArrayList = new ArrayList<>();
+        userListAdapter = new UserListAdapter(this);
+
+        rvUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvUserList.setAdapter(userListAdapter);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.li_back:
+                finish();
+                break;
+            case R.id.li_add:
+                Intent intent = new Intent(UserListActivity.this, AddUserActivity.class);
+                startActivity(intent);
                 finish();
                 break;
         }
