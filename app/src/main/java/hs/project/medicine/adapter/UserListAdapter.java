@@ -98,37 +98,52 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         holder.liDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**
-                 *  1. 해당 포지션 user  ArrayList 에서 remove
-                 *  2. Preference 에 저장되어 있는 userList 에서 remove
-                 */
 
-                new AlertDialog.Builder(context)
-                        .setTitle("경고")
-                        .setMessage("정말 삭제하시겠습니까?")
-                        .setCancelable(false)
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                selectedPosition = holder.getAdapterPosition();
-                                LogUtil.e("holder.getAdapterPosition()/" + selectedPosition);
+                if (userModel.isCurrent()) {
 
-                                // adapter 에서 데이터 삭제
-                                items.remove(userModel);
-                                notifyItemRemoved(selectedPosition);
+                    Toast.makeText(context, "사용중인 유저는 삭제할 수 없습니다", Toast.LENGTH_SHORT).show();
 
-                                // preference 에서 데이터 삭제한 후 다시 저장
-                                PreferenceUtil.setJSONArrayPreference(context, Config.PREFERENCE_KEY.USER_LIST, getRemovePreferenceList(selectedPosition));
-                                Toast.makeText(context, userModel.getName() + " 의 정보가 삭제되었습니다", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            }
-                        }).show();
+                } else {
+
+                    /**
+                     *  1. 해당 포지션 user  ArrayList 에서 remove
+                     *  2. Preference 에 저장되어 있는 userList 에서 remove
+                     */
+
+                    AlertDialog dialog = new AlertDialog.Builder(context)
+                            .setTitle("경고")
+                            .setMessage("정말 삭제하시겠습니까?")
+                            .setCancelable(false)
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Toast.makeText(context, "취소", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    selectedPosition = holder.getAdapterPosition();
+                                    LogUtil.e("holder.getAdapterPosition()/" + selectedPosition);
+
+                                    // adapter 에서 데이터 삭제
+                                    items.remove(userModel);
+                                    notifyItemRemoved(selectedPosition);
+
+                                    // preference 에서 데이터 삭제한 후 다시 저장
+                                    PreferenceUtil.setJSONArrayPreference(context, Config.PREFERENCE_KEY.USER_LIST, getRemovePreferenceList(selectedPosition));
+                                    Toast.makeText(context, userModel.getName() + " 의 정보가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            }).create();
+
+                    dialog.show();
+
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_a09d9d));
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+
+                }
 
             }
         });
