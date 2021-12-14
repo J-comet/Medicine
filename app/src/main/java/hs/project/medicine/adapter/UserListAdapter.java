@@ -1,6 +1,8 @@
 package hs.project.medicine.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,19 +17,27 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.MedicineDetailActivity;
 import hs.project.medicine.activitys.ModifyUserActivity;
 import hs.project.medicine.datas.Item;
 import hs.project.medicine.datas.User;
+import hs.project.medicine.util.LogUtil;
+import hs.project.medicine.util.PreferenceUtil;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> {
 
     private Context context;
     private ArrayList<User> items = new ArrayList<>();
+    private int selectedPosition = -100;
 
     public UserListAdapter(Context context) {
         this.context = context;
@@ -57,9 +67,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         holder.tvName.setText(userModel.getName());
         holder.tvAge.setText(userModel.getAge());
 
-        /**
-         *  남자 or 여자에 따라 다른 이미지 출력하기
-         */
         switch (userModel.getGender()) {
             case "남자":
                 holder.ivGender.setImageResource(R.drawable.male);
@@ -96,6 +103,33 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                  *  2. Preference 에 저장되어 있는 userList 에서 remove
                  */
 
+                new AlertDialog.Builder(context)
+                        .setTitle("경고")
+                        .setMessage("정말 삭제하시겠습니까?")
+                        .setCancelable(false)
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                selectedPosition = holder.getAdapterPosition();
+                                LogUtil.e("holder.getAdapterPosition()/" + selectedPosition);
+
+                                // adapter 에서 데이터 삭제
+                                items.remove(userModel);
+                                notifyItemRemoved(selectedPosition);
+
+                                // preference 에서 데이터 삭제한 후 다시 저장
+                                PreferenceUtil.setJSONArrayPreference(context, Config.PREFERENCE_KEY.USER_LIST, getRemovePreferenceList(selectedPosition));
+                                Toast.makeText(context, userModel.getName() + " 의 정보가 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        }).show();
+
             }
         });
 
@@ -112,6 +146,46 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         }
         this.items.addAll(itemArrayList);
         notifyDataSetChanged();
+    }
+
+    private ArrayList<String> getRemovePreferenceList(int pos) {
+//        ArrayList<User> userArrayList = new ArrayList<>();  // Preference 에 저장되어 있는 UserList 값 불러오기
+
+        ArrayList<String> strUserList = new ArrayList<>();
+
+        if (PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.USER_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.USER_LIST).size() > 0) {
+
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.USER_LIST));
+
+            try {
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    User user = new User();
+                    JSONObject object = new JSONObject(jsonArray.getString(i));
+
+                    //  선택한 값 빼고 userArrayList 에 저장
+                    if (pos != i) {
+                        user.setName(object.getString("name"));
+                        user.setAge(object.getString("age"));
+                        user.setGender(object.getString("gender"));
+                        user.setCurrent(object.getBoolean("isCurrent"));
+
+//                        userArrayList.add(user);
+                        strUserList.add(user.toJSON());
+                        LogUtil.e("userArrayList[" + i + "]/ " + user.getName());
+                    }
+
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return strUserList;
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -140,7 +214,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         if (userListClickListener != null) {
-                            userListClickListener.onUserClick(v,position);
+                            userListClickListener.onUserClick(v, position);
                         }
                     }
                 }
