@@ -47,6 +47,8 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
     protected void onStart() {
         super.onStart();
 
+        userArrayList = new ArrayList<>();
+
         if (PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST) != null
                 && PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST).size() > 0) {
 
@@ -115,7 +117,6 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
 
         rvUserList = findViewById(R.id.rv_user_list);
 
-        userArrayList = new ArrayList<>();
         userListAdapter = new UserListAdapter(this);
 
         rvUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
