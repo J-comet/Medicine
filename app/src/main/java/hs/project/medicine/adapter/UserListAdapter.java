@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.MedicineDetailActivity;
+import hs.project.medicine.activitys.ModifyUserActivity;
 import hs.project.medicine.datas.Item;
 import hs.project.medicine.datas.User;
 
@@ -69,13 +71,33 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 break;
         }
 
-
         if (userModel.isCurrent()) {
             holder.ivSelected.setVisibility(View.VISIBLE);
         } else {
             holder.ivSelected.setVisibility(View.GONE);
         }
 
+        holder.liModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ModifyUserActivity.class);
+                intent.putExtra("user", userModel);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                context.startActivity(intent);
+                Toast.makeText(context, userModel.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        holder.liDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 *  1. 해당 포지션 user  ArrayList 에서 remove
+                 *  2. Preference 에 저장되어 있는 userList 에서 remove
+                 */
+
+            }
+        });
 
     }
 
@@ -95,6 +117,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ConstraintLayout clContent;
+        LinearLayout liModify;
+        LinearLayout liDelete;
         ImageView ivGender;
         ImageView ivSelected;
         TextView tvName;
@@ -103,6 +127,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             clContent = itemView.findViewById(R.id.cl_content);
+            liModify = itemView.findViewById(R.id.li_modify);
+            liDelete = itemView.findViewById(R.id.li_delete);
             ivGender = itemView.findViewById(R.id.iv_gender);
             ivSelected = itemView.findViewById(R.id.iv_selected);
             tvName = itemView.findViewById(R.id.tv_name);
