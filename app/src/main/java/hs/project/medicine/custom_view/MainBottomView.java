@@ -31,6 +31,18 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
     private TextView tvSearch;
     private TextView tvTelevision;
 
+    private MainBottomListener eventListener;
+
+    public interface MainBottomListener {
+        void onHomeClick();
+        void onSearchClick();
+        void onTVClick();
+    }
+
+    public void setMainMenuEventListener(MainBottomListener listener) {
+        this.eventListener = listener;
+    }
+
     public MainBottomView(@NonNull Context context) {
         super(context);
         initView(context);
@@ -95,7 +107,6 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
                 tvTelevision.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red));
                 break;
         }
-
     }
 
     @Override
@@ -103,12 +114,15 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
         switch (v.getId()) {
             case R.id.cl_bottom_menu_home:
                 menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
+                eventListener.onHomeClick();
                 break;
             case R.id.cl_bottom_menu_search:
                 menuStatus(Config.MAIN_BOTTOM_MENU.SEARCH);
+                eventListener.onSearchClick();
                 break;
             case R.id.cl_bottom_menu_tv:
                 menuStatus(Config.MAIN_BOTTOM_MENU.TV);
+                eventListener.onTVClick();
                 break;
         }
     }
