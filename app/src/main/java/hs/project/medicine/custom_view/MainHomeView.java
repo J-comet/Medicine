@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
@@ -39,6 +41,11 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
     private User currentUser;
 
     private Context context;
+
+    private CardView cvNearbyMedicineStore;
+    private CardView cvAlarm;
+    private CardView cvMyInfo;
+    private CardView cvTest;
 
     public MainHomeView(@NonNull Context context) {
         super(context);
@@ -75,8 +82,18 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
         tvName = findViewById(R.id.tv_name);
         tvAge = findViewById(R.id.tv_age);
 
+        cvNearbyMedicineStore = findViewById(R.id.cv_nearby_medicine_store);
+        cvAlarm = findViewById(R.id.cv_alarm);
+        cvMyInfo = findViewById(R.id.cv_my_info);
+        cvTest = findViewById(R.id.cv_example);
+
         liAddUser.setOnClickListener(this);
         clCurrentUser.setOnClickListener(this);
+
+        cvNearbyMedicineStore.setOnClickListener(this);
+        cvAlarm.setOnClickListener(this);
+        cvMyInfo.setOnClickListener(this);
+        cvTest.setOnClickListener(this);
 
         setupUI();
     }
@@ -160,6 +177,18 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
             case R.id.cl_current_user:
                 intent = new Intent(context, UserListActivity.class);
                 context.startActivity(intent);
+                break;
+            case R.id.cv_nearby_medicine_store:
+                Toast.makeText(context, "주변약국" , Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.cv_alarm:
+                Toast.makeText(context, "알람설정" , Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.cv_my_info:
+                Toast.makeText(context, "내 정보" , Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.cv_example:
+                Toast.makeText(context, "테스트" , Toast.LENGTH_SHORT).show();
                 break;
         }
     }
