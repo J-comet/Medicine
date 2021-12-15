@@ -22,6 +22,9 @@ import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.custom_view.MainBottomView;
+import hs.project.medicine.custom_view.MainHomeView;
+import hs.project.medicine.custom_view.MainSearchView;
+import hs.project.medicine.custom_view.MainTvView;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
@@ -31,14 +34,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MainBottomView mainBottomView;
 
     private LinearLayout liMenu;
-//    private ConstraintLayout clCurrentUser;
-//    private LinearLayout liAddUser;
-//    private ImageView ivGender;
-//    private TextView tvName;
-//    private TextView tvAge;
-//
-//    private User currentUser;
-
+    private MainHomeView mainHomeView;
+    private MainSearchView mainSearchView;
+    private MainTvView mainTvView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,31 +50,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
+
     }
 
     private void init() {
         mainBottomView = findViewById(R.id.main_bottom_view);
         liMenu = findViewById(R.id.li_menu);
+        mainHomeView = findViewById(R.id.main_content_home);
+        mainSearchView = findViewById(R.id.main_content_search);
+        mainTvView = findViewById(R.id.main_content_tv);
+
         liMenu.setOnClickListener(this);
 
         mainBottomView.setMainMenuEventListener(new MainBottomView.MainBottomListener() {
             @Override
             public void onHomeClick() {
-
+                changeMainContent(Config.MAIN_BOTTOM_MENU.HOME);
             }
 
             @Override
             public void onSearchClick() {
-
+                changeMainContent(Config.MAIN_BOTTOM_MENU.SEARCH);
             }
 
             @Override
             public void onTVClick() {
-
+                changeMainContent(Config.MAIN_BOTTOM_MENU.TV);
             }
         });
     }
 
+    private void changeMainContent(String selectedContent) {
+        mainHomeView.setVisibility(View.GONE);
+        mainSearchView.setVisibility(View.GONE);
+        mainTvView.setVisibility(View.GONE);
+
+        switch (selectedContent) {
+            case Config.MAIN_BOTTOM_MENU.HOME:
+                mainHomeView.setVisibility(View.VISIBLE);
+                mainHomeView.setupUI();
+                break;
+            case Config.MAIN_BOTTOM_MENU.SEARCH:
+                mainSearchView.setVisibility(View.VISIBLE);
+                break;
+            case Config.MAIN_BOTTOM_MENU.TV:
+                mainTvView.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
 
 
     @Override
