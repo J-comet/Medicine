@@ -1,6 +1,7 @@
 package hs.project.medicine.activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
+import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.util.NetworkUtil;
 
@@ -31,7 +33,7 @@ public class SplashActivity extends AppCompatActivity {
                }
            }, 1500);
         } else {
-           new AlertDialog.Builder(this)
+           AlertDialog dialog = new AlertDialog.Builder(SplashActivity.this)
                    .setTitle("네트워크 경고")
                    .setMessage("네트워크에 연결되지 않았습니다")
                    .setCancelable(false)
@@ -41,7 +43,10 @@ public class SplashActivity extends AppCompatActivity {
                            dialogInterface.dismiss();
                            finish();
                        }
-                   }).show();
+                   }).create();
+
+           dialog.show();
+           dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
        }
 
 
