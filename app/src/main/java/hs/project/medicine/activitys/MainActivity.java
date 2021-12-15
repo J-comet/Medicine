@@ -50,7 +50,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
-
+        /**
+         *  UserListActivity 에서 현재 유저 변경 후 값 가져오기 위해 onStart 에서 실행
+         */
+        mainHomeView.setupUI();
     }
 
     private void init() {
