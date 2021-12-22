@@ -23,7 +23,7 @@ import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
-public class ModifyUserActivity extends AppCompatActivity implements View.OnClickListener {
+public class ModifyUserActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityModifyUserBinding binding;
 

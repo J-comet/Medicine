@@ -25,7 +25,7 @@ import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
-public class UserListActivity extends AppCompatActivity implements View.OnClickListener {
+public class UserListActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityUserListBinding binding;
 

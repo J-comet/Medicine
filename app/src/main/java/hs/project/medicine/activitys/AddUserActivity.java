@@ -24,19 +24,21 @@ import java.util.ArrayList;
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.databinding.ActivityAddUserBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
-public class AddUserActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddUserActivity extends BaseActivity implements View.OnClickListener {
 
+    private ActivityAddUserBinding binding;
 //    private TextInputLayout tilName;
 
-    private EditText etName;
-    private TextView tvGender;
-    private TextView tvAge;
-    private LinearLayout liBack;
-    private LinearLayout liComplete;
+//    private EditText etName;
+//    private TextView tvGender;
+//    private TextView tvAge;
+//    private LinearLayout liBack;
+//    private LinearLayout liComplete;
 
     private boolean isGender = false;
     private boolean isAge = false;
@@ -48,7 +50,8 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_user);
+        binding = ActivityAddUserBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         init();
 
@@ -68,16 +71,16 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
 
         LogUtil.d("userList.size()=" + userList.size());
 
-        etName = findViewById(R.id.et_name);
-        tvGender = findViewById(R.id.tv_gender);
-        tvAge = findViewById(R.id.tv_age);
-        liBack = findViewById(R.id.li_back);
-        liComplete = findViewById(R.id.li_complete);
+//        etName = findViewById(R.id.et_name);
+//        tvGender = findViewById(R.id.tv_gender);
+//        tvAge = findViewById(R.id.tv_age);
+//        liBack = findViewById(R.id.li_back);
+//        liComplete = findViewById(R.id.li_complete);
 
-        tvGender.setOnClickListener(this);
-        tvAge.setOnClickListener(this);
-        liBack.setOnClickListener(this);
-        liComplete.setOnClickListener(this);
+        binding.tvGender.setOnClickListener(this);
+        binding.tvAge.setOnClickListener(this);
+        binding.liBack.setOnClickListener(this);
+        binding.liComplete.setOnClickListener(this);
 
 //        tilName = findViewById(R.id.til_name);
 //        tilName.setStartIconTintList(ContextCompat.getColorStateList(MediApplication.ApplicationContext(), R.color.selector_starticon));
@@ -89,9 +92,9 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
          * 2. 만약 Preference 에 저장된 User List 가 없다면 setCurrent = true 로 변경하는 코드 추가 필요
          */
         User user = new User();
-        user.setName(etName.getText().toString());
-        user.setGender(tvGender.getText().toString());
-        user.setAge(tvAge.getText().toString());
+        user.setName(binding.etName.getText().toString());
+        user.setGender(binding.tvGender.getText().toString());
+        user.setAge(binding.tvAge.getText().toString());
         user.setCurrent(isCurrent);
 
         LogUtil.d("user /" + user.getName());
@@ -124,8 +127,8 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                 .setItems(genderList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        tvGender.setText(genderList[which]);
-                        tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        binding.tvGender.setText(genderList[which]);
+                        binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
                         isGender = true;
                         dialog.dismiss();
                     }
@@ -141,8 +144,8 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                 .setItems(ageList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        tvAge.setText(ageList[which]);
-                        tvAge.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        binding.tvAge.setText(ageList[which]);
+                        binding.tvAge.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
                         isAge = true;
                         dialog.dismiss();
                     }
@@ -166,9 +169,10 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                 /**
                  * 모든 정보 입력 완료했을 때 실행할 수 있도록
                  */
-                if (etName.getText().toString().length() > 0 && isGender && isAge) {
+                if (binding.etName.getText().toString().length() > 0 && isGender && isAge) {
                     complete();
                     Intent intent = new Intent(AddUserActivity.this, UserListActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     finish();
                 } else {

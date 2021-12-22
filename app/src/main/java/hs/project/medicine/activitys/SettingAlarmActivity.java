@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import hs.project.medicine.databinding.ActivitySettingAlarmBinding;
 
-public class SettingAlarmActivity extends AppCompatActivity {
+public class SettingAlarmActivity extends BaseActivity {
 
     private ActivitySettingAlarmBinding binding;
 

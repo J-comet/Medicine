@@ -16,7 +16,7 @@ import hs.project.medicine.databinding.ActivitySplashBinding;
 import hs.project.medicine.databinding.ActivityUserListBinding;
 import hs.project.medicine.util.NetworkUtil;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private ActivitySplashBinding binding;
 
@@ -33,6 +33,7 @@ public class SplashActivity extends AppCompatActivity {
                public void run() {
 
                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                   intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                    startActivity(intent);
                    finish();
                }

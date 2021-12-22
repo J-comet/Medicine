@@ -148,10 +148,12 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
         switch (v.getId()){
             case R.id.li_add_user:
                 intent = new Intent(context, AddUserActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 context.startActivity(intent);
                 break;
             case R.id.cl_current_user:
                 intent = new Intent(context, UserListActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 context.startActivity(intent);
                 break;
             case R.id.cv_nearby_medicine_store:

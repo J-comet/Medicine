@@ -20,7 +20,7 @@ import org.jsoup.Jsoup;
 import hs.project.medicine.R;
 import hs.project.medicine.datas.medicine.MedicineItem;
 
-public class MedicineDetailActivity extends AppCompatActivity {
+public class MedicineDetailActivity extends BaseActivity {
 
     private MedicineItem medicineItem;
 
