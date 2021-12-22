@@ -32,13 +32,6 @@ import hs.project.medicine.util.PreferenceUtil;
 public class AddUserActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityAddUserBinding binding;
-//    private TextInputLayout tilName;
-
-//    private EditText etName;
-//    private TextView tvGender;
-//    private TextView tvAge;
-//    private LinearLayout liBack;
-//    private LinearLayout liComplete;
 
     private boolean isGender = false;
     private boolean isAge = false;
@@ -70,12 +63,6 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
         }
 
         LogUtil.d("userList.size()=" + userList.size());
-
-//        etName = findViewById(R.id.et_name);
-//        tvGender = findViewById(R.id.tv_gender);
-//        tvAge = findViewById(R.id.tv_age);
-//        liBack = findViewById(R.id.li_back);
-//        liComplete = findViewById(R.id.li_complete);
 
         binding.tvGender.setOnClickListener(this);
         binding.tvAge.setOnClickListener(this);

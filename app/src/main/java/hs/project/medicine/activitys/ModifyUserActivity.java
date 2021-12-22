@@ -29,12 +29,6 @@ public class ModifyUserActivity extends BaseActivity implements View.OnClickList
 
     private User user;
 
-//    private EditText etName;
-//    private TextView tvGender;
-//    private TextView tvAge;
-//    private LinearLayout liBack;
-//    private LinearLayout liModifyComplete;
-
     private ArrayList<String> strUserList;
 
     private ArrayList<User> userArrayList; // Preference 에 저장할 유저 정보
