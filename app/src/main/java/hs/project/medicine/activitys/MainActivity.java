@@ -25,23 +25,20 @@ import hs.project.medicine.custom_view.MainBottomView;
 import hs.project.medicine.custom_view.MainHomeView;
 import hs.project.medicine.custom_view.MainSearchView;
 import hs.project.medicine.custom_view.MainTvView;
+import hs.project.medicine.databinding.ActivityMainBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private MainBottomView mainBottomView;
-
-    private LinearLayout liMenu;
-    private MainHomeView mainHomeView;
-    private MainSearchView mainSearchView;
-    private MainTvView mainTvView;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         init();
     }
@@ -53,19 +50,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /**
          *  UserListActivity 에서 현재 유저 변경 후 값 가져오기 위해 onStart 에서 실행
          */
-        mainHomeView.setupUI();
+        binding.mainContentHome.setupUI();
     }
 
     private void init() {
-        mainBottomView = findViewById(R.id.main_bottom_view);
-        liMenu = findViewById(R.id.li_menu);
-        mainHomeView = findViewById(R.id.main_content_home);
-        mainSearchView = findViewById(R.id.main_content_search);
-        mainTvView = findViewById(R.id.main_content_tv);
+        binding.liMenu.setOnClickListener(this);
 
-        liMenu.setOnClickListener(this);
-
-        mainBottomView.setMainMenuEventListener(new MainBottomView.MainBottomListener() {
+        binding.mainBottomView.setMainMenuEventListener(new MainBottomView.MainBottomListener() {
             @Override
             public void onHomeClick() {
                 changeMainContent(Config.MAIN_BOTTOM_MENU.HOME);
@@ -84,20 +75,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void changeMainContent(String selectedContent) {
-        mainHomeView.setVisibility(View.GONE);
-        mainSearchView.setVisibility(View.GONE);
-        mainTvView.setVisibility(View.GONE);
+        binding.mainContentHome.setVisibility(View.GONE);
+        binding.mainContentSearch.setVisibility(View.GONE);
+        binding.mainContentTv.setVisibility(View.GONE);
 
         switch (selectedContent) {
             case Config.MAIN_BOTTOM_MENU.HOME:
-                mainHomeView.setVisibility(View.VISIBLE);
-                mainHomeView.setupUI();
+                binding.mainContentHome.setVisibility(View.VISIBLE);
+                binding.mainContentHome.setupUI();
                 break;
             case Config.MAIN_BOTTOM_MENU.SEARCH:
-                mainSearchView.setVisibility(View.VISIBLE);
+                binding.mainContentSearch.setVisibility(View.VISIBLE);
                 break;
             case Config.MAIN_BOTTOM_MENU.TV:
-                mainTvView.setVisibility(View.VISIBLE);
+                binding.mainContentTv.setVisibility(View.VISIBLE);
                 break;
         }
     }

@@ -19,15 +19,16 @@ import java.util.ArrayList;
 import hs.project.medicine.Config;
 import hs.project.medicine.R;
 import hs.project.medicine.adapter.UserListAdapter;
+import hs.project.medicine.databinding.ActivityMainBinding;
+import hs.project.medicine.databinding.ActivityUserListBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
 public class UserListActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private LinearLayout liBack;
-    private LinearLayout liAdd;
-    private RecyclerView rvUserList;
+    private ActivityUserListBinding binding;
+
     private ArrayList<User> userArrayList;
     private ArrayList<User> newUserList;
 
@@ -38,8 +39,8 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_list);
-
+        binding = ActivityUserListBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         init();
     }
 
@@ -110,17 +111,13 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void init() {
-        liBack = findViewById(R.id.li_back);
-        liAdd = findViewById(R.id.li_add);
-        liBack.setOnClickListener(this);
-        liAdd.setOnClickListener(this);
-
-        rvUserList = findViewById(R.id.rv_user_list);
+        binding.liBack.setOnClickListener(this);
+        binding.liAdd.setOnClickListener(this);
 
         userListAdapter = new UserListAdapter(this);
 
-        rvUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvUserList.setAdapter(userListAdapter);
+        binding.rvUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        binding.rvUserList.setAdapter(userListAdapter);
     }
 
     @Override
@@ -131,6 +128,7 @@ public class UserListActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.li_add:
                 Intent intent = new Intent(UserListActivity.this, AddUserActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
                 finish();
                 break;

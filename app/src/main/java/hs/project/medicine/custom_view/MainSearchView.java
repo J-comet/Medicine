@@ -23,11 +23,14 @@ import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.AddUserActivity;
 import hs.project.medicine.activitys.UserListActivity;
+import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
+import hs.project.medicine.databinding.LayoutMainSearchViewBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
 public class MainSearchView extends ConstraintLayout implements View.OnClickListener {
+    private LayoutMainSearchViewBinding binding;
     private Context context;
 
     public MainSearchView(@NonNull Context context) {
@@ -53,11 +56,7 @@ public class MainSearchView extends ConstraintLayout implements View.OnClickList
     }
 
     private void initView(Context context) {
-        LayoutInflater inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View v = inflater.inflate(R.layout.layout_main_search_view, this, false);
-        addView(v);
+        binding = LayoutMainSearchViewBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
     @Override

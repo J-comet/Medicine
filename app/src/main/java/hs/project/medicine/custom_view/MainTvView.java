@@ -10,8 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import hs.project.medicine.R;
+import hs.project.medicine.databinding.LayoutMainTvViewBinding;
 
 public class MainTvView extends ConstraintLayout implements View.OnClickListener {
+    private LayoutMainTvViewBinding binding;
     private Context context;
 
     public MainTvView(@NonNull Context context) {
@@ -37,11 +39,7 @@ public class MainTvView extends ConstraintLayout implements View.OnClickListener
     }
 
     private void initView(Context context) {
-        LayoutInflater inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View v = inflater.inflate(R.layout.layout_main_tv_view, this, false);
-        addView(v);
+        binding = LayoutMainTvViewBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
     @Override

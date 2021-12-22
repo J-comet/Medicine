@@ -12,14 +12,19 @@ import android.os.Looper;
 
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.databinding.ActivitySplashBinding;
+import hs.project.medicine.databinding.ActivityUserListBinding;
 import hs.project.medicine.util.NetworkUtil;
 
 public class SplashActivity extends AppCompatActivity {
 
+    private ActivitySplashBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        binding = ActivitySplashBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // 인터넷 연결 체크 후 앱 실행
        if (NetworkUtil.checkConnectedNetwork(this)) {

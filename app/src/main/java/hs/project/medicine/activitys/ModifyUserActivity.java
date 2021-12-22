@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.databinding.ActivityModifyUserBinding;
 import hs.project.medicine.datas.Item;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
@@ -30,13 +31,15 @@ import hs.project.medicine.util.PreferenceUtil;
 
 public class ModifyUserActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private ActivityModifyUserBinding binding;
+
     private User user;
 
-    private EditText etName;
-    private TextView tvGender;
-    private TextView tvAge;
-    private LinearLayout liBack;
-    private LinearLayout liModifyComplete;
+//    private EditText etName;
+//    private TextView tvGender;
+//    private TextView tvAge;
+//    private LinearLayout liBack;
+//    private LinearLayout liModifyComplete;
 
     private ArrayList<String> strUserList;
 
@@ -45,7 +48,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_modify_user);
+        binding = ActivityModifyUserBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         init();
         setData();
@@ -53,16 +57,11 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void init() {
-        etName = findViewById(R.id.et_name);
-        tvGender = findViewById(R.id.tv_gender);
-        tvAge = findViewById(R.id.tv_age);
-        liBack = findViewById(R.id.li_back);
-        liModifyComplete = findViewById(R.id.li_modify_complete);
 
-        tvGender.setOnClickListener(this);
-        tvAge.setOnClickListener(this);
-        liBack.setOnClickListener(this);
-        liModifyComplete.setOnClickListener(this);
+        binding.tvGender.setOnClickListener(this);
+        binding.tvAge.setOnClickListener(this);
+        binding.liBack.setOnClickListener(this);
+        binding.liModifyComplete.setOnClickListener(this);
 
         userArrayList = new ArrayList<>();
 
@@ -99,11 +98,11 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
         user = (User) getIntent().getSerializableExtra("user");
 
         if (user != null) {
-            etName.setText(user.getName());
-            tvGender.setText(user.getGender());
-            tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
-            tvAge.setText(user.getAge());
-            tvAge.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+            binding.etName.setText(user.getName());
+            binding.tvGender.setText(user.getGender());
+            binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+            binding.tvAge.setText(user.getAge());
+            binding.tvAge.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
         }
 
     }
@@ -117,8 +116,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 .setItems(genderList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        tvGender.setText(genderList[which]);
-                        tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        binding.tvGender.setText(genderList[which]);
+                        binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
                         dialog.dismiss();
                     }
                 }).show();
@@ -133,8 +132,8 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 .setItems(ageList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        tvAge.setText(ageList[which]);
-                        tvAge.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        binding.tvAge.setText(ageList[which]);
+                        binding.tvAge.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
                         dialog.dismiss();
                     }
                 }).show();
@@ -155,9 +154,9 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
             addUser.setCurrent(userArrayList.get(i).isCurrent());
 
             if (user.getName().equals(userArrayList.get(i).getName())) {
-                addUser.setName(etName.getText().toString());
-                addUser.setGender(tvGender.getText().toString());
-                addUser.setAge(tvAge.getText().toString());
+                addUser.setName(binding.etName.getText().toString());
+                addUser.setGender(binding.tvGender.getText().toString());
+                addUser.setAge(binding.tvAge.getText().toString());
                 addUser.setCurrent(userArrayList.get(i).isCurrent());
             }
 
@@ -187,7 +186,7 @@ public class ModifyUserActivity extends AppCompatActivity implements View.OnClic
                 /**
                  * 모든 정보 입력 완료했을 때 실행할 수 있도록
                  */
-                if (etName.getText().toString().length() > 0) {
+                if (binding.etName.getText().toString().length() > 0) {
                     modifyComplete();
                     finish();
                 } else {

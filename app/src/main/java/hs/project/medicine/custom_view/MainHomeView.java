@@ -26,26 +26,17 @@ import hs.project.medicine.R;
 import hs.project.medicine.activitys.AddUserActivity;
 import hs.project.medicine.activitys.MainActivity;
 import hs.project.medicine.activitys.UserListActivity;
+import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
 public class MainHomeView extends ConstraintLayout implements View.OnClickListener {
 
-    private ConstraintLayout clCurrentUser;
-    private LinearLayout liAddUser;
-    private ImageView ivGender;
-    private TextView tvName;
-    private TextView tvAge;
+    private LayoutMainHomeViewBinding binding;
 
     private User currentUser;
-
     private Context context;
-
-    private CardView cvNearbyMedicineStore;
-    private CardView cvAlarm;
-    private CardView cvMyInfo;
-    private CardView cvTest;
 
     public MainHomeView(@NonNull Context context) {
         super(context);
@@ -70,30 +61,15 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
     }
 
     private void initView(Context context) {
-        LayoutInflater inflater = (LayoutInflater)
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        binding = LayoutMainHomeViewBinding.inflate(LayoutInflater.from(context), this, true);
 
-        View v = inflater.inflate(R.layout.layout_main_home_view, this, false);
-        addView(v);
+        binding.liAddUser.setOnClickListener(this);
+        binding.clCurrentUser.setOnClickListener(this);
 
-        liAddUser = findViewById(R.id.li_add_user);
-        clCurrentUser = findViewById(R.id.cl_current_user);
-        ivGender = findViewById(R.id.iv_gender);
-        tvName = findViewById(R.id.tv_name);
-        tvAge = findViewById(R.id.tv_age);
-
-        cvNearbyMedicineStore = findViewById(R.id.cv_nearby_medicine_store);
-        cvAlarm = findViewById(R.id.cv_alarm);
-        cvMyInfo = findViewById(R.id.cv_my_info);
-        cvTest = findViewById(R.id.cv_example);
-
-        liAddUser.setOnClickListener(this);
-        clCurrentUser.setOnClickListener(this);
-
-        cvNearbyMedicineStore.setOnClickListener(this);
-        cvAlarm.setOnClickListener(this);
-        cvMyInfo.setOnClickListener(this);
-        cvTest.setOnClickListener(this);
+        binding.cvNearbyMedicineStore.setOnClickListener(this);
+        binding.cvAlarm.setOnClickListener(this);
+        binding.cvMyInfo.setOnClickListener(this);
+        binding.cvExample.setOnClickListener(this);
 
         setupUI();
     }
@@ -106,8 +82,8 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
     // 현재 선택된 유저가 있는지 체크
     private void checkCurrentUser() {
 
-        liAddUser.setVisibility(View.VISIBLE);
-        clCurrentUser.setVisibility(View.INVISIBLE);
+        binding.liAddUser.setVisibility(View.VISIBLE);
+        binding.clCurrentUser.setVisibility(View.INVISIBLE);
 
         if (PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.USER_LIST) != null
                 && PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.USER_LIST).size() > 0) {
@@ -140,8 +116,8 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
                 e.printStackTrace();
             }
 
-            liAddUser.setVisibility(View.INVISIBLE);
-            clCurrentUser.setVisibility(View.VISIBLE);
+            binding.liAddUser.setVisibility(View.INVISIBLE);
+            binding.clCurrentUser.setVisibility(View.VISIBLE);
         }
     }
 
@@ -150,17 +126,17 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
 
             switch (currentUser.getGender()) {
                 case "남자":
-                    ivGender.setImageResource(R.drawable.male);
-                    ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.blue));
+                    binding.ivGender.setImageResource(R.drawable.male);
+                    binding.ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.blue));
                     break;
                 case "여자":
-                    ivGender.setImageResource(R.drawable.female);
-                    ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.red));
+                    binding.ivGender.setImageResource(R.drawable.female);
+                    binding.ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.red));
                     break;
             }
 
-            tvName.setText("이름  :  " + currentUser.getName());
-            tvAge.setText("연령대  :  " + currentUser.getAge());
+            binding.tvName.setText("이름  :  " + currentUser.getName());
+            binding.tvAge.setText("연령대  :  " + currentUser.getAge());
         }
     }
 

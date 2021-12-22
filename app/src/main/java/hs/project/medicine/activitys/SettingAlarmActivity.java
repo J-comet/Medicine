@@ -4,13 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import hs.project.medicine.R;
+import hs.project.medicine.databinding.ActivitySettingAlarmBinding;
 
 public class SettingAlarmActivity extends AppCompatActivity {
+
+    private ActivitySettingAlarmBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting_alarm);
+        binding = ActivitySettingAlarmBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
     }
 }
