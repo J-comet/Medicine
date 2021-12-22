@@ -7,7 +7,7 @@ public class Body {
     private Integer pageNo;
     private Integer totalCount;
     private Integer numOfRows;
-    private List<Item> items = null;
+    private List<MedicineItem> items = null;
 
     public Integer getPageNo() {
         return pageNo;
@@ -33,11 +33,11 @@ public class Body {
         this.numOfRows = numOfRows;
     }
 
-    public List<Item> getItems() {
+    public List<MedicineItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<MedicineItem> items) {
         this.items = items;
     }
 

@@ -39,9 +39,6 @@
             android:name=".activitys.MedicineDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".activitys.SearchMedicineActivity"
-            android:exported="false" />
-        <activity
             android:name=".activitys.MainActivity"
             android:exported="false" />
     </application>

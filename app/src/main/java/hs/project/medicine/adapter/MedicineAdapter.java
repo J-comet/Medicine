@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,12 +15,12 @@ import java.util.ArrayList;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.MedicineDetailActivity;
 import hs.project.medicine.databinding.ItemMedicineBinding;
-import hs.project.medicine.datas.Item;
+import hs.project.medicine.datas.MedicineItem;
 
 public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHolder> {
 
     private Context context;
-    private ArrayList<Item> items = new ArrayList<>();
+    private ArrayList<MedicineItem> items = new ArrayList<>();
 
     public MedicineAdapter(Context context) {
         this.context = context;
@@ -36,7 +35,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Item itemModel = items.get(position);
+        MedicineItem itemModel = items.get(position);
         holder.bindItem(itemModel);
     }
 
@@ -45,7 +44,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         return items.size();
     }
 
-    public void addAll(ArrayList<Item> itemArrayList) {
+    public void addAll(ArrayList<MedicineItem> itemArrayList) {
         if (items != null) {
             items.clear();
         }
@@ -62,7 +61,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             itemBinding = ItemMedicineBinding.bind(itemView);
         }
 
-        void bindItem(Item medicineItem) {
+        void bindItem(MedicineItem medicineItem) {
             itemBinding.tvEntpName.setText(medicineItem.getEntpName());
             itemBinding.tvItemName.setText(medicineItem.getItemName());
             itemBinding.tvItemSeq.setText(medicineItem.getItemSeq());

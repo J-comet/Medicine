@@ -2,7 +2,7 @@ package hs.project.medicine.datas;
 
 import java.io.Serializable;
 
-public class Item implements Serializable {
+public class MedicineItem implements Serializable {
 
     private String entpName;        // 업체명
     private String itemName;        // 제품명

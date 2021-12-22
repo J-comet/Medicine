@@ -3,8 +3,6 @@ package hs.project.medicine.activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,19 +12,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import hs.project.medicine.R;
-import hs.project.medicine.datas.Item;
+import hs.project.medicine.datas.MedicineItem;
 
 public class MedicineDetailActivity extends AppCompatActivity {
 
-    private Item medicineItem;
+    private MedicineItem medicineItem;
 
     private LinearLayout btnBack;
     private ImageView ivImg;
@@ -78,7 +74,7 @@ public class MedicineDetailActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        medicineItem = (Item) getIntent().getSerializableExtra("item");
+        medicineItem = (MedicineItem) getIntent().getSerializableExtra("item");
 
         if (medicineItem.getEntpName() != null && !medicineItem.getEntpName().equals("null")) {
             Log.e("hs", medicineItem.getEntpName());
