@@ -19,4 +19,6 @@
 <!--    <color name="red">#FF7b5a</color>-->
     <color name="color_main_red">#ff9e81</color>
     <color name="color_ff5232">#ff5232</color>
+    <color name="color_main_bg">#99FFE4E1</color>
+
 </resources>

@@ -165,8 +165,7 @@ public class MainSearchView extends ConstraintLayout {
                         itemArray = bodyObject.getJSONArray("items");
                     } else {
 
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -245,8 +244,7 @@ public class MainSearchView extends ConstraintLayout {
                         }
                     } else {
 
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 new AlertDialog.Builder(context)
@@ -281,8 +279,7 @@ public class MainSearchView extends ConstraintLayout {
                     e.printStackTrace();
                 }
 
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         // UI 변경이 필요할 때 메인스레드 사용.
