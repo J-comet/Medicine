@@ -1,8 +1,8 @@
-package hs.project.medicine.datas;
+package hs.project.medicine.datas.medicine;
 
 import java.util.List;
 
-public class Body {
+public class MedicineBody {
 
     private Integer pageNo;
     private Integer totalCount;

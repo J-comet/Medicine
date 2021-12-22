@@ -1,4 +1,4 @@
-package hs.project.medicine.datas;
+package hs.project.medicine.datas.medicine;
 
 import java.io.Serializable;
 

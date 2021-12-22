@@ -31,9 +31,9 @@ import hs.project.medicine.HttpRequest;
 import hs.project.medicine.R;
 import hs.project.medicine.adapter.MedicineAdapter;
 import hs.project.medicine.databinding.LayoutMainSearchViewBinding;
-import hs.project.medicine.datas.Body;
-import hs.project.medicine.datas.Header;
-import hs.project.medicine.datas.MedicineItem;
+import hs.project.medicine.datas.medicine.MedicineBody;
+import hs.project.medicine.datas.medicine.MedicineHeader;
+import hs.project.medicine.datas.medicine.MedicineItem;
 
 public class MainSearchView extends ConstraintLayout {
     private LayoutMainSearchViewBinding binding;
@@ -201,21 +201,21 @@ public class MainSearchView extends ConstraintLayout {
 //                        });
                     }
 
-                    Header header = new Header();
-                    header.setResultCode(headerObject.getString("resultCode"));
-                    header.setResultMsg(headerObject.getString("resultMsg"));
+                    MedicineHeader medicineHeader = new MedicineHeader();
+                    medicineHeader.setResultCode(headerObject.getString("resultCode"));
+                    medicineHeader.setResultMsg(headerObject.getString("resultMsg"));
 
-                    Log.e("header", header.toString());
+                    Log.e("header", medicineHeader.toString());
 
-                    Body body = new Body();
-                    body.setTotalCount(Integer.valueOf(bodyObject.getString("totalCount")));
-                    body.setNumOfRows(Integer.valueOf(bodyObject.getString("numOfRows")));
-                    body.setPageNo(Integer.valueOf(bodyObject.getString("pageNo")));
+                    MedicineBody medicineBody = new MedicineBody();
+                    medicineBody.setTotalCount(Integer.valueOf(bodyObject.getString("totalCount")));
+                    medicineBody.setNumOfRows(Integer.valueOf(bodyObject.getString("numOfRows")));
+                    medicineBody.setPageNo(Integer.valueOf(bodyObject.getString("pageNo")));
 
-                    totalCnt = body.getTotalCount();
+                    totalCnt = medicineBody.getTotalCount();
                     displaySearchTotalCnt = String.valueOf(totalCnt);
 
-                    Log.e("body", body.toString());
+                    Log.e("body", medicineBody.toString());
 
                     // totalCnt - 현재리스트 > 0 클 때만 데이터 가져오도록
                     totalCnt = totalCnt - itemArrayList.size();

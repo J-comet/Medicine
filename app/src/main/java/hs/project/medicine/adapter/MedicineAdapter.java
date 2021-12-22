@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.MedicineDetailActivity;
 import hs.project.medicine.databinding.ItemMedicineBinding;
-import hs.project.medicine.datas.MedicineItem;
+import hs.project.medicine.datas.medicine.MedicineItem;
 
 public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHolder> {
 

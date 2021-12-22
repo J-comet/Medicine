@@ -1,6 +1,6 @@
-package hs.project.medicine.datas;
+package hs.project.medicine.datas.medicine;
 
-public class Header {
+public class MedicineHeader {
 
 
     private String resultCode;

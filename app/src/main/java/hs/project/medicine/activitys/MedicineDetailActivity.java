@@ -18,7 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import org.jsoup.Jsoup;
 
 import hs.project.medicine.R;
-import hs.project.medicine.datas.MedicineItem;
+import hs.project.medicine.datas.medicine.MedicineItem;
 
 public class MedicineDetailActivity extends AppCompatActivity {
 
