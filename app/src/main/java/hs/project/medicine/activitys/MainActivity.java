@@ -1,34 +1,19 @@
 package hs.project.medicine.activitys;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.custom_view.MainBottomView;
-import hs.project.medicine.custom_view.MainHomeView;
-import hs.project.medicine.custom_view.MainSearchView;
-import hs.project.medicine.custom_view.MainTvView;
 import hs.project.medicine.databinding.ActivityMainBinding;
-import hs.project.medicine.datas.User;
-import hs.project.medicine.util.LogUtil;
-import hs.project.medicine.util.PreferenceUtil;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -99,7 +84,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         switch (v.getId()) {
             case R.id.li_menu:
-                Toast.makeText(this, "메뉴클릭", Toast.LENGTH_SHORT).show();
+                binding.dlSlide.openDrawer(Gravity.LEFT);
                 break;
 
            /* case R.id.cl_search_medic:
