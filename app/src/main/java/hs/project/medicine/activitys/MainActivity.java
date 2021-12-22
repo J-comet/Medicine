@@ -101,4 +101,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private boolean isDrawerOpen() {
+        return binding.dlSlide.isDrawerOpen(Gravity.LEFT);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isDrawerOpen()) {
+            binding.dlSlide.closeDrawer(Gravity.LEFT);
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
 }
