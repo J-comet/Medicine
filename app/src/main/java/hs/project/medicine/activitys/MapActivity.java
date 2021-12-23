@@ -1,19 +1,27 @@
 package hs.project.medicine.activitys;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,6 +30,7 @@ import net.daum.mf.map.api.MapPoint;
 
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityMapBinding;
+import hs.project.medicine.util.LocationUtil;
 import hs.project.medicine.util.LogUtil;
 
 public class MapActivity extends BaseActivity {
@@ -38,6 +47,23 @@ public class MapActivity extends BaseActivity {
     private static final int CODE_GPS_PERMISSION_FINE_DENIED = 200;  // 대략허용
     private static final int CODE_GPS_PERMISSION_DENIED_TRUE = 100;  // 허용 거부한적 있는 유저
     private static final int CODE_GPS_PERMISSION_FIRST = 1000;  // 처음 권한 요청하는 유저
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
+    /**
+     * 위치서비스 꺼져있을 때 요청할 StartActivityForResult
+     */
+    ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        LogUtil.e("intent :" + intent.toString());
+                    }
+                }
+            });
 
     // 권한 획득 launcher
     ActivityResultLauncher<String[]> gpsPermissionRequest =
@@ -102,15 +128,38 @@ public class MapActivity extends BaseActivity {
         binding = ActivityMapBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        /* 권한체크 */
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            permissionResultAction(gpsPermissionCheck());
-            Toast.makeText(this, "위치권한 허용 필요", Toast.LENGTH_SHORT).show();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            LogUtil.e("권한 없음");
-            return;
-        }
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+                // 중심점 이동
+                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
+                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
+            }
+
+            @Override
+            public void onFlushComplete(int requestCode) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+
+            }
+        };
 
         // 중심점 이동
         binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
@@ -127,6 +176,44 @@ public class MapActivity extends BaseActivity {
         // 줌 아웃
         binding.mapView.zoomOut(true);
 
+        /* 권한체크 */
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionResultAction(gpsPermissionCheck());
+            Toast.makeText(this, "위치권한 허용 필요", Toast.LENGTH_SHORT).show();
+
+            LogUtil.e("권한 없음");
+        } else {
+
+            /* 권한 획득한 사용자는 GPS 활성화 했는지 체크 */
+            if (checkLocationServicesStatus()){
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                LogUtil.e("GPS ON");
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("위치서비스");
+                builder.setMessage("위치서비스를 활성화 해주세요");
+                builder.setCancelable(false);
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        gpsSettingRequest.launch(intent);
+                    }
+                });
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Toast.makeText(MapActivity.this, "위치서비스 비활성화 상태", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.show();
+
+            }
+        }
     }
 
     /**
