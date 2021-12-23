@@ -1,6 +1,7 @@
 package hs.project.medicine.activitys;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,9 +52,7 @@ public class MapActivity extends BaseActivity {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    /**
-     * 위치서비스 꺼져있을 때 요청할 StartActivityForResult
-     */
+    /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -65,7 +64,7 @@ public class MapActivity extends BaseActivity {
                 }
             });
 
-    // 권한 획득 launcher
+    /* 권한 획득 launcher */
     ActivityResultLauncher<String[]> gpsPermissionRequest =
             registerForActivityResult(new ActivityResultContracts
                             .RequestMultiplePermissions(), result -> {
@@ -73,7 +72,7 @@ public class MapActivity extends BaseActivity {
                         Boolean fineLocationGranted = null;
                         Boolean coarseLocationGranted = null;
 
-                LogUtil.e("result :" + result.toString());
+                        LogUtil.e("result :" + result.toString());
 
                         // API 24 이상에서 동작
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -103,21 +102,43 @@ public class MapActivity extends BaseActivity {
                                 // 정밀한 위치 사용에 대해서 위치권한 허용
                                 LogUtil.e("정밀한위치");
 
+                                /* 위치권한 허용했을 때 실행할 코드 */
+                                myLocationON();
+
                             } else if (coarseLocationGranted != null && coarseLocationGranted && fineLocationGranted == false) {
                                 // Only approximate location access granted.
                                 // 대략적인 위치 사용에 대해서만 위치권한 허용
                                 LogUtil.e("대략적인위치");
 
+                                /* 위치권한 허용했을 때 실행할 코드 */
+                                myLocationON();
+
                             } else {
                                 // No location access granted.
                                 // 권한획득 거부
-                                Toast.makeText(this, "현재위치를 가져오려면 위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
                                 LogUtil.e("위치권한거부");
                             }
 
                         } else {
-                            Toast.makeText(this, "현재위치를 가져오려면 위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
-                            LogUtil.e("위치권한거부");
+                            /* api 31 미만일 때 실행 */
+
+                            LogUtil.e("fineLocationGranted :" + fineLocationGranted);
+                            LogUtil.e("coarseLocationGranted :" + coarseLocationGranted);
+
+                            if (fineLocationGranted != null && fineLocationGranted && coarseLocationGranted != null && coarseLocationGranted) {
+                                // Precise location access granted.
+                                // 정밀한 위치 사용에 대해서 위치권한 허용
+                                LogUtil.e("위치권한허용");
+
+                                /* 위치권한 허용했을 때 실행할 코드 */
+                                myLocationON();
+                            } else {
+                                // No location access granted.
+                                // 권한획득 거부
+                                Toast.makeText(this, "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
+                                LogUtil.e("위치권한거부");
+                            }
                         }
                     }
             );
@@ -127,39 +148,6 @@ public class MapActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMapBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
-                // 중심점 이동
-                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
-                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
-            }
-
-            @Override
-            public void onFlushComplete(int requestCode) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(@NonNull String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(@NonNull String provider) {
-
-            }
-        };
 
         // 중심점 이동
         binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
@@ -180,15 +168,15 @@ public class MapActivity extends BaseActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             permissionResultAction(gpsPermissionCheck());
-            Toast.makeText(this, "위치권한 허용 필요", Toast.LENGTH_SHORT).show();
 
             LogUtil.e("권한 없음");
         } else {
 
             /* 권한 획득한 사용자는 GPS 활성화 했는지 체크 */
-            if (checkLocationServicesStatus()){
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            if (checkLocationServicesStatus()) {
+
+                myLocationON();
+
                 LogUtil.e("GPS ON");
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -313,5 +301,43 @@ public class MapActivity extends BaseActivity {
 
     }
 
+    /* 내 위치 띄우는 코드 */
+    @SuppressLint("MissingPermission")
+    private void myLocationON() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+                // 중심점 이동
+                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
+                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
+            }
+
+            @Override
+            public void onFlushComplete(int requestCode) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+
+            }
+        };
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+    }
 }

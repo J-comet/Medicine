@@ -24,7 +24,7 @@ public class LocationUtil {
             addressList = geocoder.getFromLocationName(
                     searchAddress, // 지역 이름
                     5); // 읽을 개수
-            Log.e("hs", "searchAddress" + addressList.toString());
+            LogUtil.e("searchAddress" + addressList.toString());
 
             if (addressList == null || addressList.size() < 0) {
                 Toast.makeText(activity, "찾을 수 없는 지역입니다.",Toast.LENGTH_SHORT).show();
@@ -61,11 +61,11 @@ public class LocationUtil {
                 address = addressList.get(0).getAddressLine(0);
             }
 
-            Log.e("hs", "address.get(0) = " + address);
+            LogUtil.e("address.get(0) = " + address);
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("hs", e.getMessage());
+            LogUtil.e(e.getMessage());
         }
 
         return address;
