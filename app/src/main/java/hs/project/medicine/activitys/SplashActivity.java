@@ -34,7 +34,7 @@ public class SplashActivity extends BaseActivity {
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        getHashKey();
+//        getHashKey();
 
         // 인터넷 연결 체크 후 앱 실행
        if (NetworkUtil.checkConnectedNetwork(this)) {
