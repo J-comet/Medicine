@@ -145,7 +145,7 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
 
         Intent intent;
 
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.li_add_user:
                 intent = new Intent(context, AddUserActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -157,16 +157,16 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
                 context.startActivity(intent);
                 break;
             case R.id.cv_nearby_medicine_store:
-                Toast.makeText(context, "주변약국" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "주변약국", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.cv_alarm:
-                Toast.makeText(context, "알람설정" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "알람설정", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.cv_my_info:
-                Toast.makeText(context, "내 정보" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "내 정보", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.cv_example:
-                Toast.makeText(context, "테스트" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "테스트", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

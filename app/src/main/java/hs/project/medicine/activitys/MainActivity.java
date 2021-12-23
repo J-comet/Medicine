@@ -12,6 +12,7 @@ import android.widget.Toast;
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.custom_view.LeftSlideView;
 import hs.project.medicine.custom_view.MainBottomView;
 import hs.project.medicine.databinding.ActivityMainBinding;
 
@@ -41,6 +42,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void init() {
         binding.liMenu.setOnClickListener(this);
 
+        /* 하단메뉴클릭 리스너 */
         binding.mainBottomView.setMainMenuEventListener(new MainBottomView.MainBottomListener() {
             @Override
             public void onHomeClick() {
@@ -55,6 +57,36 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onTVClick() {
                 changeMainContent(Config.MAIN_BOTTOM_MENU.TV);
+            }
+        });
+
+        /* LeftSlide 메뉴클릭 리스너 */
+        binding.leftSlideView.setLeftMenuEventListener(new LeftSlideView.LeftSlideListener() {
+            @Override
+            public void onHomeClick() {
+                if (isDrawerOpen()){
+                    binding.dlSlide.closeDrawer(Gravity.LEFT);
+                }
+                changeMainContent(Config.MAIN_BOTTOM_MENU.HOME);
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
+            }
+
+            @Override
+            public void onSearchClick() {
+                if (isDrawerOpen()){
+                    binding.dlSlide.closeDrawer(Gravity.LEFT);
+                }
+                changeMainContent(Config.MAIN_BOTTOM_MENU.SEARCH);
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.SEARCH);
+            }
+
+            @Override
+            public void onTVClick() {
+                if (isDrawerOpen()){
+                    binding.dlSlide.closeDrawer(Gravity.LEFT);
+                }
+                changeMainContent(Config.MAIN_BOTTOM_MENU.TV);
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.TV);
             }
         });
     }

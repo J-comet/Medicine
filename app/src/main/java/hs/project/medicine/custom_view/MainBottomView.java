@@ -18,7 +18,7 @@ import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.LayoutMainBottomViewBinding;
 
-public class MainBottomView extends ConstraintLayout implements View.OnClickListener{
+public class MainBottomView extends ConstraintLayout implements View.OnClickListener {
 
     private LayoutMainBottomViewBinding binding;
 
@@ -26,7 +26,9 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
 
     public interface MainBottomListener {
         void onHomeClick();
+
         void onSearchClick();
+
         void onTVClick();
     }
 
@@ -59,7 +61,7 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
         menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
     }
 
-    private void menuStatus(String selectedMenu) {
+    public void menuStatus(String selectedMenu) {
         // 메뉴들 초기화
         binding.ivHome.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
         binding.ivSearch.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
