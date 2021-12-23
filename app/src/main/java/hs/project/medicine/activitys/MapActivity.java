@@ -1,5 +1,7 @@
 package hs.project.medicine.activitys;
 
+import static hs.project.medicine.HttpRequest.getRequest;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,7 +15,10 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -28,7 +33,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapView;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import hs.project.medicine.Config;
+import hs.project.medicine.HttpRequest;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityMapBinding;
 import hs.project.medicine.util.LocationUtil;
@@ -43,6 +54,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
     private ActivityMapBinding binding;
 
     private String[] arrGpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+    private String[] arrGpsPermissionsHighVersion = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION};
 
     private static final int CODE_GPS_PERMISSION_ALL_GRANTED = 300;  // 모두허용
     private static final int CODE_GPS_PERMISSION_FINE_DENIED = 200;  // 대략허용
@@ -91,13 +103,17 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
                          * Android 12 이상 위치권한 동작방식 변경
                          * 1) 정밀한 위치일 때 ACCESS_FINE_LOCATION , ACCESS_COARSE_LOCATION 두가지 권한 다 필요.
                          * 2) 대략적인 위치일 때 ACCESS_COARSE_LOCATION 권한만 필요.
+                         * 3) 안드로이드 버전 11 이상부터 BackGroundLocation 권한 추가로 해줘야함
                          */
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 
                             LogUtil.e("fineLocationGranted :" + fineLocationGranted);
                             LogUtil.e("coarseLocationGranted :" + coarseLocationGranted);
+//                            LogUtil.e("backGroundLocationGranted :" + backGroundLocationGranted);
 
-                            if (fineLocationGranted != null && fineLocationGranted && coarseLocationGranted != null && coarseLocationGranted) {
+                            if (fineLocationGranted != null && fineLocationGranted
+                                    && coarseLocationGranted != null && coarseLocationGranted ) {
+//
                                 // Precise location access granted.
                                 // 정밀한 위치 사용에 대해서 위치권한 허용
                                 LogUtil.e("정밀한위치");
@@ -121,7 +137,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
                             }
 
                         } else {
-                            /* api 31 미만일 때 실행 */
+                            /* api 30 미만일 때 실행 */
 
                             LogUtil.e("fineLocationGranted :" + fineLocationGranted);
                             LogUtil.e("coarseLocationGranted :" + coarseLocationGranted);
@@ -151,7 +167,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 
         init();
         // 중심점 이동
-        binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
+//        binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
         // 줌 레벨 변경
         binding.mapView.setZoomLevel(7, true);
         // 중심점 변경 + 줌 레벨 변경
@@ -160,6 +176,87 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
         binding.mapView.zoomIn(true);
         // 줌 아웃
         binding.mapView.zoomOut(true);
+
+
+        /**
+         * 트래킹모드 현재 안드로이드 11 버전 에러 발생
+         */
+        /*new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+            }
+        }, 3000);*/
+
+
+        /*binding.mapView.setCurrentLocationEventListener(new MapView.CurrentLocationEventListener() {
+            @Override
+            public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float v) {
+                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
+            }
+
+            @Override
+            public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
+
+            }
+
+            @Override
+            public void onCurrentLocationUpdateFailed(MapView mapView) {
+
+            }
+
+            @Override
+            public void onCurrentLocationUpdateCancelled(MapView mapView) {
+
+            }
+        });
+
+        binding.mapView.setMapViewEventListener(new MapView.MapViewEventListener() {
+            @Override
+            public void onMapViewInitialized(MapView mapView) {
+
+            }
+
+            @Override
+            public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
+
+            }
+
+            @Override
+            public void onMapViewZoomLevelChanged(MapView mapView, int i) {
+
+            }
+
+            @Override
+            public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
+
+            }
+
+            @Override
+            public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
+
+            }
+
+            @Override
+            public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
+
+            }
+
+            @Override
+            public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
+
+            }
+
+            @Override
+            public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
+
+            }
+
+            @Override
+            public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
+
+            }
+        });*/
 
         /* 권한체크 */
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -172,10 +269,10 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
             /* 권한 획득한 사용자는 GPS 활성화 했는지 체크 */
 
             if (checkLocationServicesStatus()) {
-
                 myLocationON();
 
                 LogUtil.e("GPS ON");
+
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("위치서비스");
@@ -257,6 +354,12 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 
             case CODE_GPS_PERMISSION_FIRST:  // 처음 실행
                 gpsPermissionRequest.launch(arrGpsPermissions);
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    gpsPermissionRequest.launch(arrGpsPermissionsHighVersion);
+                } else {
+                    gpsPermissionRequest.launch(arrGpsPermissions);
+                }*/
+
                 break;
         }
     }
@@ -305,41 +408,82 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
     /* 내 위치 띄우는 코드 */
     @SuppressLint("MissingPermission")
     private void myLocationON() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//
+//        locationListener = new LocationListener() {
+//            @Override
+//            public void onLocationChanged(@NonNull Location location) {
+//                double lat = location.getLatitude();
+//                double lng = location.getLongitude();
+//                // 중심점 이동
+//                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
+//
+//                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
+//            }
+//
+//            @Override
+//            public void onFlushComplete(int requestCode) {
+//
+//            }
+//
+//            @Override
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//
+//            }
+//
+//            @Override
+//            public void onProviderEnabled(@NonNull String provider) {
+//
+//            }
+//
+//            @Override
+//            public void onProviderDisabled(@NonNull String provider) {
+//
+//            }
+//        };
+//
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
-        locationListener = new LocationListener() {
+//        binding.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+    }
+
+    private void getStoreData(String Q0, String Q1, int pageNo, int numOfRows) {
+
+        Runnable runnable = new Runnable() {
             @Override
-            public void onLocationChanged(@NonNull Location location) {
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
-                // 중심점 이동
-                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
-                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
-            }
+            public void run() {
 
-            @Override
-            public void onFlushComplete(int requestCode) {
+                LogUtil.e("current pageNo:" + pageNo + "current numOfRows" + numOfRows);
 
-            }
+                Map<String, Object> parameter = new HashMap<>();
+                parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                parameter.put("Q0", Q0);  // ex) 서울특별시
+                parameter.put("Q1", Q1);  // ex) 강남구
+//                parameter.put("QT", pageNo);  // ex) 진료요일
+//                parameter.put("QN", pageNo);  // ex) 기관명
+//                parameter.put("ORD", pageNo);  // ex) 순서
+                parameter.put("pageNo", pageNo);
+                parameter.put("numOfRows", numOfRows);
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
 
-            }
+                //http://apis.data.go.kr/B552657/ErmctInsttInfoInqireService/getParmacyListInfoInqire?
+                // serviceKey=9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D&
+                // Q0=%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C&
+                // Q1=%EA%B0%95%EB%82%A8%EA%B5%AC&
+                // QT=1&
+                // QN=%EC%82%BC%EC%84%B1%EC%95%BD%EA%B5%AD&
+                // ORD=NAME&
+                // pageNo=1&
+                // numOfRows=10
 
-            @Override
-            public void onProviderEnabled(@NonNull String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(@NonNull String provider) {
+                String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
+                Log.e("result", response);
 
             }
         };
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        new Thread(runnable).start();
     }
 
     @Override
