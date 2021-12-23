@@ -32,6 +32,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
@@ -63,6 +64,9 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
+
+    private MapPoint mapPoint;
+    private MapPOIItem myLocationMarker;
 
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -112,7 +116,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 //                            LogUtil.e("backGroundLocationGranted :" + backGroundLocationGranted);
 
                             if (fineLocationGranted != null && fineLocationGranted
-                                    && coarseLocationGranted != null && coarseLocationGranted ) {
+                                    && coarseLocationGranted != null && coarseLocationGranted) {
 //
                                 // Precise location access granted.
                                 // 정밀한 위치 사용에 대해서 위치권한 허용
@@ -270,7 +274,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 
             if (checkLocationServicesStatus()) {
                 myLocationON();
-
+                getStoreData("서울특별시", "강남구", 1, 100);
                 LogUtil.e("GPS ON");
 
             } else {
@@ -408,45 +412,65 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
     /* 내 위치 띄우는 코드 */
     @SuppressLint("MissingPermission")
     private void myLocationON() {
-//        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//
-//        locationListener = new LocationListener() {
-//            @Override
-//            public void onLocationChanged(@NonNull Location location) {
-//                double lat = location.getLatitude();
-//                double lng = location.getLongitude();
-//                // 중심점 이동
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+                // 중심점 이동
 //                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
-//
-//                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
-//            }
-//
-//            @Override
-//            public void onFlushComplete(int requestCode) {
-//
-//            }
-//
-//            @Override
-//            public void onStatusChanged(String provider, int status, Bundle extras) {
-//
-//            }
-//
-//            @Override
-//            public void onProviderEnabled(@NonNull String provider) {
-//
-//            }
-//
-//            @Override
-//            public void onProviderDisabled(@NonNull String provider) {
-//
-//            }
-//        };
-//
-//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+                if (myLocationMarker != null) {
+                    binding.mapView.removePOIItem(myLocationMarker);
+                }
+
+                myLocationMarker = new MapPOIItem();
+                String name = "현재 위치";
+                myLocationMarker.setItemName(name);
+//                myLocationMarker.setTag(1);
+                myLocationMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(lat, lng));
+
+                myLocationMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+
+                myLocationMarker.setCustomImageResourceId(R.drawable.custom_marker_red);
+                myLocationMarker.setCustomImageAutoscale(false);
+                myLocationMarker.setCustomImageAnchor(0.5f, 1.0f);
+
+                binding.mapView.addPOIItem(myLocationMarker);
+                binding.mapView.selectPOIItem(myLocationMarker, true);
+
+                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
+            }
+
+            @Override
+            public void onFlushComplete(int requestCode) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+
+            }
+        };
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
 
 //        binding.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
     }
+
 
     private void getStoreData(String Q0, String Q1, int pageNo, int numOfRows) {
 
@@ -478,7 +502,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
                 // numOfRows=10
 
                 String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
-                Log.e("result", response);
+                LogUtil.e("result/" + response);
 
             }
         };
