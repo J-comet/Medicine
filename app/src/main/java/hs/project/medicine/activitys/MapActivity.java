@@ -68,6 +68,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
     private MapPoint mapPoint;
     private MapPOIItem myLocationMarker;
 
+    boolean isFirst = true; // 처음에만 중심으로 이동할 플래그
+
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -412,15 +414,22 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
     /* 내 위치 띄우는 코드 */
     @SuppressLint("MissingPermission")
     private void myLocationON() {
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
+
                 double lat = location.getLatitude();
                 double lng = location.getLongitude();
+
                 // 중심점 이동
-//                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
+                if (isFirst) {
+                    binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
+                    isFirst = false;
+                    LogUtil.d("isFirst");
+                }
 
                 if (myLocationMarker != null) {
                     binding.mapView.removePOIItem(myLocationMarker);
