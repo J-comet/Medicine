@@ -25,6 +25,7 @@ import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.AddUserActivity;
 import hs.project.medicine.activitys.MainActivity;
+import hs.project.medicine.activitys.MapActivity;
 import hs.project.medicine.activitys.UserListActivity;
 import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
 import hs.project.medicine.datas.User;
@@ -157,7 +158,9 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
                 context.startActivity(intent);
                 break;
             case R.id.cv_nearby_medicine_store:
-                Toast.makeText(context, "주변약국", Toast.LENGTH_SHORT).show();
+                intent = new Intent(context, MapActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                context.startActivity(intent);
                 break;
             case R.id.cv_alarm:
                 Toast.makeText(context, "알람설정", Toast.LENGTH_SHORT).show();

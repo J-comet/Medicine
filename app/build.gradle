@@ -46,4 +46,7 @@ dependencies {
 
     // html parsing
     implementation 'org.jsoup:jsoup:1.13.1'
+
+    // kakao map
+    implementation files('libs/libDaumMapAndroid.jar')
 }

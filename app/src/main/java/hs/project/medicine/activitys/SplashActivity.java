@@ -6,14 +6,22 @@ import androidx.core.content.ContextCompat;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Base64;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivitySplashBinding;
 import hs.project.medicine.databinding.ActivityUserListBinding;
+import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.NetworkUtil;
 
 public class SplashActivity extends BaseActivity {
@@ -25,6 +33,8 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        getHashKey();
 
         // 인터넷 연결 체크 후 앱 실행
        if (NetworkUtil.checkConnectedNetwork(this)) {
@@ -57,5 +67,26 @@ public class SplashActivity extends BaseActivity {
 
 
 
+    }
+
+    private void getHashKey(){
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageInfo == null)
+            LogUtil.e("KeyHash/KeyHash:null");
+
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                LogUtil.d("KeyHash/"+Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            } catch (NoSuchAlgorithmException e) {
+                LogUtil.e("KeyHash"+ "Unable to get MessageDigest. signature=" + signature + e);
+            }
+        }
     }
 }
