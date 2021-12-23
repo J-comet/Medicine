@@ -4,6 +4,7 @@ package hs.project.medicine.activitys;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 
 import android.widget.Toast;
@@ -87,6 +88,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 changeMainContent(Config.MAIN_BOTTOM_MENU.TV);
                 binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.TV);
+            }
+        });
+
+        /* LeftSlideView 나와있을 때 하위 뷰 터치 막는 코드 */
+        binding.leftSlideView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
             }
         });
     }
