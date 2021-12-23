@@ -14,7 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 
@@ -34,7 +34,7 @@ import hs.project.medicine.databinding.ActivityMapBinding;
 import hs.project.medicine.util.LocationUtil;
 import hs.project.medicine.util.LogUtil;
 
-public class MapActivity extends BaseActivity {
+public class MapActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * 처음 Activity 진입할 때 권한체크
@@ -149,18 +149,15 @@ public class MapActivity extends BaseActivity {
         binding = ActivityMapBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        init();
         // 중심점 이동
         binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
-
         // 줌 레벨 변경
         binding.mapView.setZoomLevel(7, true);
-
         // 중심점 변경 + 줌 레벨 변경
 //        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(33.41, 126.52), 9, true);
-
         // 줌 인
         binding.mapView.zoomIn(true);
-
         // 줌 아웃
         binding.mapView.zoomOut(true);
 
@@ -173,6 +170,7 @@ public class MapActivity extends BaseActivity {
         } else {
 
             /* 권한 획득한 사용자는 GPS 활성화 했는지 체크 */
+
             if (checkLocationServicesStatus()) {
 
                 myLocationON();
@@ -199,9 +197,12 @@ public class MapActivity extends BaseActivity {
                     }
                 });
                 builder.show();
-
             }
         }
+    }
+
+    private void init() {
+        binding.liBack.setOnClickListener(this);
     }
 
     /**
@@ -339,5 +340,14 @@ public class MapActivity extends BaseActivity {
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.li_back:
+                finish();
+                break;
+        }
     }
 }
