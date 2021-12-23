@@ -441,7 +441,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
                 binding.mapView.addPOIItem(myLocationMarker);
                 binding.mapView.selectPOIItem(myLocationMarker, true);
 
-                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
+//                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
             }
 
             @Override
