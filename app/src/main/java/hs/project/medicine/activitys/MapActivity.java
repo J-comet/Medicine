@@ -32,6 +32,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.naver.maps.map.LocationTrackingMode;
+import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.NaverMapOptions;
+import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.util.FusedLocationSource;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +49,7 @@ import hs.project.medicine.databinding.ActivityMapBinding;
 import hs.project.medicine.util.LocationUtil;
 import hs.project.medicine.util.LogUtil;
 
-public class MapActivity extends BaseActivity implements View.OnClickListener {
+public class MapActivity extends BaseActivity implements View.OnClickListener, OnMapReadyCallback {
 
     /**
      * 처음 Activity 진입할 때 권한체크
@@ -50,8 +57,9 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityMapBinding binding;
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 999;
+
     private String[] arrGpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-    private String[] arrGpsPermissionsHighVersion = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION};
 
     private static final int CODE_GPS_PERMISSION_ALL_GRANTED = 300;  // 모두허용
     private static final int CODE_GPS_PERMISSION_FINE_DENIED = 200;  // 대략허용
@@ -61,8 +69,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-//    private MapPoint mapPoint;
-//    private MapPOIItem myLocationMarker;
+    private FusedLocationSource locationSource;
+    private NaverMap map;
 
     boolean isFirst = true; // 처음에만 중심으로 이동할 플래그
 
@@ -211,6 +219,27 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 
     private void init() {
         binding.liBack.setOnClickListener(this);
+
+        MapFragment mapFragment = (MapFragment)getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance(new NaverMapOptions().locationButtonEnabled(true));
+            getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
+        }
+        mapFragment.getMapAsync(this);
+
+        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            if (!locationSource.isActivated()) {
+                map.setLocationTrackingMode(LocationTrackingMode.None);
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     /**
@@ -265,12 +294,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 
             case CODE_GPS_PERMISSION_FIRST:  // 처음 실행
                 gpsPermissionRequest.launch(arrGpsPermissions);
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    gpsPermissionRequest.launch(arrGpsPermissionsHighVersion);
-                } else {
-                    gpsPermissionRequest.launch(arrGpsPermissions);
-                }*/
-
                 break;
         }
     }
@@ -405,5 +428,12 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
                 finish();
                 break;
         }
+    }
+
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+        map = naverMap;
+
+        naverMap.setLocationSource(locationSource);
     }
 }
