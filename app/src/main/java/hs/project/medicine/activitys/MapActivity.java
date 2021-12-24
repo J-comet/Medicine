@@ -32,10 +32,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import net.daum.mf.map.api.MapPOIItem;
-import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapView;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,8 +61,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    private MapPoint mapPoint;
-    private MapPOIItem myLocationMarker;
+//    private MapPoint mapPoint;
+//    private MapPOIItem myLocationMarker;
 
     boolean isFirst = true; // 처음에만 중심으로 이동할 플래그
 
@@ -172,97 +168,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
         setContentView(binding.getRoot());
 
         init();
-        // 중심점 이동
-//        binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
-        // 줌 레벨 변경
-        binding.mapView.setZoomLevel(7, true);
-        // 중심점 변경 + 줌 레벨 변경
-//        mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(33.41, 126.52), 9, true);
-        // 줌 인
-        binding.mapView.zoomIn(true);
-        // 줌 아웃
-        binding.mapView.zoomOut(true);
-
-
-        /**
-         * 트래킹모드 현재 안드로이드 11 버전 에러 발생
-         */
-        /*new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                binding.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
-            }
-        }, 3000);*/
-
-
-        /*binding.mapView.setCurrentLocationEventListener(new MapView.CurrentLocationEventListener() {
-            @Override
-            public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float v) {
-                binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
-            }
-
-            @Override
-            public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
-
-            }
-
-            @Override
-            public void onCurrentLocationUpdateFailed(MapView mapView) {
-
-            }
-
-            @Override
-            public void onCurrentLocationUpdateCancelled(MapView mapView) {
-
-            }
-        });
-
-        binding.mapView.setMapViewEventListener(new MapView.MapViewEventListener() {
-            @Override
-            public void onMapViewInitialized(MapView mapView) {
-
-            }
-
-            @Override
-            public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
-
-            }
-
-            @Override
-            public void onMapViewZoomLevelChanged(MapView mapView, int i) {
-
-            }
-
-            @Override
-            public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
-
-            }
-
-            @Override
-            public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
-
-            }
-
-            @Override
-            public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
-
-            }
-
-            @Override
-            public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
-
-            }
-
-            @Override
-            public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
-
-            }
-
-            @Override
-            public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
-
-            }
-        });*/
 
         /* 권한체크 */
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -424,31 +329,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
                 double lat = location.getLatitude();
                 double lng = location.getLongitude();
 
-                // 중심점 이동
-                if (isFirst) {
-                    binding.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(lat, lng), true);
-                    isFirst = false;
-                    LogUtil.d("isFirst");
-                }
-
-                if (myLocationMarker != null) {
-                    binding.mapView.removePOIItem(myLocationMarker);
-                }
-
-                myLocationMarker = new MapPOIItem();
-                String name = "현재 위치";
-                myLocationMarker.setItemName(name);
-//                myLocationMarker.setTag(1);
-                myLocationMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(lat, lng));
-
-                myLocationMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-
-                myLocationMarker.setCustomImageResourceId(R.drawable.custom_marker_red);
-                myLocationMarker.setCustomImageAutoscale(false);
-                myLocationMarker.setCustomImageAnchor(0.5f, 1.0f);
-
-                binding.mapView.addPOIItem(myLocationMarker);
-                binding.mapView.selectPOIItem(myLocationMarker, true);
 
 //                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
             }
@@ -477,7 +357,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
 
-//        binding.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
     }
 
 
@@ -491,8 +370,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener {
 
                 Map<String, Object> parameter = new HashMap<>();
                 parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
-                parameter.put("Q0", Q0);  // ex) 서울특별시
-                parameter.put("Q1", Q1);  // ex) 강남구
+//                parameter.put("Q0", Q0);  // ex) 서울특별시
+//                parameter.put("Q1", Q1);  // ex) 강남구
 //                parameter.put("QT", pageNo);  // ex) 진료요일
 //                parameter.put("QN", pageNo);  // ex) 기관명
 //                parameter.put("ORD", pageNo);  // ex) 순서

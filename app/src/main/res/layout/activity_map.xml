@@ -45,7 +45,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <net.daum.mf.map.api.MapView
+    <com.naver.maps.map.MapView
         android:id="@+id/map_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
