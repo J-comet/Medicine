@@ -142,8 +142,10 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                             } else {
                                 // No location access granted.
                                 // 권한획득 거부
+
                                 Toast.makeText(this, "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
                                 LogUtil.e("위치권한거부");
+                                permissionRequestDialog();
                             }
 
                         } else {
@@ -164,6 +166,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                 // 권한획득 거부
                                 Toast.makeText(this, "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
                                 LogUtil.e("위치권한거부");
+                                permissionRequestDialog();
+
                             }
                         }
                     }
@@ -220,7 +224,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     private void init() {
         binding.liBack.setOnClickListener(this);
 
-        MapFragment mapFragment = (MapFragment)getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance(new NaverMapOptions().locationButtonEnabled(true));
             getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
@@ -236,6 +240,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
             if (!locationSource.isActivated()) {
                 map.setLocationTrackingMode(LocationTrackingMode.None);
+                permissionRequestDialog();
             }
             return;
         }
@@ -269,33 +274,35 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 break;
 
             case CODE_GPS_PERMISSION_DENIED_TRUE:  // 권한 거부한적 있는 유저
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-                builder.setTitle("필수권한")
-                        .setMessage("위치정보를 얻기 위해\n위치권한을 허용해주세요")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getPackageName()));
-                                startActivity(intent);
-                            }
-                        }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Toast.makeText(MapActivity.this, "위치권한 거부", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                builder.show();
-
+                permissionRequestDialog();
                 break;
 
             case CODE_GPS_PERMISSION_FIRST:  // 처음 실행
                 gpsPermissionRequest.launch(arrGpsPermissions);
                 break;
         }
+    }
+
+    private void permissionRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setTitle("필수권한")
+                .setMessage("위치정보를 얻기 위해\n위치권한을 허용해주세요")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getPackageName()));
+                        startActivity(intent);
+                    }
+                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Toast.makeText(MapActivity.this, "위치권한 거부", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
     }
 
     private int gpsPermissionCheck() {
@@ -435,5 +442,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         map = naverMap;
 
         naverMap.setLocationSource(locationSource);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
     }
 }
