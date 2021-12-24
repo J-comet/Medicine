@@ -31,12 +31,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 
+import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import java.util.HashMap;
@@ -44,6 +47,7 @@ import java.util.Map;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.HttpRequest;
+import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityMapBinding;
 import hs.project.medicine.util.LocationUtil;
@@ -73,6 +77,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     private NaverMap map;
 
     boolean isFirst = true; // 처음에만 중심으로 이동할 플래그
+
+    private CircleOverlay circleOverlay;
 
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -350,6 +356,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     @SuppressLint("MissingPermission")
     private void myLocationON() {
 
+        circleOverlay = new CircleOverlay();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         locationListener = new LocationListener() {
@@ -359,6 +366,19 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 double lat = location.getLatitude();
                 double lng = location.getLongitude();
 
+                int color = ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red);
+
+                circleOverlay.setCenter(new LatLng(lat, lng));
+                circleOverlay.setRadius(1000);
+                circleOverlay.setColor(ColorUtils.setAlphaComponent(color, 31));
+                circleOverlay.setOutlineColor(color);
+                circleOverlay.setOutlineWidth(3);
+                circleOverlay.setMap(map);
+
+
+                Log.e("hs", "getCenter/"+circleOverlay.getCenter());
+                Log.e("hs", "getBounds/"+circleOverlay.getBounds());
+                Log.e("hs", "getGlobalZIndex/"+circleOverlay.getGlobalZIndex());
 
 //                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
             }
@@ -443,5 +463,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
     }
 }
