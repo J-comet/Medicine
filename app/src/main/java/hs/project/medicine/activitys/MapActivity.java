@@ -42,8 +42,28 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.HttpRequest;
@@ -450,6 +470,42 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
                 String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
                 LogUtil.e("result/" + response);
+
+
+
+                BufferedReader br = null;
+                //DocumentBuilderFactory 생성
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                factory.setNamespaceAware(true);
+                DocumentBuilder builder = null;
+                Document doc = null;
+                
+                InputSource is = new InputSource(new StringReader(response));
+                try {
+                    builder = factory.newDocumentBuilder();
+                    doc = builder.parse(is);
+                    XPathFactory xpathFactory = XPathFactory.newInstance();
+                    XPath xpath = xpathFactory.newXPath();
+                    XPathExpression expr = xpath.compile("//items/item");
+                    NodeList nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+                    for (int i = 0; i < nodeList.getLength(); i++) {
+                        NodeList child = nodeList.item(i).getChildNodes();
+                        for (int j = 0; j < child.getLength(); j++) {
+                            Node node = child.item(j);
+                            System.out.println("현재 노드 이름 : " + node.getNodeName());
+                            System.out.println("현재 노드 타입 : " + node.getNodeType());
+                            System.out.println("현재 노드 값 : " + node.getTextContent());
+                            System.out.println("현재 노드 네임스페이스 : " + node.getPrefix());
+                            System.out.println("현재 노드의 다음 노드 : " + node.getNextSibling());
+                            System.out.println("");
+                        }
+                    }
+
+                } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
+                    e.printStackTrace();
+                }
+
+
 
             }
         };
