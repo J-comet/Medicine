@@ -588,18 +588,11 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                     pharmacyMarker.setOnClickListener(new Overlay.OnClickListener() {
                                         @Override
                                         public boolean onClick(@NonNull Overlay overlay) {
-                                            /*infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getApplication()) {
-                                                @NonNull
-                                                @Override
-                                                public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                                                    return "제주도청";
-                                                }
-                                            });*/
-//                                            infoWindow.setAnchor(new PointF(0, 1));
-//                                            infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
-//                                            infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
-                                            LogUtil.d(pharmacy.getDutyName()+"/"+pharmacy.getDutyTel1());
-                                            infoWindow.setAdapter(new InfoWindowAdapter(MapActivity.this, pharmacy.getDutyName(), pharmacy.getDutyTel1()));
+                                            infoWindow.setAnchor(new PointF(0, 1));
+                                            infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+                                            infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+                                            LogUtil.d(pharmacy.getDutyName() + "/" + pharmacy.getDutyTel1() + "/" + pharmacy.getDutyAddr());
+                                            infoWindow.setAdapter(new InfoWindowAdapter(MapActivity.this, pharmacy.getDutyName(), pharmacy.getDutyTel1(), pharmacy.getDutyAddr()));
                                             infoWindow.setOnClickListener(new Overlay.OnClickListener() {
                                                 @Override
                                                 public boolean onClick(@NonNull Overlay overlay) {
@@ -678,14 +671,17 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         //        private ImageView icon;
         private TextView tvName;
         private TextView tvTell;
-//        private Pharmacy mPharmacy;
+        private TextView tvAdd;
+        //        private Pharmacy mPharmacy;
         private String name;
         private String phone;
+        private String address;
 
-        public InfoWindowAdapter(@NonNull Context context, String dutyNamel, String dutyTel1) {
+        public InfoWindowAdapter(@NonNull Context context, String dutyName, String dutyTel1, String add) {
             this.context = context;
-            this.name = dutyNamel;
+            this.name = dutyName;
             this.phone = dutyTel1;
+            this.address = add;
         }
 
         @NonNull
@@ -695,11 +691,13 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 rootView = View.inflate(context, R.layout.view_map_info_window, null);
                 tvName = rootView.findViewById(R.id.tv_name);
                 tvTell = rootView.findViewById(R.id.tv_tell);
+                tvAdd = rootView.findViewById(R.id.tv_add);
             }
 
             if (infoWindow.getMarker() != null) {
                 tvName.setText(name);
                 tvTell.setText(phone);
+                tvAdd.setText(address);
 //                tvTell.setText((String)infoWindow.getMarker().getTag());
             } /*else {
                 icon.setImageResource(R.drawable.ic_my_location_black_24dp);

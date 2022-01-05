@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="custom_info_window_offset_x">-27dp</dimen>
-    <dimen name="custom_info_window_offset_y">-9dp</dimen>
+    <!-- X축 '-' 왼쪽  / '+' 오른쪽  -->
+    <dimen name="custom_info_window_offset_x">-55dp</dimen>
+
+    <!-- Y축 '-' 아래쪽  / '+' 위쪽  -->
+    <dimen name="custom_info_window_offset_y">-15dp</dimen>
 </resources>
