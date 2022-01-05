@@ -421,6 +421,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 LogUtil.e("results[1]=" + results[1]);
                 LogUtil.e("results[2]=" + results[2]);
 
+                binding.tvCurPlace.setText(results[1]+" "+results[2]);
+
 //                pharmacyList = new ArrayList<>();
                 getTotalStoreData(results[1], results[2]);
 
@@ -664,6 +666,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
     }
 
+    /* InfoWindowAdapter */
     private class InfoWindowAdapter extends InfoWindow.ViewAdapter {
         @NonNull
         private Context context;
