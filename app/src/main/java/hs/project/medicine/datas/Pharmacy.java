@@ -4,7 +4,7 @@ package hs.project.medicine.datas;
 public class Pharmacy {
 
     String dutyAddr;   // 주소
-    String dutyNamel;   // 기관명
+    String dutyName;   // 기관명
     String dutyTel1;  // 대표전화
     double wgs84Lon;  // 병원경도
     double wgs84Lat;  // 병원위도
@@ -17,12 +17,12 @@ public class Pharmacy {
         this.dutyAddr = dutyAddr;
     }
 
-    public String getDutyNamel() {
-        return dutyNamel;
+    public String getDutyName() {
+        return dutyName;
     }
 
-    public void setDutyNamel(String dutyNamel) {
-        this.dutyNamel = dutyNamel;
+    public void setDutyName(String dutyName) {
+        this.dutyName = dutyName;
     }
 
     public String getDutyTel1() {

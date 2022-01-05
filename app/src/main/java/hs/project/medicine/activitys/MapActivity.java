@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,6 +21,8 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -40,7 +43,9 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.CircleOverlay;
+import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 
@@ -104,9 +109,11 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
     private CircleOverlay circleOverlay;
     private String curAddress = "";
-    private ArrayList<Pharmacy> pharmacyList;  // 약국리스트
+    //    private ArrayList<Pharmacy> pharmacyList;  // 약국리스트
     private int pageNo = 1;
     private double getTotalCnt = -1;
+
+    private InfoWindow infoWindow;
 
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -383,7 +390,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     @SuppressLint("MissingPermission")
     private void myLocationON() {
 
-        circleOverlay = new CircleOverlay();
+//        circleOverlay = new CircleOverlay();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         locationListener = new LocationListener() {
@@ -393,28 +400,28 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 double lat = location.getLatitude();
                 double lng = location.getLongitude();
 
-                int color = ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red);
+//                int color = ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red);
 
-                circleOverlay.setCenter(new LatLng(lat, lng));
-                circleOverlay.setRadius(1000);
-                circleOverlay.setColor(ColorUtils.setAlphaComponent(color, 31));
-                circleOverlay.setOutlineColor(color);
-                circleOverlay.setOutlineWidth(3);
-                circleOverlay.setMap(map);
+//                circleOverlay.setCenter(new LatLng(lat, lng));
+//                circleOverlay.setRadius(1000);
+//                circleOverlay.setColor(ColorUtils.setAlphaComponent(color, 31));
+//                circleOverlay.setOutlineColor(color);
+//                circleOverlay.setOutlineWidth(3);
+//                circleOverlay.setMap(map);
 
 
-                Log.e("hs", "getCenter/"+circleOverlay.getCenter());
-                Log.e("hs", "getBounds/"+circleOverlay.getBounds());
-                Log.e("hs", "getGlobalZIndex/"+circleOverlay.getGlobalZIndex());
+//                Log.e("hs", "getCenter/"+circleOverlay.getCenter());
+//                Log.e("hs", "getBounds/"+circleOverlay.getBounds());
+//                Log.e("hs", "getGlobalZIndex/"+circleOverlay.getGlobalZIndex());
 
                 curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
-                LogUtil.e("curAddress="+curAddress);
-                String[] results = curAddress.split("\\s");
-                LogUtil.e("results[0]="+results[0]);
-                LogUtil.e("results[1]="+results[1]);
-                LogUtil.e("results[2]="+results[2]);
 
-                pharmacyList = new ArrayList<>();
+                String[] results = curAddress.split("\\s");
+                LogUtil.e("results[0]=" + results[0]);
+                LogUtil.e("results[1]=" + results[1]);
+                LogUtil.e("results[2]=" + results[2]);
+
+//                pharmacyList = new ArrayList<>();
                 getTotalStoreData(results[1], results[2]);
 
             }
@@ -440,8 +447,10 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
             }
         };
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 1, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 1, locationListener);
+        // minTime = 1시간
+        // minDistance = 1km
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3600000, 1000, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3600000, 1000, locationListener);
 
     }
 
@@ -473,18 +482,18 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     XPathFactory xpathFactory = XPathFactory.newInstance();
                     XPath xpath = xpathFactory.newXPath();
                     XPathExpression expr = xpath.compile("//totalCount");
-                    Node node = (Node) expr.evaluate(doc,XPathConstants.NODE);
+                    Node node = (Node) expr.evaluate(doc, XPathConstants.NODE);
 
-                    LogUtil.d("현재 노드 이름 : "+ node.getNodeName());
-                    LogUtil.d("현재 노드 값 : "+ node.getTextContent());
+                    LogUtil.d("현재 노드 이름 : " + node.getNodeName());
+                    LogUtil.d("현재 노드 값 : " + node.getTextContent());
 
                     String cnt = node.getTextContent();
                     getTotalCnt = Integer.parseInt(cnt);
                     getTotalCnt = Math.ceil(getTotalCnt / 100);
                     pageNo = (int) getTotalCnt;
 
-                    LogUtil.d("getTotalCnt / 100="+getTotalCnt / 100);
-                    LogUtil.d("pageNo="+pageNo);
+                    LogUtil.d("getTotalCnt / 100=" + getTotalCnt / 100);
+                    LogUtil.d("pageNo=" + pageNo);
 
 
                     // pageNo 만큼 데이터 요청
@@ -531,7 +540,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 factory.setNamespaceAware(true);
                 DocumentBuilder builder = null;
                 Document doc = null;
-                
+
                 InputSource is = new InputSource(new StringReader(response));
                 try {
                     builder = factory.newDocumentBuilder();
@@ -545,6 +554,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                         NodeList child = nodeList.item(i).getChildNodes();
                         Pharmacy pharmacy = new Pharmacy();
                         Marker pharmacyMarker = new Marker();
+                        infoWindow = new InfoWindow();
 
                         for (int j = 0; j < child.getLength(); j++) {
                             Node node = child.item(j);
@@ -556,8 +566,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                 case "dutyAddr":  // 주소
                                     pharmacy.setDutyAddr(node.getTextContent());
                                     break;
-                                case "dutyNamel":  // 기관명
-                                    pharmacy.setDutyNamel(node.getTextContent());
+                                case "dutyName":  // 기관명
+                                    pharmacy.setDutyName(node.getTextContent());
                                     break;
                                 case "dutyTel1":  // 대표전화
                                     pharmacy.setDutyTel1(node.getTextContent());
@@ -573,18 +583,44 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+
                                     setMarker(pharmacyMarker, pharmacy.getWgs84Lat(), pharmacy.getWgs84Lon());
+                                    pharmacyMarker.setOnClickListener(new Overlay.OnClickListener() {
+                                        @Override
+                                        public boolean onClick(@NonNull Overlay overlay) {
+                                            /*infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getApplication()) {
+                                                @NonNull
+                                                @Override
+                                                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                                                    return "제주도청";
+                                                }
+                                            });*/
+//                                            infoWindow.setAnchor(new PointF(0, 1));
+//                                            infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+//                                            infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+                                            LogUtil.d(pharmacy.getDutyName()+"/"+pharmacy.getDutyTel1());
+                                            infoWindow.setAdapter(new InfoWindowAdapter(MapActivity.this, pharmacy.getDutyName(), pharmacy.getDutyTel1()));
+                                            infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                                                @Override
+                                                public boolean onClick(@NonNull Overlay overlay) {
+                                                    infoWindow.close();
+                                                    return true;
+                                                }
+                                            });
+
+                                            infoWindow.open(pharmacyMarker);
+                                            return false;
+                                        }
+                                    });
+
                                 }
                             });
 
                         }
-                        pharmacyList.add(pharmacy);
+//                        pharmacyList.add(pharmacy);
                     }
-                    LogUtil.d("리스트 개수 : "+ pharmacyList.size());
+//                    LogUtil.d("리스트 개수 : "+ pharmacyList.size());
 
-                    /**
-                     * 마크 추가해주기
-                     */
 
                 } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
                     e.printStackTrace();
@@ -596,8 +632,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         new Thread(runnable).start();
     }
 
-    private void setMarker(Marker marker, double lat, double lng)
-    {
+    private void setMarker(Marker marker, double lat, double lng) {
         //원근감 표시
         marker.setIconPerspectiveEnabled(true);
 
@@ -605,7 +640,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place));
 
         //마커의 투명도
-        marker.setAlpha(0.5f);
+//        marker.setAlpha(0.1f);
 
         //마커 위치
         marker.setPosition(new LatLng(lat, lng));
@@ -629,9 +664,51 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         map = naverMap;
+//        infoWindow = new InfoWindow();
 
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
     }
+
+    private class InfoWindowAdapter extends InfoWindow.ViewAdapter {
+        @NonNull
+        private Context context;
+        private View rootView;
+        //        private ImageView icon;
+        private TextView tvName;
+        private TextView tvTell;
+//        private Pharmacy mPharmacy;
+        private String name;
+        private String phone;
+
+        public InfoWindowAdapter(@NonNull Context context, String dutyNamel, String dutyTel1) {
+            this.context = context;
+            this.name = dutyNamel;
+            this.phone = dutyTel1;
+        }
+
+        @NonNull
+        @Override
+        public View getView(@NonNull InfoWindow infoWindow) {
+            if (rootView == null) {
+                rootView = View.inflate(context, R.layout.view_map_info_window, null);
+                tvName = rootView.findViewById(R.id.tv_name);
+                tvTell = rootView.findViewById(R.id.tv_tell);
+            }
+
+            if (infoWindow.getMarker() != null) {
+                tvName.setText(name);
+                tvTell.setText(phone);
+//                tvTell.setText((String)infoWindow.getMarker().getTag());
+            } /*else {
+                icon.setImageResource(R.drawable.ic_my_location_black_24dp);
+                text.setText(context.getString(
+                        R.string.format_coord, infoWindow.getPosition().latitude, infoWindow.getPosition().longitude));
+            }*/
+
+            return rootView;
+        }
+    }
+
 }
