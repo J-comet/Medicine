@@ -80,6 +80,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
     private CircleOverlay circleOverlay;
 
+    private String curAddress = "";
+
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -199,7 +201,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
             if (checkLocationServicesStatus()) {
                 myLocationON();
-                getStoreData("서울특별시", "강남구", 1, 100);
                 LogUtil.e("GPS ON");
 
             } else {
@@ -380,7 +381,15 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 Log.e("hs", "getBounds/"+circleOverlay.getBounds());
                 Log.e("hs", "getGlobalZIndex/"+circleOverlay.getGlobalZIndex());
 
-//                LogUtil.e(LocationUtil.changeForAddress(MapActivity.this, lat, lng));
+                curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
+                LogUtil.e("curAddress="+curAddress);
+                String[] results = curAddress.split("\\s");
+                LogUtil.e("results[0]="+results[0]);
+                LogUtil.e("results[1]="+results[1]);
+                LogUtil.e("results[2]="+results[2]);
+
+                getStoreData(results[1], results[2], 1, 100);
+
             }
 
             @Override
@@ -404,8 +413,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
             }
         };
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 1, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 1, locationListener);
 
     }
 
@@ -420,8 +429,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
                 Map<String, Object> parameter = new HashMap<>();
                 parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
-//                parameter.put("Q0", Q0);  // ex) 서울특별시
-//                parameter.put("Q1", Q1);  // ex) 강남구
+                parameter.put("Q0", Q0);  // ex) 서울특별시
+                parameter.put("Q1", Q1);  // ex) 강남구
 //                parameter.put("QT", pageNo);  // ex) 진료요일
 //                parameter.put("QN", pageNo);  // ex) 기관명
 //                parameter.put("ORD", pageNo);  // ex) 순서
