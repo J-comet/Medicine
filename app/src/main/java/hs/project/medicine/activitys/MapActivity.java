@@ -46,6 +46,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,6 +71,7 @@ import hs.project.medicine.HttpRequest;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityMapBinding;
+import hs.project.medicine.datas.Pharmacy;
 import hs.project.medicine.util.LocationUtil;
 import hs.project.medicine.util.LogUtil;
 
@@ -99,8 +101,10 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     boolean isFirst = true; // 처음에만 중심으로 이동할 플래그
 
     private CircleOverlay circleOverlay;
-
     private String curAddress = "";
+    private ArrayList<Pharmacy> pharmacyList;  // 약국리스트
+    private int pageNo = 1;
+    private double getTotalCnt = -1;
 
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -408,7 +412,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 LogUtil.e("results[1]="+results[1]);
                 LogUtil.e("results[2]="+results[2]);
 
-                getStoreData(results[1], results[2], 1, 100);
+                pharmacyList = new ArrayList<>();
+                getTotalStoreData(results[1], results[2]);
 
             }
 
@@ -438,14 +443,69 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
     }
 
-
-    private void getStoreData(String Q0, String Q1, int pageNo, int numOfRows) {
+    /* 총 데이터 개수 가져올 메서드 */
+    private void getTotalStoreData(String Q0, String Q1) {
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
 
-                LogUtil.e("current pageNo:" + pageNo + "current numOfRows" + numOfRows);
+                Map<String, Object> parameter = new HashMap<>();
+                parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                parameter.put("Q0", Q0);  // ex) 서울특별시
+                parameter.put("Q1", Q1);  // ex) 강남구
+
+                String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
+                LogUtil.e("result/" + response);
+
+                BufferedReader br = null;
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                factory.setNamespaceAware(true);
+                DocumentBuilder builder = null;
+                Document doc = null;
+
+                InputSource is = new InputSource(new StringReader(response));
+                try {
+                    builder = factory.newDocumentBuilder();
+                    doc = builder.parse(is);
+                    XPathFactory xpathFactory = XPathFactory.newInstance();
+                    XPath xpath = xpathFactory.newXPath();
+                    XPathExpression expr = xpath.compile("//totalCount");
+                    Node node = (Node) expr.evaluate(doc,XPathConstants.NODE);
+
+                    LogUtil.d("현재 노드 이름 : "+ node.getNodeName());
+                    LogUtil.d("현재 노드 값 : "+ node.getTextContent());
+
+                    String cnt = node.getTextContent();
+                    getTotalCnt = Integer.parseInt(cnt);
+                    getTotalCnt = Math.ceil(getTotalCnt / 100);
+                    pageNo = (int) getTotalCnt;
+
+                    LogUtil.d("getTotalCnt / 100="+getTotalCnt / 100);
+                    LogUtil.d("pageNo="+pageNo);
+
+                    for (int i = 1; i <= pageNo; i++) {
+                        getStoreData(Q0, Q1, i, 100);
+                    }
+
+
+                } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
+        new Thread(runnable).start();
+
+    }
+
+    /* 현재위치의 주변 약국 정보 데이터 가져올 메서드 */
+    private void getStoreData(String Q0, String Q1, int pageNo, int numOfRows) {
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
 
                 Map<String, Object> parameter = new HashMap<>();
                 parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
@@ -458,20 +518,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 parameter.put("numOfRows", numOfRows);
 
 
-                //http://apis.data.go.kr/B552657/ErmctInsttInfoInqireService/getParmacyListInfoInqire?
-                // serviceKey=9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D&
-                // Q0=%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C&
-                // Q1=%EA%B0%95%EB%82%A8%EA%B5%AC&
-                // QT=1&
-                // QN=%EC%82%BC%EC%84%B1%EC%95%BD%EA%B5%AD&
-                // ORD=NAME&
-                // pageNo=1&
-                // numOfRows=10
-
                 String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
                 LogUtil.e("result/" + response);
-
-
 
                 BufferedReader br = null;
                 //DocumentBuilderFactory 생성
@@ -488,24 +536,47 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     XPath xpath = xpathFactory.newXPath();
                     XPathExpression expr = xpath.compile("//items/item");
                     NodeList nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+
                     for (int i = 0; i < nodeList.getLength(); i++) {
                         NodeList child = nodeList.item(i).getChildNodes();
+                        Pharmacy pharmacy = new Pharmacy();
+
                         for (int j = 0; j < child.getLength(); j++) {
                             Node node = child.item(j);
-                            System.out.println("현재 노드 이름 : " + node.getNodeName());
-                            System.out.println("현재 노드 타입 : " + node.getNodeType());
-                            System.out.println("현재 노드 값 : " + node.getTextContent());
-                            System.out.println("현재 노드 네임스페이스 : " + node.getPrefix());
-                            System.out.println("현재 노드의 다음 노드 : " + node.getNextSibling());
-                            System.out.println("");
+
+//                            LogUtil.d("현재 노드 이름 : "+ node.getNodeName());
+//                            LogUtil.d("현재 노드 값 : "+ node.getTextContent());
+
+                            switch (node.getNodeName()) {
+                                case "dutyAddr":  // 주소
+                                    pharmacy.setDutyAddr(node.getTextContent());
+                                    break;
+                                case "dutyNamel":  // 기관명
+                                    pharmacy.setDutyNamel(node.getTextContent());
+                                    break;
+                                case "dutyTel1":  // 대표전화
+                                    pharmacy.setDutyTel1(node.getTextContent());
+                                    break;
+                                case "wgs84Lon":  // 병원경도
+                                    pharmacy.setWgs84Lon(node.getTextContent());
+                                    break;
+                                case "wgs84Lat":  // 병원위도
+                                    pharmacy.setWgs84Lat(node.getTextContent());
+                                    break;
+                            }
+
                         }
+                        pharmacyList.add(pharmacy);
                     }
+                    LogUtil.d("리스트 개수 : "+ pharmacyList.size());
+
+                    /**
+                     * 마크 추가해주기
+                     */
 
                 } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
                     e.printStackTrace();
                 }
-
-
 
             }
         };
