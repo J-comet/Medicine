@@ -40,6 +40,8 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.CircleOverlay;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 
 
@@ -484,6 +486,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     LogUtil.d("getTotalCnt / 100="+getTotalCnt / 100);
                     LogUtil.d("pageNo="+pageNo);
 
+
+                    // pageNo 만큼 데이터 요청
                     for (int i = 1; i <= pageNo; i++) {
                         getStoreData(Q0, Q1, i, 100);
                     }
@@ -540,6 +544,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     for (int i = 0; i < nodeList.getLength(); i++) {
                         NodeList child = nodeList.item(i).getChildNodes();
                         Pharmacy pharmacy = new Pharmacy();
+                        Marker pharmacyMarker = new Marker();
 
                         for (int j = 0; j < child.getLength(); j++) {
                             Node node = child.item(j);
@@ -558,12 +563,19 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                     pharmacy.setDutyTel1(node.getTextContent());
                                     break;
                                 case "wgs84Lon":  // 병원경도
-                                    pharmacy.setWgs84Lon(node.getTextContent());
+                                    pharmacy.setWgs84Lon(Double.parseDouble(node.getTextContent()));
                                     break;
                                 case "wgs84Lat":  // 병원위도
-                                    pharmacy.setWgs84Lat(node.getTextContent());
+                                    pharmacy.setWgs84Lat(Double.parseDouble(node.getTextContent()));
                                     break;
                             }
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setMarker(pharmacyMarker, pharmacy.getWgs84Lat(), pharmacy.getWgs84Lon());
+                                }
+                            });
 
                         }
                         pharmacyList.add(pharmacy);
@@ -582,6 +594,27 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         };
 
         new Thread(runnable).start();
+    }
+
+    private void setMarker(Marker marker, double lat, double lng)
+    {
+        //원근감 표시
+        marker.setIconPerspectiveEnabled(true);
+
+        //아이콘 지정
+        marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place));
+
+        //마커의 투명도
+        marker.setAlpha(0.5f);
+
+        //마커 위치
+        marker.setPosition(new LatLng(lat, lng));
+
+        //마커 우선순위
+//        marker.setZIndex(zIndex);
+
+        //마커 표시
+        marker.setMap(map);
     }
 
     @Override

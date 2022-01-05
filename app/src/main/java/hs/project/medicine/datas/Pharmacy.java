@@ -6,8 +6,8 @@ public class Pharmacy {
     String dutyAddr;   // 주소
     String dutyNamel;   // 기관명
     String dutyTel1;  // 대표전화
-    String wgs84Lon;  // 병원경도
-    String wgs84Lat;  // 병원위도
+    double wgs84Lon;  // 병원경도
+    double wgs84Lat;  // 병원위도
 
     public String getDutyAddr() {
         return dutyAddr;
@@ -33,19 +33,19 @@ public class Pharmacy {
         this.dutyTel1 = dutyTel1;
     }
 
-    public String getWgs84Lon() {
+    public double getWgs84Lon() {
         return wgs84Lon;
     }
 
-    public void setWgs84Lon(String wgs84Lon) {
+    public void setWgs84Lon(double wgs84Lon) {
         this.wgs84Lon = wgs84Lon;
     }
 
-    public String getWgs84Lat() {
+    public double getWgs84Lat() {
         return wgs84Lat;
     }
 
-    public void setWgs84Lat(String wgs84Lat) {
+    public void setWgs84Lat(double wgs84Lat) {
         this.wgs84Lat = wgs84Lat;
     }
 }
