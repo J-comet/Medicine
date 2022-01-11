@@ -48,13 +48,13 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout6"
+        android:id="@+id/cl_location_detail"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/bg_stroke_round_color_main_red"
+        android:background="@drawable/bg_selected_stroke_round"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
@@ -90,7 +90,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
+        app:layout_constraintTop_toBottomOf="@+id/cl_location_detail">
 
         <TextView
             android:layout_width="wrap_content"
