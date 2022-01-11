@@ -79,6 +79,7 @@ import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityMapBinding;
 import hs.project.medicine.datas.Pharmacy;
+import hs.project.medicine.dialog.BottomSheetMapSearchDialog;
 import hs.project.medicine.util.LocationUtil;
 import hs.project.medicine.util.LogUtil;
 
@@ -114,6 +115,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     private double getTotalCnt = -1;
 
     private InfoWindow infoWindow;
+
+    private BottomSheetMapSearchDialog bottomSheetMapSearchDialog;
 
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -263,6 +266,15 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
     private void init() {
         binding.liBack.setOnClickListener(this);
+        binding.liSearch.setOnClickListener(this);
+
+        bottomSheetMapSearchDialog = new BottomSheetMapSearchDialog();
+        bottomSheetMapSearchDialog.setBottomSheetListener(new BottomSheetMapSearchDialog.BottomSheetListener() {
+            @Override
+            public void onBtnClicked(String text) {
+                LogUtil.e("숨겨짐");
+            }
+        });
 
         MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         if (mapFragment == null) {
@@ -652,6 +664,10 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         switch (v.getId()) {
             case R.id.li_back:
                 finish();
+                break;
+            case R.id.li_search:
+                bottomSheetMapSearchDialog.show(getSupportFragmentManager(), "mapSearchDialog");
+                LogUtil.e("보여짐");
                 break;
         }
     }
