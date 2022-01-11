@@ -37,6 +37,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
@@ -268,7 +269,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         binding.liBack.setOnClickListener(this);
         binding.liSearch.setOnClickListener(this);
 
-        bottomSheetMapSearchDialog = new BottomSheetMapSearchDialog();
+        bottomSheetMapSearchDialog = new BottomSheetMapSearchDialog(this);
         bottomSheetMapSearchDialog.setBottomSheetListener(new BottomSheetMapSearchDialog.BottomSheetListener() {
             @Override
             public void onBtnClicked(String text) {
@@ -428,6 +429,9 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
                 curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
 
+                LocationUtil.changeForLatLng(MapActivity.this, "경기도 고양시");
+                LogUtil.e("111111111111"+LocationUtil.changeForLatLng(MapActivity.this, "경기도 고양시"));
+
                 String[] results = curAddress.split("\\s");
                 LogUtil.e("results[0]=" + results[0]);
                 LogUtil.e("results[1]=" + results[1]);
@@ -436,7 +440,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 binding.tvCurPlace.setText(results[1]+" "+results[2]);
 
 //                pharmacyList = new ArrayList<>();
-                getTotalStoreData(results[1], results[2]);
+//                getTotalStoreData(results[1], results[2]);
+                getTotalStoreData("경기도", "고양시");
 
             }
 
@@ -677,8 +682,11 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         map = naverMap;
 //        infoWindow = new InfoWindow();
 
-        naverMap.setLocationSource(locationSource);
-        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+//        naverMap.setLocationSource(locationSource);
+//        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(37.65835990000001, 126.8320201));
+        naverMap.moveCamera(cameraUpdate);
 
     }
 
