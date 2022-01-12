@@ -37,6 +37,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
@@ -289,12 +290,18 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(geocodingResult.getY(), geocodingResult.getX()));
+                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(geocodingResult.getY(), geocodingResult.getX()))
+                                            .animate(CameraAnimation.Fly, 1500)
+                                            .finishCallback(() -> {
+                                                getTotalStoreData(location, "");
+                                            })
+                                            .cancelCallback(() -> {
+                                                LogUtil.d("카메라 이동 취소");
+                                            });
+
                                     map.moveCamera(cameraUpdate);
                                 }
                             });
-
-
                         }
                     }.start();
 
@@ -313,7 +320,14 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                             double lat = Double.parseDouble(arrResult[0]);
                             double lng = Double.parseDouble(arrResult[1]);
 
-                            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng));
+                            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng))
+                                    .animate(CameraAnimation.Fly, 1500)
+                                    .finishCallback(() -> {
+                                        getTotalStoreData(location, locationDetail);
+                                    })
+                                    .cancelCallback(() -> {
+                                        LogUtil.d("카메라 이동 취소");
+                                    });
                             map.moveCamera(cameraUpdate);
                         }
                     });
