@@ -86,6 +86,7 @@ import hs.project.medicine.datas.Pharmacy;
 import hs.project.medicine.dialog.BottomSheetMapSearchDialog;
 import hs.project.medicine.util.LocationUtil;
 import hs.project.medicine.util.LogUtil;
+import hs.project.medicine.util.NetworkUtil;
 
 public class MapActivity extends BaseActivity implements View.OnClickListener, OnMapReadyCallback {
 
@@ -273,6 +274,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     private void init() {
         binding.liBack.setOnClickListener(this);
         binding.liSearch.setOnClickListener(this);
+        binding.liMyLocation.setOnClickListener(this);
 
         bottomSheetMapSearchDialog = new BottomSheetMapSearchDialog(this);
         bottomSheetMapSearchDialog.setBottomSheetListener(new BottomSheetMapSearchDialog.BottomSheetListener() {
@@ -280,64 +282,70 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
             public void onBtnClicked(String location, String locationDetail) {
                 LogUtil.e("dialog/ location:" + location + "locationDetail:" + locationDetail);
 
-                /* 세종특별자치시는 네이버 지오코더로 해야함 */
-                if (location.equals("세종특별자치시")) {
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            LogUtil.e("result =" + HttpRequest.searchNaverGeocode(location).toString());
+                if (NetworkUtil.checkConnectedNetwork(MapActivity.this)) {
 
-                            NaverGeocodingResult geocodingResult;
-                            geocodingResult = HttpRequest.searchNaverGeocode(location);
+                    /* 세종특별자치시는 네이버 지오코더로 해야함 */
+                    if (location.equals("세종특별자치시")) {
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(geocodingResult.getY(), geocodingResult.getX()))
-                                            .animate(CameraAnimation.Fly, 1500)
-                                            .finishCallback(() -> {
-                                                getTotalStoreData(location, "");
-                                                binding.tvCurPlace.setText(location);
-                                            })
-                                            .cancelCallback(() -> {
-                                                LogUtil.d("카메라 이동 취소");
-                                            });
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                LogUtil.e("result =" + HttpRequest.searchNaverGeocode(location).toString());
 
-                                    map.moveCamera(cameraUpdate);
-                                }
-                            });
-                        }
-                    }.start();
+                                NaverGeocodingResult geocodingResult;
+                                geocodingResult = HttpRequest.searchNaverGeocode(location);
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(geocodingResult.getY(), geocodingResult.getX()))
+                                                .animate(CameraAnimation.Fly, 1500)
+                                                .finishCallback(() -> {
+                                                    getTotalStoreData(location, "");
+                                                    binding.tvCurPlace.setText(location);
+                                                })
+                                                .cancelCallback(() -> {
+                                                    LogUtil.d("카메라 이동 취소");
+                                                });
+
+                                        map.moveCamera(cameraUpdate);
+                                    }
+                                });
+                            }
+                        }.start();
+
+                    } else {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
+                                LogUtil.e("result =" + LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail));
+
+                                String str = LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
+                                String[] arrResult = str.split("%");
+
+                                double lat = Double.parseDouble(arrResult[0]);
+                                double lng = Double.parseDouble(arrResult[1]);
+
+                                CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng))
+                                        .animate(CameraAnimation.Fly, 1500)
+                                        .finishCallback(() -> {
+                                            getTotalStoreData(location, locationDetail);
+                                            binding.tvCurPlace.setText(location + " " + locationDetail);
+                                        })
+                                        .cancelCallback(() -> {
+                                            LogUtil.d("카메라 이동 취소");
+                                        });
+                                map.moveCamera(cameraUpdate);
+                            }
+                        });
+                    }
 
                 } else {
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
-                            LogUtil.e("result =" + LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail));
-
-                            String str = LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
-                            String[] arrResult = str.split("%");
-
-                            double lat = Double.parseDouble(arrResult[0]);
-                            double lng = Double.parseDouble(arrResult[1]);
-
-                            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng))
-                                    .animate(CameraAnimation.Fly, 1500)
-                                    .finishCallback(() -> {
-                                        getTotalStoreData(location, locationDetail);
-                                        binding.tvCurPlace.setText(location + " " + locationDetail);
-                                    })
-                                    .cancelCallback(() -> {
-                                        LogUtil.d("카메라 이동 취소");
-                                    });
-                            map.moveCamera(cameraUpdate);
-                        }
-                    });
+                    NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
                 }
-
             }
         });
 
@@ -460,7 +468,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
             }
         }
         return isPermission;
-
     }
 
     /* 내 위치 띄우는 코드 */
@@ -491,38 +498,47 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 //                Log.e("hs", "getBounds/"+circleOverlay.getBounds());
 //                Log.e("hs", "getGlobalZIndex/"+circleOverlay.getGlobalZIndex());
 
-                curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
+                if (NetworkUtil.checkConnectedNetwork(MapActivity.this)) {
+                    curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
 
-                String[] results = curAddress.split("\\s");
-                LogUtil.e("results[0]=" + results[0]);
-                LogUtil.e("results[1]=" + results[1]);
-                LogUtil.e("results[2]=" + results[2]);
+                    String[] results = curAddress.split("\\s");
+                    LogUtil.e("results[0]=" + results[0]);
+                    LogUtil.e("results[1]=" + results[1]);
+                    LogUtil.e("results[2]=" + results[2]);
 
-                binding.tvCurPlace.setText(results[1] + " " + results[2]);
+                    binding.tvCurPlace.setText(results[1] + " " + results[2]);
 
-//                pharmacyList = new ArrayList<>();
-                getTotalStoreData(results[1], results[2]);
+                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng))
+                            .animate(CameraAnimation.Fly, 1500)
+                            .finishCallback(() -> {
+                                getTotalStoreData(results[1], results[2]);
+                                binding.tvCurPlace.setText(results[1] + " " + results[2]);
+                            })
+                            .cancelCallback(() -> {
+                                LogUtil.d("카메라 이동 취소");
+                            });
 
+                    map.moveCamera(cameraUpdate);
+
+                } else {
+                    NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
+                }
             }
 
             @Override
             public void onFlushComplete(int requestCode) {
-
             }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
             }
 
             @Override
             public void onProviderEnabled(@NonNull String provider) {
-
             }
 
             @Override
             public void onProviderDisabled(@NonNull String provider) {
-
             }
         };
 
@@ -536,187 +552,197 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     /* 총 데이터 개수 가져올 메서드 */
     private void getTotalStoreData(String Q0, String Q1) {
 
-        /* 기존에 생성된 마커 삭제 후 새로운 list 객체 생성 */
-        if (markerArrayList != null && markerArrayList.size() > 0) {
-            removeAllMarker(markerArrayList);
-        }
+        if (NetworkUtil.checkConnectedNetwork(this)) {
+            /* 기존에 생성된 마커 삭제 후 새로운 list 객체 생성 */
+            if (markerArrayList != null && markerArrayList.size() > 0) {
+                removeAllMarker(markerArrayList);
+            }
 
-        markerArrayList = new ArrayList<>();
+            markerArrayList = new ArrayList<>();
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
 
-                Map<String, Object> parameter = new HashMap<>();
-                parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
-                parameter.put("Q0", Q0);  // ex) 서울특별시
-                parameter.put("Q1", Q1);  // ex) 강남구
+                    Map<String, Object> parameter = new HashMap<>();
+                    parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                    parameter.put("Q0", Q0);  // ex) 서울특별시
+                    parameter.put("Q1", Q1);  // ex) 강남구
 
-                String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
-                LogUtil.e("result/" + response);
+                    String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
+                    LogUtil.e("result/" + response);
 
-                BufferedReader br = null;
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setNamespaceAware(true);
-                DocumentBuilder builder = null;
-                Document doc = null;
+                    BufferedReader br = null;
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    factory.setNamespaceAware(true);
+                    DocumentBuilder builder = null;
+                    Document doc = null;
 
-                InputSource is = new InputSource(new StringReader(response));
-                try {
-                    builder = factory.newDocumentBuilder();
-                    doc = builder.parse(is);
-                    XPathFactory xpathFactory = XPathFactory.newInstance();
-                    XPath xpath = xpathFactory.newXPath();
-                    XPathExpression expr = xpath.compile("//totalCount");
-                    Node node = (Node) expr.evaluate(doc, XPathConstants.NODE);
+                    InputSource is = new InputSource(new StringReader(response));
+                    try {
+                        builder = factory.newDocumentBuilder();
+                        doc = builder.parse(is);
+                        XPathFactory xpathFactory = XPathFactory.newInstance();
+                        XPath xpath = xpathFactory.newXPath();
+                        XPathExpression expr = xpath.compile("//totalCount");
+                        Node node = (Node) expr.evaluate(doc, XPathConstants.NODE);
 
-                    LogUtil.d("현재 노드 이름 : " + node.getNodeName());
-                    LogUtil.d("현재 노드 값 : " + node.getTextContent());
+                        LogUtil.d("현재 노드 이름 : " + node.getNodeName());
+                        LogUtil.d("현재 노드 값 : " + node.getTextContent());
 
-                    String cnt = node.getTextContent();
-                    getTotalCnt = Integer.parseInt(cnt);
-                    getTotalCnt = Math.ceil(getTotalCnt / 100);
-                    pageNo = (int) getTotalCnt;
+                        String cnt = node.getTextContent();
+                        getTotalCnt = Integer.parseInt(cnt);
+                        getTotalCnt = Math.ceil(getTotalCnt / 100);
+                        pageNo = (int) getTotalCnt;
 
-                    LogUtil.d("getTotalCnt / 100=" + getTotalCnt / 100);
-                    LogUtil.d("pageNo=" + pageNo);
+                        LogUtil.d("getTotalCnt / 100=" + getTotalCnt / 100);
+                        LogUtil.d("pageNo=" + pageNo);
 
 
-                    // pageNo 만큼 데이터 요청
-                    for (int i = 1; i <= pageNo; i++) {
-                        getStoreData(Q0, Q1, i, 100);
+                        // pageNo 만큼 데이터 요청
+                        for (int i = 1; i <= pageNo; i++) {
+                            getStoreData(Q0, Q1, i, 100);
+                        }
+
+
+                    } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
+                        e.printStackTrace();
                     }
 
-
-                } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
-                    e.printStackTrace();
                 }
+            };
 
-            }
-        };
+            new Thread(runnable).start();
 
-        new Thread(runnable).start();
+        } else {
+            NetworkUtil.networkErrorDialogShow(this, false);
+        }
+
 
     }
 
     /* 현재위치의 주변 약국 정보 데이터 가져올 메서드 */
     private void getStoreData(String Q0, String Q1, int pageNo, int numOfRows) {
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
+        if (NetworkUtil.checkConnectedNetwork(this)) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
 
-                Map<String, Object> parameter = new HashMap<>();
-                parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
-                parameter.put("Q0", Q0);  // ex) 서울특별시
-                parameter.put("Q1", Q1);  // ex) 강남구
+                    Map<String, Object> parameter = new HashMap<>();
+                    parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                    parameter.put("Q0", Q0);  // ex) 서울특별시
+                    parameter.put("Q1", Q1);  // ex) 강남구
 //                parameter.put("QT", pageNo);  // ex) 진료요일
 //                parameter.put("QN", pageNo);  // ex) 기관명
 //                parameter.put("ORD", pageNo);  // ex) 순서
-                parameter.put("pageNo", pageNo);
-                parameter.put("numOfRows", numOfRows);
+                    parameter.put("pageNo", pageNo);
+                    parameter.put("numOfRows", numOfRows);
 
 
-                String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
+                    String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
 //                LogUtil.e("result/" + response);
 
-                BufferedReader br = null;
-                //DocumentBuilderFactory 생성
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setNamespaceAware(true);
-                DocumentBuilder builder = null;
-                Document doc = null;
+                    BufferedReader br = null;
+                    //DocumentBuilderFactory 생성
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    factory.setNamespaceAware(true);
+                    DocumentBuilder builder = null;
+                    Document doc = null;
 
-                InputSource is = new InputSource(new StringReader(response));
-                try {
-                    builder = factory.newDocumentBuilder();
-                    doc = builder.parse(is);
-                    XPathFactory xpathFactory = XPathFactory.newInstance();
-                    XPath xpath = xpathFactory.newXPath();
-                    XPathExpression expr = xpath.compile("//items/item");
-                    NodeList nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+                    InputSource is = new InputSource(new StringReader(response));
+                    try {
+                        builder = factory.newDocumentBuilder();
+                        doc = builder.parse(is);
+                        XPathFactory xpathFactory = XPathFactory.newInstance();
+                        XPath xpath = xpathFactory.newXPath();
+                        XPathExpression expr = xpath.compile("//items/item");
+                        NodeList nodeList = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
 
-                    for (int i = 0; i < nodeList.getLength(); i++) {
-                        NodeList child = nodeList.item(i).getChildNodes();
-                        Pharmacy pharmacy = new Pharmacy();
-                        Marker pharmacyMarker = new Marker();
-                        infoWindow = new InfoWindow();
+                        for (int i = 0; i < nodeList.getLength(); i++) {
+                            NodeList child = nodeList.item(i).getChildNodes();
+                            Pharmacy pharmacy = new Pharmacy();
+                            Marker pharmacyMarker = new Marker();
+                            infoWindow = new InfoWindow();
 
-                        for (int j = 0; j < child.getLength(); j++) {
-                            Node node = child.item(j);
+                            for (int j = 0; j < child.getLength(); j++) {
+                                Node node = child.item(j);
 
 //                            LogUtil.d("현재 노드 이름 : "+ node.getNodeName());
 //                            LogUtil.d("현재 노드 값 : "+ node.getTextContent());
 
-                            switch (node.getNodeName()) {
-                                case "dutyAddr":  // 주소
-                                    pharmacy.setDutyAddr(node.getTextContent());
-                                    break;
-                                case "dutyName":  // 기관명
-                                    pharmacy.setDutyName(node.getTextContent());
-                                    break;
-                                case "dutyTel1":  // 대표전화
-                                    pharmacy.setDutyTel1(node.getTextContent());
-                                    break;
-                                case "wgs84Lon":  // 병원경도
-                                    pharmacy.setWgs84Lon(Double.parseDouble(node.getTextContent()));
-                                    break;
-                                case "wgs84Lat":  // 병원위도
-                                    pharmacy.setWgs84Lat(Double.parseDouble(node.getTextContent()));
-                                    break;
+                                switch (node.getNodeName()) {
+                                    case "dutyAddr":  // 주소
+                                        pharmacy.setDutyAddr(node.getTextContent());
+                                        break;
+                                    case "dutyName":  // 기관명
+                                        pharmacy.setDutyName(node.getTextContent());
+                                        break;
+                                    case "dutyTel1":  // 대표전화
+                                        pharmacy.setDutyTel1(node.getTextContent());
+                                        break;
+                                    case "wgs84Lon":  // 병원경도
+                                        pharmacy.setWgs84Lon(Double.parseDouble(node.getTextContent()));
+                                        break;
+                                    case "wgs84Lat":  // 병원위도
+                                        pharmacy.setWgs84Lat(Double.parseDouble(node.getTextContent()));
+                                        break;
+                                }
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        setMarker(pharmacyMarker, pharmacy.getWgs84Lat(), pharmacy.getWgs84Lon());
+                                        pharmacyMarker.setOnClickListener(new Overlay.OnClickListener() {
+                                            @Override
+                                            public boolean onClick(@NonNull Overlay overlay) {
+                                                infoWindow.setAnchor(new PointF(0, 1));
+                                                infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+                                                infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+                                                LogUtil.d(pharmacy.getDutyName() + "/" + pharmacy.getDutyTel1() + "/" + pharmacy.getDutyAddr());
+                                                infoWindow.setAdapter(new InfoWindowAdapter(MapActivity.this, pharmacy.getDutyName(), pharmacy.getDutyTel1(), pharmacy.getDutyAddr()));
+                                                infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                                                    @Override
+                                                    public boolean onClick(@NonNull Overlay overlay) {
+                                                        infoWindow.close();
+                                                        return true;
+                                                    }
+                                                });
+
+                                                infoWindow.open(pharmacyMarker);
+                                                return false;
+                                            }
+                                        });
+
+                                    }
+                                });
+
                             }
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    setMarker(pharmacyMarker, pharmacy.getWgs84Lat(), pharmacy.getWgs84Lon());
-                                    pharmacyMarker.setOnClickListener(new Overlay.OnClickListener() {
-                                        @Override
-                                        public boolean onClick(@NonNull Overlay overlay) {
-                                            infoWindow.setAnchor(new PointF(0, 1));
-                                            infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
-                                            infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
-                                            LogUtil.d(pharmacy.getDutyName() + "/" + pharmacy.getDutyTel1() + "/" + pharmacy.getDutyAddr());
-                                            infoWindow.setAdapter(new InfoWindowAdapter(MapActivity.this, pharmacy.getDutyName(), pharmacy.getDutyTel1(), pharmacy.getDutyAddr()));
-                                            infoWindow.setOnClickListener(new Overlay.OnClickListener() {
-                                                @Override
-                                                public boolean onClick(@NonNull Overlay overlay) {
-                                                    infoWindow.close();
-                                                    return true;
-                                                }
-                                            });
-
-                                            infoWindow.open(pharmacyMarker);
-                                            return false;
-                                        }
-                                    });
-
-                                }
-                            });
-
+                            /* 다른지역 검색 후 이전 marker 전체 삭제하기위해 List 에 추가 */
+                            markerArrayList.add(pharmacyMarker);
                         }
+                        LogUtil.d("리스트 개수 : " + markerArrayList.size());
 
-                        /* 다른지역 검색 후 이전 marker 전체 삭제하기위해 List 에 추가 */
-                        markerArrayList.add(pharmacyMarker);
+                    } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
+                        e.printStackTrace();
                     }
-                    LogUtil.d("리스트 개수 : "+ markerArrayList.size());
 
-
-                } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
-                    e.printStackTrace();
                 }
+            };
+            new Thread(runnable).start();
 
-            }
-        };
+        } else {
+            NetworkUtil.networkErrorDialogShow(this, false);
+        }
 
-        new Thread(runnable).start();
     }
 
     /* 전체마커 삭제 */
     private void removeAllMarker(ArrayList<Marker> markers) {
         for (int i = 0; i < markers.size(); i++) {
-           markers.get(i).setMap(null);
+            markers.get(i).setMap(null);
         }
     }
 
@@ -749,6 +775,9 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 break;
             case R.id.li_search:
                 bottomSheetMapSearchDialog.show(getSupportFragmentManager(), "mapSearchDialog");
+                break;
+            case R.id.li_my_location:
+                myLocationON();
                 break;
         }
     }

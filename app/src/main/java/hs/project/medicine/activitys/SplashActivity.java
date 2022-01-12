@@ -36,6 +36,11 @@ public class SplashActivity extends BaseActivity {
 
 //        getDebugHashKey();
 //        getReleaseHashKey();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         // 인터넷 연결 체크 후 앱 실행
         if (NetworkUtil.checkConnectedNetwork(this)) {
@@ -50,23 +55,8 @@ public class SplashActivity extends BaseActivity {
                 }
             }, 1500);
         } else {
-            AlertDialog dialog = new AlertDialog.Builder(SplashActivity.this)
-                    .setTitle("네트워크 경고")
-                    .setMessage("네트워크에 연결되지 않았습니다")
-                    .setCancelable(false)
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            finish();
-                        }
-                    }).create();
-
-            dialog.show();
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+            NetworkUtil.networkErrorDialogShow(SplashActivity.this, true);
         }
-
-
     }
 
     /* debug hash key */
@@ -99,12 +89,12 @@ public class SplashActivity extends BaseActivity {
                 MessageDigest messageDigest;
                 messageDigest = MessageDigest.getInstance("SHA");
                 messageDigest.update(signature.toByteArray());
-                String something = new String(Base64.encode(messageDigest.digest(),0));
+                String something = new String(Base64.encode(messageDigest.digest(), 0));
                 binding.tvHashkey.setText(something);
             }
 
         } catch (Exception e) {
-            LogUtil.e("not found/"+e.toString());
+            LogUtil.e("not found/" + e.toString());
         }
     }
 }
