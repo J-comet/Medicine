@@ -3,6 +3,7 @@ package hs.project.medicine.activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.animation.Animator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,10 +49,21 @@ public class SplashActivity extends BaseActivity {
                 @Override
                 public void run() {
 
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    finish();
+                    binding.lottieView.addAnimatorListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) { }
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            startActivity(intent);
+                            finish();
+                        }
+                        @Override
+                        public void onAnimationCancel(Animator animation) { }
+                        @Override
+                        public void onAnimationRepeat(Animator animation) { }
+                    });
                 }
             }, 1500);
         } else {
