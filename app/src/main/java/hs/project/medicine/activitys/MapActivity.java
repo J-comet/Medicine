@@ -122,6 +122,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
     private BottomSheetMapSearchDialog bottomSheetMapSearchDialog;
 
+    private ArrayList<Marker> markerArrayList;
+
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -534,6 +536,13 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     /* 총 데이터 개수 가져올 메서드 */
     private void getTotalStoreData(String Q0, String Q1) {
 
+        /* 기존에 생성된 마커 삭제 후 새로운 list 객체 생성 */
+        if (markerArrayList != null && markerArrayList.size() > 0) {
+            removeAllMarker(markerArrayList);
+        }
+
+        markerArrayList = new ArrayList<>();
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -687,9 +696,11 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                             });
 
                         }
-//                        pharmacyList.add(pharmacy);
+
+                        /* 다른지역 검색 후 이전 marker 전체 삭제하기위해 List 에 추가 */
+                        markerArrayList.add(pharmacyMarker);
                     }
-//                    LogUtil.d("리스트 개수 : "+ pharmacyList.size());
+                    LogUtil.d("리스트 개수 : "+ markerArrayList.size());
 
 
                 } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
@@ -702,6 +713,14 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         new Thread(runnable).start();
     }
 
+    /* 전체마커 삭제 */
+    private void removeAllMarker(ArrayList<Marker> markers) {
+        for (int i = 0; i < markers.size(); i++) {
+           markers.get(i).setMap(null);
+        }
+    }
+
+    /* 마커 하나씩 생성 */
     private void setMarker(Marker marker, double lat, double lng) {
         //원근감 표시
         marker.setIconPerspectiveEnabled(true);
