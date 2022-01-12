@@ -79,6 +79,7 @@ import hs.project.medicine.HttpRequest;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityMapBinding;
+import hs.project.medicine.datas.NaverGeocodingResult;
 import hs.project.medicine.datas.Pharmacy;
 import hs.project.medicine.dialog.BottomSheetMapSearchDialog;
 import hs.project.medicine.util.LocationUtil;
@@ -280,18 +281,44 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     new Thread() {
                         @Override
                         public void run() {
-                            LogUtil.e("13" + HttpRequest.searchNaverGeocode(location).toString());
-                            HttpRequest.searchNaverGeocode(location);
+                            LogUtil.e("result =" + HttpRequest.searchNaverGeocode(location).toString());
+
+                            NaverGeocodingResult geocodingResult;
+                            geocodingResult = HttpRequest.searchNaverGeocode(location);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(geocodingResult.getY(), geocodingResult.getX()));
+                                    map.moveCamera(cameraUpdate);
+                                }
+                            });
+
+
                         }
                     }.start();
+
                 } else {
-                    LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
-                    LogUtil.e("22222222222" + LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail));
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
+                            LogUtil.e("result =" + LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail));
+
+                            String str = LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
+                            String[] arrResult = str.split("%");
+
+                            double lat = Double.parseDouble(arrResult[0]);
+                            double lng = Double.parseDouble(arrResult[1]);
+
+                            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng));
+                            map.moveCamera(cameraUpdate);
+                        }
+                    });
                 }
 
-
-//                CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(37.65835990000001, 126.8320201));
-//                map.moveCamera(cameraUpdate);
             }
         });
 
