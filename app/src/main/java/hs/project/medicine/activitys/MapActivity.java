@@ -805,8 +805,12 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 bottomSheetMapSearchDialog.show(getSupportFragmentManager(), "mapSearchDialog");
                 break;
             case R.id.li_my_location:
-                binding.clLoading.setVisibility(View.VISIBLE);
-                myLocationON();
+                if (NetworkUtil.checkConnectedNetwork(MapActivity.this)) {
+                    binding.clLoading.setVisibility(View.VISIBLE);
+                    myLocationON();
+                } else {
+                    NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
+                }
                 break;
         }
     }
