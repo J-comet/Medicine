@@ -307,7 +307,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     /* 세종특별자치시는 네이버 지오코더로 해야함 */
                     if (location.equals("세종특별자치시")) {
 
-                        new Thread() {
+                        new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 LogUtil.e("result =" + HttpRequest.searchNaverGeocode(location).toString());
@@ -332,11 +332,11 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                     }
                                 });
                             }
-                        }.start();
+                        }).start();
 
                     } else {
 
-                        runOnUiThread(new Runnable() {
+                        new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
@@ -348,18 +348,24 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                 double lat = Double.parseDouble(arrResult[0]);
                                 double lng = Double.parseDouble(arrResult[1]);
 
-                                CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
-                                        .animate(CameraAnimation.Fly, 1500)
-                                        .finishCallback(() -> {
-                                            getTotalStoreData(location, locationDetail);
-                                            binding.tvCurPlace.setText(location + " " + locationDetail);
-                                        })
-                                        .cancelCallback(() -> {
-                                            LogUtil.d("카메라 이동 취소");
-                                        });
-                                map.moveCamera(cameraUpdate);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
+                                                .animate(CameraAnimation.Fly, 1500)
+                                                .finishCallback(() -> {
+                                                    getTotalStoreData(location, locationDetail);
+                                                    binding.tvCurPlace.setText(location + " " + locationDetail);
+                                                })
+                                                .cancelCallback(() -> {
+                                                    LogUtil.d("카메라 이동 취소");
+                                                });
+                                        map.moveCamera(cameraUpdate);
+                                    }
+                                });
                             }
-                        });
+                        }).start();
+
                     }
 
                 } else {
@@ -519,26 +525,37 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 //                Log.e("hs", "getGlobalZIndex/"+circleOverlay.getGlobalZIndex());
 
                 if (NetworkUtil.checkConnectedNetwork(MapActivity.this)) {
-                    curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
 
-                    String[] results = curAddress.split("\\s");
-                    LogUtil.e("results[0]=" + results[0]);
-                    LogUtil.e("results[1]=" + results[1]);
-                    LogUtil.e("results[2]=" + results[2]);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
 
-                    binding.tvCurPlace.setText(results[1] + " " + results[2]);
+                            String[] results = curAddress.split("\\s");
+                            LogUtil.e("results[0]=" + results[0]);
+                            LogUtil.e("results[1]=" + results[1]);
+                            LogUtil.e("results[2]=" + results[2]);
 
-                    CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
-                            .animate(CameraAnimation.Fly, 1500)
-                            .finishCallback(() -> {
-                                getTotalStoreData(results[1], results[2]);
-                                binding.tvCurPlace.setText(results[1] + " " + results[2]);
-                            })
-                            .cancelCallback(() -> {
-                                LogUtil.d("카메라 이동 취소");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binding.tvCurPlace.setText(results[1] + " " + results[2]);
+
+                                    CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
+                                            .animate(CameraAnimation.Fly, 1500)
+                                            .finishCallback(() -> {
+                                                getTotalStoreData(results[1], results[2]);
+                                                binding.tvCurPlace.setText(results[1] + " " + results[2]);
+                                            })
+                                            .cancelCallback(() -> {
+                                                LogUtil.d("카메라 이동 취소");
+                                            });
+
+                                    map.moveCamera(cameraUpdate);
+                                }
                             });
-
-                    map.moveCamera(cameraUpdate);
+                        }
+                    }).start();
 
                 } else {
                     NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
