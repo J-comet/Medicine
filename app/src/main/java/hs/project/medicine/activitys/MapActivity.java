@@ -271,6 +271,12 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        binding.clLoading.setVisibility(View.VISIBLE);
+    }
+
     private void init() {
         binding.liBack.setOnClickListener(this);
         binding.liSearch.setOnClickListener(this);
@@ -281,6 +287,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
             @Override
             public void onBtnClicked(String location, String locationDetail) {
                 LogUtil.e("dialog/ location:" + location + "locationDetail:" + locationDetail);
+
+                binding.clLoading.setVisibility(View.VISIBLE);
 
                 if (NetworkUtil.checkConnectedNetwork(MapActivity.this)) {
 
@@ -343,8 +351,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     }
 
                 } else {
-
                     NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
+                    binding.clLoading.setVisibility(View.GONE);
                 }
             }
         });
@@ -522,6 +530,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
                 } else {
                     NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
+                    binding.clLoading.setVisibility(View.GONE);
                 }
             }
 
@@ -598,12 +607,17 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                         LogUtil.d("getTotalCnt / 100=" + getTotalCnt / 100);
                         LogUtil.d("pageNo=" + pageNo);
 
-
                         // pageNo 만큼 데이터 요청
                         for (int i = 1; i <= pageNo; i++) {
                             getStoreData(Q0, Q1, i, 100);
                         }
 
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.clLoading.setVisibility(View.GONE);
+                            }
+                        });
 
                     } catch (ParserConfigurationException | IOException | SAXException | XPathExpressionException e) {
                         e.printStackTrace();
@@ -616,6 +630,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
         } else {
             NetworkUtil.networkErrorDialogShow(this, false);
+            binding.clLoading.setVisibility(View.GONE);
         }
 
 
@@ -735,6 +750,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
         } else {
             NetworkUtil.networkErrorDialogShow(this, false);
+            binding.clLoading.setVisibility(View.GONE);
         }
 
     }
@@ -777,6 +793,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 bottomSheetMapSearchDialog.show(getSupportFragmentManager(), "mapSearchDialog");
                 break;
             case R.id.li_my_location:
+                binding.clLoading.setVisibility(View.VISIBLE);
                 myLocationON();
                 break;
         }
