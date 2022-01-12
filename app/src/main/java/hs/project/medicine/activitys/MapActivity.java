@@ -272,8 +272,26 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         bottomSheetMapSearchDialog = new BottomSheetMapSearchDialog(this);
         bottomSheetMapSearchDialog.setBottomSheetListener(new BottomSheetMapSearchDialog.BottomSheetListener() {
             @Override
-            public void onBtnClicked(String text) {
-                LogUtil.e("숨겨짐");
+            public void onBtnClicked(String location, String locationDetail) {
+                LogUtil.e("dialog/ location:" + location + "locationDetail:" + locationDetail);
+
+                /* 세종특별자치시는 네이버 지오코더로 해야함 */
+                if (location.equals("세종특별자치시")) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            LogUtil.e("13" + HttpRequest.searchNaverGeocode(location).toString());
+                            HttpRequest.searchNaverGeocode(location);
+                        }
+                    }.start();
+                } else {
+                    LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
+                    LogUtil.e("22222222222" + LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail));
+                }
+
+
+//                CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(37.65835990000001, 126.8320201));
+//                map.moveCamera(cameraUpdate);
             }
         });
 
@@ -429,19 +447,15 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
                 curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
 
-                LocationUtil.changeForLatLng(MapActivity.this, "경기도 고양시");
-                LogUtil.e("111111111111"+LocationUtil.changeForLatLng(MapActivity.this, "경기도 고양시"));
-
                 String[] results = curAddress.split("\\s");
                 LogUtil.e("results[0]=" + results[0]);
                 LogUtil.e("results[1]=" + results[1]);
                 LogUtil.e("results[2]=" + results[2]);
 
-                binding.tvCurPlace.setText(results[1]+" "+results[2]);
+                binding.tvCurPlace.setText(results[1] + " " + results[2]);
 
 //                pharmacyList = new ArrayList<>();
-//                getTotalStoreData(results[1], results[2]);
-                getTotalStoreData("경기도", "고양시");
+                getTotalStoreData(results[1], results[2]);
 
             }
 
@@ -672,7 +686,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 break;
             case R.id.li_search:
                 bottomSheetMapSearchDialog.show(getSupportFragmentManager(), "mapSearchDialog");
-                LogUtil.e("보여짐");
                 break;
         }
     }
@@ -682,12 +695,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         map = naverMap;
 //        infoWindow = new InfoWindow();
 
-//        naverMap.setLocationSource(locationSource);
-//        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-
-        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(37.65835990000001, 126.8320201));
-        naverMap.moveCamera(cameraUpdate);
-
+        naverMap.setLocationSource(locationSource);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
     }
 
     /* InfoWindowAdapter */

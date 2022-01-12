@@ -1,15 +1,27 @@
 package hs.project.medicine;
 
 
+import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import hs.project.medicine.datas.NaverGeocodingResult;
+import hs.project.medicine.util.LogUtil;
 
 public class HttpRequest {
 
@@ -78,6 +90,150 @@ public class HttpRequest {
             throw new RuntimeException(e);
         }
     }
+
+    public static NaverGeocodingResult searchNaverGeocode(final String location) {
+
+//        new Thread() {
+//            @Override
+//            public void run() {
+        NaverGeocodingResult geocodingResult = new NaverGeocodingResult();
+
+        String clientId = MediApplication.ApplicationContext().getResources().getString(R.string.naver_client_id);
+        String clientSecret = MediApplication.ApplicationContext().getResources().getString(R.string.naver_client_secret);
+
+        try {
+            String strSearch = URLEncoder.encode(location, "UTF-8");
+            String apiURL = Config.URL_GET_NAVER_GEOCODE + "?query=" + strSearch; // json 결과
+
+            LogUtil.e("apiURL=" + apiURL);
+
+            //String apiURL = "https://openapi.naver.com/v1/search/blog.xml?query="+ text; // xml 결과
+            URL url = new URL(apiURL);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("X-NCP-APIGW-API-KEY-ID", clientId);
+            con.setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret);
+
+            int responseCode = con.getResponseCode();
+            BufferedReader br;
+            if (responseCode == 200) { // 정상 호출
+                br = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+            } else {  // 에러 발생
+                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            }
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = br.readLine()) != null) {
+                response.append(inputLine);
+                response.append("\n");
+            }
+            br.close();
+
+            String naverHtml = response.toString();
+
+            Bundle bun = new Bundle();
+            bun.putString("NAVER_HTML", naverHtml);
+//                    Message msg = handler.obtainMessage();
+//                    msg.setData(bun);
+//                    handler.sendMessage(msg);
+
+            //testText.setText(response.toString());
+            System.out.println(response.toString());
+
+            JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
+            geocodingResult.setStatus(jsonObject.get("status").getAsString());
+            geocodingResult.setErrorMessage(jsonObject.get("errorMessage").getAsString());
+
+            if (!jsonObject.get("status").getAsString().equalsIgnoreCase("OK")) {
+                return geocodingResult;
+            }
+
+            JsonObject metaObject = jsonObject.get("meta").getAsJsonObject();
+            if (metaObject != null) {
+                int totalCount = metaObject.get("totalCount").getAsInt();
+                if (totalCount < 1) {
+                    // OK 이더라도 totalCount 가 0 이면 못가져온 것이고, 이 경우 주소 검색이 안 된 경우
+                    geocodingResult.setStatus("INVALID_ADDRESS");
+                    return geocodingResult;
+                }
+                int count = metaObject.get("count").getAsInt();
+                int page = metaObject.get("page").getAsInt();
+            }
+
+            // 주소가 혹시 여러개가 오더라도 어떤 것을 선택하거나 하게 할 수 없다. 그냥 첫번째 것을 사용
+            JsonArray addressArray = jsonObject.get("addresses").getAsJsonArray();
+            JsonElement addressEle = addressArray.get(0);
+            JsonObject addressObject = addressEle.getAsJsonObject();
+            geocodingResult.setJibunAddress(addressObject.get("jibunAddress").getAsString());
+            geocodingResult.setRoadAddress(addressObject.get("roadAddress").getAsString());
+
+            String strX = addressObject.get("x").getAsString();
+            String strY = addressObject.get("y").getAsString();
+
+            geocodingResult.setX(Double.parseDouble(strX));
+            geocodingResult.setY(Double.parseDouble(strY));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//            }
+//        }.start();
+
+        return geocodingResult;
+    }
+
+    /*public static GeocodingResult geocoding(String clientId, String clientSecret, String address, String geocodingUrl) throws IOException {
+
+        String reqUrl = geocodingUrl + address;
+
+        HashMap<String, String> headers = new HashMap<String, String>() {
+            {
+                put(HEADER_NAME_CLIENT_ID, clientId);
+                put(HEADER_NAME_CLIENT_SECRET, clientSecret);
+            }
+        };
+
+        String result = httpGet(reqUrl, headers);
+        System.out.println("result :" + result);
+
+        GeocodingResult geocodingResult = new GeocodingResult();
+
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(result);
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        geocodingResult.status = jsonObject.get("status").getAsString();
+        geocodingResult.errorMessage = jsonObject.get("errorMessage").getAsString();
+
+        if (!geocodingResult.status.equalsIgnoreCase("OK")) {
+            return geocodingResult;
+        }
+
+        JsonObject metaObject = jsonObject.get("meta").getAsJsonObject();
+        if (metaObject != null) {
+            int totalCount = metaObject.get("totalCount").getAsInt();
+            if (totalCount < 1) {
+                // OK 이더라도 totalcount 가 0 이면 못가져온 것이고, 이 경우 주소 검색이 안 된 경우이다.
+                geocodingResult.status = "INVALID_ADDRESS";
+                return geocodingResult;
+            }
+            int count = metaObject.get("count").getAsInt();
+            int page = metaObject.get("page").getAsInt();
+        }
+
+        // 주소가 혹시 여러개가 오더라도 어떤 것을 선택하거나 하게 할 수 없다. 그냥 첫번째 것을 사용하겠다.
+        JsonArray addressArray = jsonObject.get("addresses").getAsJsonArray();
+        JsonElement addressEle = addressArray.get(0);
+        JsonObject addressObject = addressEle.getAsJsonObject();
+        geocodingResult.jibunAddress = addressObject.get("jibunAddress").getAsString();
+        geocodingResult.roadAddress = addressObject.get("roadAddress").getAsString();
+        String xString = addressObject.get("x").getAsString();
+        String yString = addressObject.get("y").getAsString();
+        geocodingResult.x = Double.parseDouble(xString);
+        geocodingResult.y = Double.parseDouble(yString);
+
+        return geocodingResult;
+    }*/
 
 }
 
