@@ -606,7 +606,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
 
                 String response = getRequest(Config.URL_GET_MEDICINE_STORE, HttpRequest.HttpType.GET, parameter);
-                LogUtil.e("result/" + response);
+//                LogUtil.e("result/" + response);
 
                 BufferedReader br = null;
                 //DocumentBuilderFactory 생성
