@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ import androidx.core.graphics.ColorUtils;
 
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
+import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
@@ -98,7 +100,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 999;
 
-    private String[] arrGpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+    private final String[] arrGpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
 
     private static final int CODE_GPS_PERMISSION_ALL_GRANTED = 300;  // 모두허용
     private static final int CODE_GPS_PERMISSION_FINE_DENIED = 200;  // 대략허용
@@ -124,6 +126,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     private BottomSheetMapSearchDialog bottomSheetMapSearchDialog;
 
     private ArrayList<Marker> markerArrayList;
+
+    private double cameraZoomLevel = 12;
 
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -282,6 +286,14 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         binding.liSearch.setOnClickListener(this);
         binding.liMyLocation.setOnClickListener(this);
 
+        binding.clLoading.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // ignore all touch events
+                return true;
+            }
+        });
+
         bottomSheetMapSearchDialog = new BottomSheetMapSearchDialog(this);
         bottomSheetMapSearchDialog.setBottomSheetListener(new BottomSheetMapSearchDialog.BottomSheetListener() {
             @Override
@@ -306,7 +318,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(geocodingResult.getY(), geocodingResult.getX()))
+                                        CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(geocodingResult.getY(), geocodingResult.getX()), cameraZoomLevel)
                                                 .animate(CameraAnimation.Fly, 1500)
                                                 .finishCallback(() -> {
                                                     getTotalStoreData(location, "");
@@ -336,7 +348,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                 double lat = Double.parseDouble(arrResult[0]);
                                 double lng = Double.parseDouble(arrResult[1]);
 
-                                CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng))
+                                CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
                                         .animate(CameraAnimation.Fly, 1500)
                                         .finishCallback(() -> {
                                             getTotalStoreData(location, locationDetail);
@@ -516,7 +528,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
                     binding.tvCurPlace.setText(results[1] + " " + results[2]);
 
-                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(lat, lng))
+                    CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
                             .animate(CameraAnimation.Fly, 1500)
                             .finishCallback(() -> {
                                 getTotalStoreData(results[1], results[2]);
@@ -802,7 +814,13 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         map = naverMap;
-//        infoWindow = new InfoWindow();
+
+        map.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(int i, boolean b) {
+
+            }
+        });
 
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
@@ -814,16 +832,16 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     /* InfoWindowAdapter */
     private class InfoWindowAdapter extends InfoWindow.ViewAdapter {
         @NonNull
-        private Context context;
+        private final Context context;
         private View rootView;
         //        private ImageView icon;
         private TextView tvName;
         private TextView tvTell;
         private TextView tvAdd;
         //        private Pharmacy mPharmacy;
-        private String name;
-        private String phone;
-        private String address;
+        private final String name;
+        private final String phone;
+        private final String address;
 
         public InfoWindowAdapter(@NonNull Context context, String dutyName, String dutyTel1, String add) {
             this.context = context;
