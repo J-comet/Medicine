@@ -44,6 +44,7 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
@@ -294,6 +295,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                             .animate(CameraAnimation.Fly, 1500)
                                             .finishCallback(() -> {
                                                 getTotalStoreData(location, "");
+                                                binding.tvCurPlace.setText(location);
                                             })
                                             .cancelCallback(() -> {
                                                 LogUtil.d("카메라 이동 취소");
@@ -324,6 +326,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                     .animate(CameraAnimation.Fly, 1500)
                                     .finishCallback(() -> {
                                         getTotalStoreData(location, locationDetail);
+                                        binding.tvCurPlace.setText(location + " " + locationDetail);
                                     })
                                     .cancelCallback(() -> {
                                         LogUtil.d("카메라 이동 취소");
@@ -738,6 +741,9 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
+        UiSettings uiSettings = naverMap.getUiSettings();
+        uiSettings.setLocationButtonEnabled(false);
     }
 
     /* InfoWindowAdapter */
