@@ -1,4 +1,6 @@
-package hs.project.medicine.activitys;
+package hs.project.medicine.custom_view;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 import static hs.project.medicine.HttpRequest.getRequest;
 
@@ -16,44 +18,44 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.ColorUtils;
+import androidx.fragment.app.Fragment;
+
+import android.provider.Settings;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
-import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
-import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.NaverMapOptions;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,18 +73,13 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import hs.project.medicine.Config;
 import hs.project.medicine.HttpRequest;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
-import hs.project.medicine.databinding.ActivityMapBinding;
+import hs.project.medicine.activitys.MapActivity;
+import hs.project.medicine.databinding.FragmentMapBinding;
+import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
 import hs.project.medicine.datas.NaverGeocodingResult;
 import hs.project.medicine.datas.Pharmacy;
 import hs.project.medicine.dialog.BottomSheetMapSearchDialog;
@@ -90,16 +87,9 @@ import hs.project.medicine.util.LocationUtil;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.NetworkUtil;
 
-public class MapActivity extends BaseActivity implements View.OnClickListener, OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
-    /**
-     * 처음 Activity 진입할 때 권한체크
-     */
-
-    private ActivityMapBinding binding;
-
-    private static final int LOCATION_PERMISSION_REQUEST_CODE2 = 999;
-
+    private FragmentMapBinding binding;
     private final String[] arrGpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
 
     private static final int CODE_GPS_PERMISSION_ALL_GRANTED = 300;  // 모두허용
@@ -107,27 +97,19 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     private static final int CODE_GPS_PERMISSION_DENIED_TRUE = 100;  // 허용 거부한적 있는 유저
     private static final int CODE_GPS_PERMISSION_FIRST = 1000;  // 처음 권한 요청하는 유저
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-
-    private FusedLocationSource locationSource;
-    private NaverMap map;
-
-    boolean isFirst = true; // 처음에만 중심으로 이동할 플래그
-
-    private CircleOverlay circleOverlay;
-    private String curAddress = "";
-    //    private ArrayList<Pharmacy> pharmacyList;  // 약국리스트
-    private int pageNo = 1;
-    private double getTotalCnt = -1;
-
-    private InfoWindow infoWindow;
-
-    private BottomSheetMapSearchDialog bottomSheetMapSearchDialog;
-
-    private ArrayList<Marker> markerArrayList;
-
-    private double cameraZoomLevel = 12;
+    /* 단일 권한 */
+//    private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+//        if (isGranted) {
+//            // Permission is granted. Continue the action or workflow in your
+//            // app.
+//        } else {
+//            // Explain to the user that the feature is unavailable because the
+//            // features requires a permission that the user has denied. At the
+//            // same time, respect the user's decision. Don't link to system
+//            // settings in an effort to convince the user to change their
+//            // decision.
+//        }
+//    });
 
     /* 위치서비스 꺼져있을 때 요청할 launcher */
     ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -198,7 +180,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                 // No location access granted.
                                 // 권한획득 거부
 
-                                Toast.makeText(this, "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireActivity(), "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
                                 LogUtil.e("위치권한거부");
                                 permissionRequestDialog();
                             }
@@ -219,32 +201,41 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                             } else {
                                 // No location access granted.
                                 // 권한획득 거부
-                                Toast.makeText(this, "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireActivity(), "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
                                 LogUtil.e("위치권한거부");
                                 permissionRequestDialog();
-
                             }
                         }
                     }
             );
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMapBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    private NaverMap map;
+    private FusedLocationSource locationSource;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 999;
+    private InfoWindow infoWindow;
+    private BottomSheetMapSearchDialog bottomSheetMapSearchDialog;
+    private ArrayList<Marker> markerArrayList;
+    private double cameraZoomLevel = 12;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private String curAddress = "";
+    private int pageNo = 1;
+    private double getTotalCnt = -1;
 
-        init();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
+        binding.mapView.onStart();
         binding.clLoading.setVisibility(View.VISIBLE);
 
         /* 권한체크 */
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             permissionResultAction(gpsPermissionCheck());
 
             LogUtil.e("권한 없음");
@@ -257,7 +248,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 LogUtil.e("GPS ON");
 
             } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
                 builder.setTitle("위치서비스");
                 builder.setMessage("위치서비스를 활성화 해주세요");
                 builder.setCancelable(false);
@@ -273,7 +264,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        Toast.makeText(MapActivity.this, "위치서비스 비활성화 상태", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireActivity(), "위치서비스 비활성화 상태", Toast.LENGTH_SHORT).show();
                     }
                 });
                 builder.show();
@@ -281,11 +272,61 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        binding.mapView.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        binding.mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        binding.mapView.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        binding.mapView.onLowMemory();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentMapBinding.inflate(inflater, container, false);
+        binding.mapView.onCreate(savedInstanceState);
+        binding.mapView.getMapAsync(this);
+        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init();
+    }
+
     private void init() {
-        binding.liBack.setOnClickListener(this);
         binding.liSearch.setOnClickListener(this);
         binding.liMyLocation.setOnClickListener(this);
-
         binding.clLoading.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -294,7 +335,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
             }
         });
 
-        bottomSheetMapSearchDialog = new BottomSheetMapSearchDialog(this);
+        bottomSheetMapSearchDialog = new BottomSheetMapSearchDialog(requireActivity());
         bottomSheetMapSearchDialog.setBottomSheetListener(new BottomSheetMapSearchDialog.BottomSheetListener() {
             @Override
             public void onBtnClicked(String location, String locationDetail) {
@@ -302,7 +343,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
                 binding.clLoading.setVisibility(View.VISIBLE);
 
-                if (NetworkUtil.checkConnectedNetwork(MapActivity.this)) {
+                if (NetworkUtil.checkConnectedNetwork(requireActivity())) {
 
                     /* 세종특별자치시는 네이버 지오코더로 해야함 */
                     if (location.equals("세종특별자치시")) {
@@ -315,7 +356,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                 NaverGeocodingResult geocodingResult;
                                 geocodingResult = HttpRequest.searchNaverGeocode(location);
 
-                                runOnUiThread(new Runnable() {
+                                requireActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(geocodingResult.getY(), geocodingResult.getX()), cameraZoomLevel)
@@ -339,16 +380,16 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
-                                LogUtil.e("result =" + LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail));
+                                LocationUtil.changeForLatLng(requireActivity(), location + " " + locationDetail);
+                                LogUtil.e("result =" + LocationUtil.changeForLatLng(requireActivity(), location + " " + locationDetail));
 
-                                String str = LocationUtil.changeForLatLng(MapActivity.this, location + " " + locationDetail);
+                                String str = LocationUtil.changeForLatLng(requireActivity(), location + " " + locationDetail);
                                 String[] arrResult = str.split("%");
 
                                 double lat = Double.parseDouble(arrResult[0]);
                                 double lng = Double.parseDouble(arrResult[1]);
 
-                                runOnUiThread(new Runnable() {
+                                requireActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
@@ -369,40 +410,171 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                     }
 
                 } else {
-                    NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
+                    NetworkUtil.networkErrorDialogShow(requireActivity(), false);
                     binding.clLoading.setVisibility(View.GONE);
                 }
             }
         });
-
-        MapFragment mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-        if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance(new NaverMapOptions().locationButtonEnabled(true));
-            getSupportFragmentManager().beginTransaction().add(R.id.map_fragment, mapFragment).commit();
-        }
-        mapFragment.getMapAsync(this);
-
-        locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE2);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-            if (!locationSource.isActivated()) {
-                map.setLocationTrackingMode(LocationTrackingMode.None);
-                permissionRequestDialog();
+    /* 내 위치 띄우는 코드 */
+    @SuppressLint("MissingPermission")
+    private void myLocationON() {
+
+//        circleOverlay = new CircleOverlay();
+        locationManager = (LocationManager) requireActivity().getSystemService(LOCATION_SERVICE);
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+
+//                int color = ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red);
+
+//                circleOverlay.setCenter(new LatLng(lat, lng));
+//                circleOverlay.setRadius(1000);
+//                circleOverlay.setColor(ColorUtils.setAlphaComponent(color, 31));
+//                circleOverlay.setOutlineColor(color);
+//                circleOverlay.setOutlineWidth(3);
+//                circleOverlay.setMap(map);
+
+
+//                Log.e("hs", "getCenter/"+circleOverlay.getCenter());
+//                Log.e("hs", "getBounds/"+circleOverlay.getBounds());
+//                Log.e("hs", "getGlobalZIndex/"+circleOverlay.getGlobalZIndex());
+
+                if (NetworkUtil.checkConnectedNetwork(requireActivity())) {
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            curAddress = LocationUtil.changeForAddress(requireActivity(), lat, lng);
+
+                            String[] results = curAddress.split("\\s");
+                            LogUtil.e("results[0]=" + results[0]);
+                            LogUtil.e("results[1]=" + results[1]);
+                            LogUtil.e("results[2]=" + results[2]);
+
+                            requireActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binding.tvCurPlace.setText(results[1] + " " + results[2]);
+
+                                    CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
+                                            .animate(CameraAnimation.Fly, 1500)
+                                            .finishCallback(() -> {
+                                                getTotalStoreData(results[1], results[2]);
+                                                binding.tvCurPlace.setText(results[1] + " " + results[2]);
+                                            })
+                                            .cancelCallback(() -> {
+                                                LogUtil.d("카메라 이동 취소");
+                                            });
+
+                                    map.moveCamera(cameraUpdate);
+                                }
+                            });
+                        }
+                    }).start();
+
+                } else {
+                    NetworkUtil.networkErrorDialogShow(requireActivity(), false);
+                    binding.clLoading.setVisibility(View.GONE);
+                }
             }
-            return;
+
+            @Override
+            public void onFlushComplete(int requestCode) {
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+            }
+        };
+
+        // minTime = 1시간
+        // minDistance = 1km
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3600000, 1000, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3600000, 1000, locationListener);
+
+    }
+
+    private void permissionRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setTitle("필수권한")
+                .setMessage("위치정보를 얻기 위해\n위치권한을 허용해주세요")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + requireActivity().getPackageName()));
+                        startActivity(intent);
+                    }
+                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Toast.makeText(requireActivity(), "위치권한 거부", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
+    }
+
+    private int gpsPermissionCheck() {
+
+        int isPermission = -1;
+
+        // 권한 허용한 사용자인지 체크
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            /**
+             * 위치권한 모두 허용
+             */
+            isPermission = CODE_GPS_PERMISSION_ALL_GRANTED;
+
+        } else if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+
+            /**
+             * 위치권한 'ACCESS_COARSE_LOCATION' 만 허용
+             */
+            isPermission = CODE_GPS_PERMISSION_FINE_DENIED;
+
+        } else {
+
+            /**
+             * 위치권한 거부
+             * 1. 명시적으로 거부한 유저인지
+             * 2. 권한을 요청한 적 없는 유저인지
+             */
+
+            // 사용자가 권한요청을 명시적으로 거부했던 적 있는 경우 true 를 반환
+            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                isPermission = CODE_GPS_PERMISSION_DENIED_TRUE;
+            } else {
+                isPermission = CODE_GPS_PERMISSION_FIRST;
+            }
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        return isPermission;
     }
 
     /**
      * 사용자가 GPS 활성화 시켰는지 확인
      */
     public boolean checkLocationServicesStatus() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(LOCATION_SERVICE);
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -434,163 +606,10 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         }
     }
 
-    private void permissionRequestDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-        builder.setTitle("필수권한")
-                .setMessage("위치정보를 얻기 위해\n위치권한을 허용해주세요")
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getPackageName()));
-                        startActivity(intent);
-                    }
-                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Toast.makeText(MapActivity.this, "위치권한 거부", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder.show();
-    }
-
-    private int gpsPermissionCheck() {
-
-        int isPermission = -1;
-
-        // 권한 허용한 사용자인지 체크
-        if (ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            /**
-             * 위치권한 모두 허용
-             */
-            isPermission = CODE_GPS_PERMISSION_ALL_GRANTED;
-
-        } else if (ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-
-            /**
-             * 위치권한 'ACCESS_COARSE_LOCATION' 만 허용
-             */
-            isPermission = CODE_GPS_PERMISSION_FINE_DENIED;
-
-        } else {
-
-            /**
-             * 위치권한 거부
-             * 1. 명시적으로 거부한 유저인지
-             * 2. 권한을 요청한 적 없는 유저인지
-             */
-
-            // 사용자가 권한요청을 명시적으로 거부했던 적 있는 경우 true 를 반환
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                isPermission = CODE_GPS_PERMISSION_DENIED_TRUE;
-            } else {
-                isPermission = CODE_GPS_PERMISSION_FIRST;
-            }
-        }
-        return isPermission;
-    }
-
-    /* 내 위치 띄우는 코드 */
-    @SuppressLint("MissingPermission")
-    private void myLocationON() {
-
-//        circleOverlay = new CircleOverlay();
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
-
-//                int color = ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red);
-
-//                circleOverlay.setCenter(new LatLng(lat, lng));
-//                circleOverlay.setRadius(1000);
-//                circleOverlay.setColor(ColorUtils.setAlphaComponent(color, 31));
-//                circleOverlay.setOutlineColor(color);
-//                circleOverlay.setOutlineWidth(3);
-//                circleOverlay.setMap(map);
-
-
-//                Log.e("hs", "getCenter/"+circleOverlay.getCenter());
-//                Log.e("hs", "getBounds/"+circleOverlay.getBounds());
-//                Log.e("hs", "getGlobalZIndex/"+circleOverlay.getGlobalZIndex());
-
-                if (NetworkUtil.checkConnectedNetwork(MapActivity.this)) {
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            curAddress = LocationUtil.changeForAddress(MapActivity.this, lat, lng);
-
-                            String[] results = curAddress.split("\\s");
-                            LogUtil.e("results[0]=" + results[0]);
-                            LogUtil.e("results[1]=" + results[1]);
-                            LogUtil.e("results[2]=" + results[2]);
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    binding.tvCurPlace.setText(results[1] + " " + results[2]);
-
-                                    CameraUpdate cameraUpdate = CameraUpdate.scrollAndZoomTo(new LatLng(lat, lng), cameraZoomLevel)
-                                            .animate(CameraAnimation.Fly, 1500)
-                                            .finishCallback(() -> {
-                                                getTotalStoreData(results[1], results[2]);
-                                                binding.tvCurPlace.setText(results[1] + " " + results[2]);
-                                            })
-                                            .cancelCallback(() -> {
-                                                LogUtil.d("카메라 이동 취소");
-                                            });
-
-                                    map.moveCamera(cameraUpdate);
-                                }
-                            });
-                        }
-                    }).start();
-
-                } else {
-                    NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
-                    binding.clLoading.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFlushComplete(int requestCode) {
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            @Override
-            public void onProviderEnabled(@NonNull String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(@NonNull String provider) {
-            }
-        };
-
-        // minTime = 1시간
-        // minDistance = 1km
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3600000, 1000, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3600000, 1000, locationListener);
-
-    }
-
     /* 총 데이터 개수 가져올 메서드 */
     private void getTotalStoreData(String Q0, String Q1) {
 
-        if (NetworkUtil.checkConnectedNetwork(this)) {
+        if (NetworkUtil.checkConnectedNetwork(requireActivity())) {
             /* 기존에 생성된 마커 삭제 후 새로운 list 객체 생성 */
             if (markerArrayList != null && markerArrayList.size() > 0) {
                 removeAllMarker(markerArrayList);
@@ -641,7 +660,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                             getStoreData(Q0, Q1, i, 100);
                         }
 
-                        runOnUiThread(new Runnable() {
+                        requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 binding.clLoading.setVisibility(View.GONE);
@@ -658,7 +677,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
             new Thread(runnable).start();
 
         } else {
-            NetworkUtil.networkErrorDialogShow(this, false);
+            NetworkUtil.networkErrorDialogShow(requireActivity(), false);
             binding.clLoading.setVisibility(View.GONE);
         }
 
@@ -668,7 +687,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     /* 현재위치의 주변 약국 정보 데이터 가져올 메서드 */
     private void getStoreData(String Q0, String Q1, int pageNo, int numOfRows) {
 
-        if (NetworkUtil.checkConnectedNetwork(this)) {
+        if (NetworkUtil.checkConnectedNetwork(requireActivity())) {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -733,7 +752,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                         break;
                                 }
 
-                                runOnUiThread(new Runnable() {
+                                requireActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
 
@@ -749,7 +768,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                                             infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
                                                             infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
                                                             LogUtil.d(pharmacy.getDutyName() + "/" + pharmacy.getDutyTel1() + "/" + pharmacy.getDutyAddr());
-                                                            infoWindow.setAdapter(new InfoWindowAdapter(MapActivity.this, pharmacy.getDutyName(), pharmacy.getDutyTel1(), pharmacy.getDutyAddr()));
+                                                            infoWindow.setAdapter(new InfoWindowAdapter(requireActivity(), pharmacy.getDutyName(), pharmacy.getDutyTel1(), pharmacy.getDutyAddr()));
                                                             infoWindow.setOnClickListener(new Overlay.OnClickListener() {
                                                                 @Override
                                                                 public boolean onClick(@NonNull Overlay overlay) {
@@ -790,10 +809,9 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
             new Thread(runnable).start();
 
         } else {
-            NetworkUtil.networkErrorDialogShow(this, false);
+            NetworkUtil.networkErrorDialogShow(requireActivity(), false);
             binding.clLoading.setVisibility(View.GONE);
         }
-
     }
 
     /* 전체마커 삭제 */
@@ -809,7 +827,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         marker.setIconPerspectiveEnabled(true);
 
         //아이콘 지정
-        marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place));
+        marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place_red));
 
         //마커의 투명도
 //        marker.setAlpha(0.1f);
@@ -825,26 +843,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.li_back:
-                finish();
-                break;
-            case R.id.li_search:
-                bottomSheetMapSearchDialog.show(getSupportFragmentManager(), "mapSearchDialog");
-                break;
-            case R.id.li_my_location:
-                if (NetworkUtil.checkConnectedNetwork(MapActivity.this)) {
-                    binding.clLoading.setVisibility(View.VISIBLE);
-                    myLocationON();
-                } else {
-                    NetworkUtil.networkErrorDialogShow(MapActivity.this, false);
-                }
-                break;
-        }
-    }
-
-    @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         map = naverMap;
 
@@ -853,6 +851,23 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
 
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(false);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.li_search:
+                bottomSheetMapSearchDialog.show(getActivity().getSupportFragmentManager(), "mapSearchDialog");
+                break;
+            case R.id.li_my_location:
+                if (NetworkUtil.checkConnectedNetwork(getActivity())) {
+                    binding.clLoading.setVisibility(View.VISIBLE);
+                    myLocationON();
+                } else {
+                    NetworkUtil.networkErrorDialogShow(getActivity(), false);
+                }
+                break;
+        }
     }
 
     /* InfoWindowAdapter */

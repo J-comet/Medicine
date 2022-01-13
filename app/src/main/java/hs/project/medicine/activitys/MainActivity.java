@@ -1,7 +1,10 @@
 package hs.project.medicine.activitys;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -10,12 +13,22 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.overlay.CircleOverlay;
+import com.naver.maps.map.overlay.InfoWindow;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.util.FusedLocationSource;
+
+import java.util.ArrayList;
+
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.custom_view.LeftSlideView;
 import hs.project.medicine.custom_view.MainBottomView;
+import hs.project.medicine.custom_view.MapFragment;
 import hs.project.medicine.databinding.ActivityMainBinding;
+import hs.project.medicine.dialog.BottomSheetMapSearchDialog;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -38,6 +51,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
          *  UserListActivity 에서 현재 유저 변경 후 값 가져오기 위해 onStart 에서 실행
          */
         binding.mainContentHome.setupUI();
+//        binding.mainContentMap.setUpUI(this);
     }
 
     private void init() {
@@ -120,7 +134,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 binding.mainContentSearch.setVisibility(View.VISIBLE);
                 break;
             case Config.MAIN_BOTTOM_MENU.MAP:
+                MapFragment mapFragment = new MapFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.main_content_map, mapFragment).commit();
+
                 binding.mainContentMap.setVisibility(View.VISIBLE);
+//                binding.mainContentMap.setUpUI(this);
                 break;
             case Config.MAIN_BOTTOM_MENU.TV:
                 binding.mainContentTv.setVisibility(View.VISIBLE);
