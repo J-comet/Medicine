@@ -741,22 +741,34 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                                         pharmacyMarker.setOnClickListener(new Overlay.OnClickListener() {
                                             @Override
                                             public boolean onClick(@NonNull Overlay overlay) {
-                                                infoWindow.setAnchor(new PointF(0, 1));
-                                                infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
-                                                infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
-                                                LogUtil.d(pharmacy.getDutyName() + "/" + pharmacy.getDutyTel1() + "/" + pharmacy.getDutyAddr());
-                                                infoWindow.setAdapter(new InfoWindowAdapter(MapActivity.this, pharmacy.getDutyName(), pharmacy.getDutyTel1(), pharmacy.getDutyAddr()));
-                                                infoWindow.setOnClickListener(new Overlay.OnClickListener() {
-                                                    @Override
-                                                    public boolean onClick(@NonNull Overlay overlay) {
-                                                        infoWindow.close();
-                                                        return true;
-                                                    }
-                                                });
 
-                                                infoWindow.open(pharmacyMarker);
+                                                CameraUpdate cameraUpdate2 = CameraUpdate.scrollTo(new LatLng(pharmacy.getWgs84Lat(), pharmacy.getWgs84Lon()))
+                                                        .animate(CameraAnimation.Easing, 350)
+                                                        .finishCallback(() -> {
+                                                            infoWindow.setAnchor(new PointF(0, 1));
+                                                            infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+                                                            infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+                                                            LogUtil.d(pharmacy.getDutyName() + "/" + pharmacy.getDutyTel1() + "/" + pharmacy.getDutyAddr());
+                                                            infoWindow.setAdapter(new InfoWindowAdapter(MapActivity.this, pharmacy.getDutyName(), pharmacy.getDutyTel1(), pharmacy.getDutyAddr()));
+                                                            infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                                                                @Override
+                                                                public boolean onClick(@NonNull Overlay overlay) {
+                                                                    infoWindow.close();
+                                                                    return true;
+                                                                }
+                                                            });
+
+                                                            infoWindow.open(pharmacyMarker);
+                                                        })
+                                                        .cancelCallback(() -> {
+                                                            LogUtil.d("카메라 이동 취소");
+                                                        });
+
+                                                map.moveCamera(cameraUpdate2);
+
                                                 return false;
                                             }
+
                                         });
 
                                     }
@@ -835,13 +847,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         map = naverMap;
-
-        map.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(int i, boolean b) {
-
-            }
-        });
 
         naverMap.setLocationSource(locationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
