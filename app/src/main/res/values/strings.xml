@@ -11,6 +11,8 @@
     <string name="str_bottom_menu_home">홈</string>
     <string name="str_bottom_menu_search">검색</string>
     <string name="str_bottom_menu_tv">메디tv</string>
+    <string name="str_bottom_menu_map">약국위치</string>
+
     <string name="str_bottom_menu_tv_02">메디TV</string>
 
 

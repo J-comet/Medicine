@@ -10,6 +10,7 @@ public class Config {
         String HOME = "home";
         String SEARCH = "search";
         String TV = "tv";
+        String MAP = "map";
     }
 
     public interface PREFERENCE_KEY {

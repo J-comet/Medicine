@@ -56,6 +56,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
 
             @Override
+            public void onMapClick() {
+                changeMainContent(Config.MAIN_BOTTOM_MENU.MAP);
+            }
+
+            @Override
             public void onTVClick() {
                 changeMainContent(Config.MAIN_BOTTOM_MENU.TV);
             }
@@ -65,7 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         binding.leftSlideView.setLeftMenuEventListener(new LeftSlideView.LeftSlideListener() {
             @Override
             public void onHomeClick() {
-                if (isDrawerOpen()){
+                if (isDrawerOpen()) {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
                 changeMainContent(Config.MAIN_BOTTOM_MENU.HOME);
@@ -74,7 +79,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onSearchClick() {
-                if (isDrawerOpen()){
+                if (isDrawerOpen()) {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
                 changeMainContent(Config.MAIN_BOTTOM_MENU.SEARCH);
@@ -83,7 +88,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onTVClick() {
-                if (isDrawerOpen()){
+                if (isDrawerOpen()) {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
                 changeMainContent(Config.MAIN_BOTTOM_MENU.TV);
@@ -104,6 +109,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         binding.mainContentHome.setVisibility(View.GONE);
         binding.mainContentSearch.setVisibility(View.GONE);
         binding.mainContentTv.setVisibility(View.GONE);
+        binding.mainContentMap.setVisibility(View.GONE);
 
         switch (selectedContent) {
             case Config.MAIN_BOTTOM_MENU.HOME:
@@ -112,6 +118,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case Config.MAIN_BOTTOM_MENU.SEARCH:
                 binding.mainContentSearch.setVisibility(View.VISIBLE);
+                break;
+            case Config.MAIN_BOTTOM_MENU.MAP:
+                binding.mainContentMap.setVisibility(View.VISIBLE);
                 break;
             case Config.MAIN_BOTTOM_MENU.TV:
                 binding.mainContentTv.setVisibility(View.VISIBLE);
