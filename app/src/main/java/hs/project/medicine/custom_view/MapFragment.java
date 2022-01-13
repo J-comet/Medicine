@@ -77,7 +77,6 @@ import hs.project.medicine.Config;
 import hs.project.medicine.HttpRequest;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
-import hs.project.medicine.activitys.MapActivity;
 import hs.project.medicine.databinding.FragmentMapBinding;
 import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
 import hs.project.medicine.datas.NaverGeocodingResult;

@@ -23,7 +23,6 @@ import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.AddUserActivity;
-import hs.project.medicine.activitys.MapActivity;
 import hs.project.medicine.activitys.UserListActivity;
 import hs.project.medicine.adapter.GridUserAdapter;
 import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
