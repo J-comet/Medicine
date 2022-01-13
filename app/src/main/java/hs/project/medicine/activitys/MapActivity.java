@@ -235,6 +235,12 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
         setContentView(binding.getRoot());
 
         init();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        binding.clLoading.setVisibility(View.VISIBLE);
 
         /* 권한체크 */
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -273,12 +279,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener, O
                 builder.show();
             }
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        binding.clLoading.setVisibility(View.VISIBLE);
     }
 
     private void init() {
