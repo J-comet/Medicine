@@ -4,7 +4,6 @@ import androidx.core.content.res.ResourcesCompat;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 
@@ -17,6 +16,7 @@ import org.jsoup.Jsoup;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityMedicineDetailBinding;
 import hs.project.medicine.datas.medicine.MedicineItem;
+import hs.project.medicine.util.LogUtil;
 
 public class MedicineDetailActivity extends BaseActivity {
 
@@ -49,58 +49,58 @@ public class MedicineDetailActivity extends BaseActivity {
         medicineItem = (MedicineItem) getIntent().getSerializableExtra("item");
 
         if (medicineItem.getEntpName() != null && !medicineItem.getEntpName().equals("null")) {
-            Log.e("hs", medicineItem.getEntpName());
+            LogUtil.d(medicineItem.getEntpName());
             binding.tvEntpName.setText(medicineItem.getEntpName());
         }
 
         if (medicineItem.getItemName() != null && !medicineItem.getItemName().equals("null")) {
-            Log.e("hs", medicineItem.getItemName());
+            LogUtil.d(medicineItem.getItemName());
             binding.tvItemName.setText(medicineItem.getItemName());
         }
 
         if (medicineItem.getItemSeq() != null && !medicineItem.getItemSeq().equals("null")) {
-            Log.e("hs", medicineItem.getItemSeq());
+            LogUtil.d(medicineItem.getItemSeq());
             binding.tvItemSeq.setText(medicineItem.getItemSeq());
         }
 
         if (medicineItem.getEfcyQesitm() != null && !medicineItem.getEfcyQesitm().equals("null")) {
-            Log.e("hs", medicineItem.getEfcyQesitm());
+            LogUtil.d(medicineItem.getEfcyQesitm());
             binding.tvEfcyQesitm.setText(Jsoup.parse(medicineItem.getEfcyQesitm()).wholeText());
         }
 
         if (medicineItem.getUseMethodQesitm() != null && !medicineItem.getUseMethodQesitm().equals("null")) {
-            Log.e("hs", medicineItem.getUseMethodQesitm());
+            LogUtil.d(medicineItem.getUseMethodQesitm());
             binding.tvUseMethodQesitm.setText(Jsoup.parse(medicineItem.getUseMethodQesitm()).wholeText());
         }
 
         if (medicineItem.getAtpnWarnQesitm() != null && !medicineItem.getAtpnWarnQesitm().equals("null")) {
-            Log.e("hs", medicineItem.getAtpnWarnQesitm().toString());
+            LogUtil.d(medicineItem.getAtpnWarnQesitm().toString());
             binding.tvAtpnWarnQesitm.setText(medicineItem.getAtpnWarnQesitm().toString());
 //            tvAtpnWarnQesitm.setText(Jsoup.parse(medicineItem.getAtpnWarnQesitm()).wholeText());
         }
 
         if (medicineItem.getAtpnQesitm() != null && !medicineItem.getAtpnQesitm().equals("null")) {
-            Log.e("hs", medicineItem.getAtpnQesitm());
+            LogUtil.d(medicineItem.getAtpnQesitm());
             binding.tvAtpnQesitm.setText(Jsoup.parse(medicineItem.getAtpnQesitm()).wholeText());
         }
 
         if (medicineItem.getIntrcQesitm() != null && !medicineItem.getIntrcQesitm().equals("null")) {
-            Log.e("hs", medicineItem.getIntrcQesitm());
+            LogUtil.d(medicineItem.getIntrcQesitm());
             binding.tvIntrcQesitm.setText(Jsoup.parse(medicineItem.getIntrcQesitm()).wholeText());
         }
 
         if (medicineItem.getSeQesitm() != null && !medicineItem.getSeQesitm().equals("null")) {
-            Log.e("hs", medicineItem.getSeQesitm());
+            LogUtil.d(medicineItem.getSeQesitm());
             binding.tvSeQesitm.setText(Jsoup.parse(medicineItem.getSeQesitm()).wholeText());
         }
 
         if (medicineItem.getDepositMethodQesitm() != null && !medicineItem.getDepositMethodQesitm().equals("null")) {
-            Log.e("hs", medicineItem.getDepositMethodQesitm());
+            LogUtil.d(medicineItem.getDepositMethodQesitm());
             binding.tvDepositMethodQesitm.setText(Jsoup.parse(medicineItem.getDepositMethodQesitm()).wholeText());
         }
 
         if (medicineItem.getOpenDe() != null && !medicineItem.getOpenDe().equals("null")) {
-            Log.e("hs", medicineItem.getOpenDe());
+            LogUtil.d(medicineItem.getOpenDe());
             String openDate = medicineItem.getOpenDe().replaceAll("-","");
             String openYear = openDate.substring(0,4);
             String openMonth = openDate.substring(4,6);
@@ -110,7 +110,7 @@ public class MedicineDetailActivity extends BaseActivity {
         }
 
         if (medicineItem.getUpdateDe() != null && !medicineItem.getUpdateDe().equals("null")) {
-            Log.e("hs", medicineItem.getUpdateDe());
+            LogUtil.d(medicineItem.getUpdateDe());
 
             String openYear = medicineItem.getUpdateDe().substring(0,4);
             String openMonth = medicineItem.getUpdateDe().substring(4,6);
@@ -120,9 +120,10 @@ public class MedicineDetailActivity extends BaseActivity {
         }
 
         if (medicineItem.getItemImage() != null && !medicineItem.getItemImage().equals("null")) {
-            Log.e("hs", medicineItem.getItemImage());
+            LogUtil.d(medicineItem.getItemImage());
             Glide.with(this)
                     .load(medicineItem.getItemImage())
+                    .placeholder(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_image_search, null))
                     .apply(new RequestOptions().transform(new RoundedCorners(32)))
                     .into(binding.ivItemImg);
         } else {
