@@ -89,44 +89,44 @@
         app:layout_constraintStart_toStartOf="@+id/et_name"
         app:layout_constraintTop_toBottomOf="@+id/et_name" />
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/str_gender"
-        android:textColor="@color/black"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_gender"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_gender" />
+<!--    <TextView-->
+<!--        android:id="@+id/textView1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="24dp"-->
+<!--        android:text="@string/str_gender"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="16dp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/tv_gender"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/tv_gender" />-->
 
-    <TextView
-        android:id="@+id/tv_gender"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="24dp"
-        android:paddingRight="16dp"
-        android:text="@string/str_gender"
-        android:textColor="@color/color_a09d9d"
-        android:gravity="right|center_vertical"
-        android:letterSpacing="0.01"
-        android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/et_name"
-        app:layout_constraintStart_toEndOf="@+id/textView1"
-        app:layout_constraintTop_toBottomOf="@+id/view2" />
+<!--    <TextView-->
+<!--        android:id="@+id/tv_gender"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:paddingRight="16dp"-->
+<!--        android:text="@string/str_gender"-->
+<!--        android:textColor="@color/color_a09d9d"-->
+<!--        android:gravity="right|center_vertical"-->
+<!--        android:letterSpacing="0.01"-->
+<!--        android:textSize="16dp"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/et_name"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/textView1"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/view2" />-->
 
-    <View
-        android:id="@+id/view3"
-        android:layout_width="0dp"
-        android:layout_height="0.7dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_gender" />
+<!--    <View-->
+<!--        android:id="@+id/view3"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0.7dp"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:background="@android:color/darker_gray"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/tv_gender" />-->
 
     <TextView
         android:id="@+id/textView2"
@@ -152,9 +152,9 @@
         android:gravity="right|center_vertical"
         android:letterSpacing="0.01"
         android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_gender"
+        app:layout_constraintEnd_toEndOf="@+id/et_name"
         app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/view3" />
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
     <View
         android:id="@+id/view4"

@@ -91,7 +91,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                     if (pos != i) {
                         user.setName(object.getString("name"));
                         user.setAge(object.getString("age"));
-                        user.setGender(object.getString("gender"));
+                        user.setRelation(object.getString("relation"));
+//                        user.setGender(object.getString("gender"));
 //                        user.setCurrent(object.getBoolean("isCurrent"));
 
 //                        userArrayList.add(user);
@@ -140,16 +141,16 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             });
 
             /* 성별 */
-            switch (userItem.getGender()) {
-                case "남자":
-                    itemBinding.ivGender.setImageResource(R.drawable.male);
-                    itemBinding.ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.blue));
-                    break;
-                case "여자":
-                    itemBinding.ivGender.setImageResource(R.drawable.female);
-                    itemBinding.ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.red));
-                    break;
-            }
+//            switch (userItem.getGender()) {
+//                case "남자":
+//                    itemBinding.ivGender.setImageResource(R.drawable.male);
+//                    itemBinding.ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.blue));
+//                    break;
+//                case "여자":
+//                    itemBinding.ivGender.setImageResource(R.drawable.female);
+//                    itemBinding.ivGender.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.red));
+//                    break;
+//            }
 
             /* 현재 사용중인 유저 */
             /*if (userItem.isCurrent()) {

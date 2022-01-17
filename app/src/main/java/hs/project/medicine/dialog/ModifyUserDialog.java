@@ -75,7 +75,7 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
     }
 
     private void init() {
-        binding.tvGender.setOnClickListener(this);
+//        binding.tvGender.setOnClickListener(this);
         binding.tvAge.setOnClickListener(this);
         binding.tvRelation.setOnClickListener(this);
         binding.liBack.setOnClickListener(this);
@@ -95,7 +95,7 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                     JSONObject object = new JSONObject(jsonArray.getString(i));
                     user.setName(object.getString("name"));
                     user.setAge(object.getString("age"));
-                    user.setGender(object.getString("gender"));
+//                    user.setGender(object.getString("gender"));
                     user.setRelation(object.getString("relation"));
 //                    user.setCurrent(object.getBoolean("isCurrent"));
 
@@ -118,8 +118,8 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
 
         if (user != null) {
             binding.etName.setText(user.getName());
-            binding.tvGender.setText(user.getGender());
-            binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+//            binding.tvGender.setText(user.getGender());
+//            binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
             binding.tvAge.setText(user.getAge());
             binding.tvAge.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
             binding.tvRelation.setText(user.getRelation());
@@ -137,8 +137,8 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                 .setItems(genderList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        binding.tvGender.setText(genderList[which]);
-                        binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+//                        binding.tvGender.setText(genderList[which]);
+//                        binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
                         dialog.dismiss();
                     }
                 }).show();
@@ -186,14 +186,14 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
         for (int i = 0; i < userArrayList.size(); i++) {
             User addUser = new User();
             addUser.setName(userArrayList.get(i).getName());
-            addUser.setGender(userArrayList.get(i).getGender());
+//            addUser.setGender(userArrayList.get(i).getGender());
             addUser.setAge(userArrayList.get(i).getAge());
             addUser.setRelation(userArrayList.get(i).getRelation());
 //            addUser.setCurrent(userArrayList.get(i).isCurrent());
 
             if (user.getName().equals(userArrayList.get(i).getName())) {
                 addUser.setName(binding.etName.getText().toString());
-                addUser.setGender(binding.tvGender.getText().toString());
+//                addUser.setGender(binding.tvGender.getText().toString());
                 addUser.setAge(binding.tvAge.getText().toString());
                 addUser.setRelation(binding.tvRelation.getText().toString());
 //                addUser.setCurrent(userArrayList.get(i).isCurrent());
@@ -211,9 +211,9 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_gender:
-                displayGenderDialog();
-                break;
+//            case R.id.tv_gender:
+//                displayGenderDialog();
+//                break;
             case R.id.tv_age:
                 displayAgeDialog();
                 break;
@@ -230,7 +230,7 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                     if (eventListener != null) {
                         User userItem = new User();
                         userItem.setName(binding.etName.getText().toString());
-                        userItem.setGender(binding.tvGender.getText().toString());
+//                        userItem.setGender(binding.tvGender.getText().toString());
                         userItem.setAge(binding.tvAge.getText().toString());
                         userItem.setRelation(binding.tvRelation.getText().toString());
 

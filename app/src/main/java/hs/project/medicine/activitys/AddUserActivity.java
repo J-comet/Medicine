@@ -33,7 +33,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
 
     private ActivityAddUserBinding binding;
 
-    private boolean isGender = false;
+//    private boolean isGender = false;
     private boolean isAge = false;
     private boolean isRelation = false;
 
@@ -65,7 +65,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
 
         LogUtil.d("userList.size()=" + userList.size());
 
-        binding.tvGender.setOnClickListener(this);
+//        binding.tvGender.setOnClickListener(this);
         binding.tvAge.setOnClickListener(this);
         binding.tvRelation.setOnClickListener(this);
         binding.liBack.setOnClickListener(this);
@@ -82,13 +82,13 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
          */
         User user = new User();
         user.setName(binding.etName.getText().toString());
-        user.setGender(binding.tvGender.getText().toString());
+//        user.setGender(binding.tvGender.getText().toString());
         user.setAge(binding.tvAge.getText().toString());
         user.setRelation(binding.tvRelation.getText().toString());
 //        user.setCurrent(isCurrent);
 
         LogUtil.d("user /" + user.getName());
-        LogUtil.d("user /" + user.getGender());
+//        LogUtil.d("user /" + user.getGender());
         LogUtil.d("user /" + user.getAge());
         LogUtil.d("user /" + user.getRelation());
 //        LogUtil.d("user /" + user.isCurrent());
@@ -118,9 +118,9 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                 .setItems(genderList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        binding.tvGender.setText(genderList[which]);
-                        binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
-                        isGender = true;
+//                        binding.tvGender.setText(genderList[which]);
+//                        binding.tvGender.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+//                        isGender = true;
                         dialog.dismiss();
                     }
                 }).show();
@@ -164,9 +164,9 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_gender:
-                displayGenderDialog();
-                break;
+//            case R.id.tv_gender:
+//                displayGenderDialog();
+//                break;
             case R.id.tv_age:
                 displayAgeDialog();
                 break;
@@ -181,7 +181,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                 /**
                  * 모든 정보 입력 완료했을 때 실행할 수 있도록
                  */
-                if (binding.etName.getText().toString().length() > 0 && isGender && isAge && isRelation) {
+                if (binding.etName.getText().toString().length() > 0 && isAge && isRelation) {
                     complete();
                     Intent intent = new Intent(AddUserActivity.this, UserListActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

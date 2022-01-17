@@ -83,11 +83,6 @@ public class GridUserAdapter extends RecyclerView.Adapter<GridUserAdapter.ViewHo
             itemBinding.cvUserCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-//                    Intent intent = new Intent(context, MedicineDetailActivity.class);
-//                    intent.putExtra("item", medicineItem);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                    context.startActivity(intent);
                     Intent intent = new Intent(context, UserDetailActivity.class);
                     intent.putExtra("user", userItem);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

@@ -93,19 +93,19 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
                     if (i == jsonArray.length()) {
                         user.setName("등록하기");
                         user.setAge("null");
-                        user.setGender("null");
+//                        user.setGender("null");
                         user.setRelation("null");
 //                        user.setCurrent(false);
                     } else {
                         JSONObject object = new JSONObject(jsonArray.getString(i));
                         user.setName(object.getString("name"));
                         user.setAge(object.getString("age"));
-                        user.setGender(object.getString("gender"));
+//                        user.setGender(object.getString("gender"));
                         user.setRelation(object.getString("relation"));
 //                        user.setCurrent(object.getBoolean("isCurrent"));
 
                         LogUtil.d("user /" + user.getName());
-                        LogUtil.d("user /" + user.getGender());
+//                        LogUtil.d("user /" + user.getGender());
                         LogUtil.d("user /" + user.getAge());
                         LogUtil.d("user /" + user.getRelation());
 
@@ -123,7 +123,7 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
             User user = new User();
             user.setName("등록하기");
             user.setAge("null");
-            user.setGender("null");
+//            user.setGender("null");
             user.setRelation("null");
 //            user.setCurrent(false);
 
