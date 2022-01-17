@@ -20,13 +20,12 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".activitys.UserDetailActivity"
-            android:exported="false" />
-        <activity
+            android:exported="false"
+
+            />
+        <!--<activity
             android:name=".activitys.MapActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activitys.ModifyUserActivity"
-            android:exported="false" />
+            android:exported="false" />-->
         <activity
             android:name=".activitys.UserListActivity"
             android:exported="false" />

@@ -181,7 +181,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                 /**
                  * 모든 정보 입력 완료했을 때 실행할 수 있도록
                  */
-                if (binding.etName.getText().toString().length() > 0 && isGender && isAge) {
+                if (binding.etName.getText().toString().length() > 0 && isGender && isAge && isRelation) {
                     complete();
                     Intent intent = new Intent(AddUserActivity.this, UserListActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

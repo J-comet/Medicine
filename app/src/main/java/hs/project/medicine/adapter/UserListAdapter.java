@@ -1,13 +1,10 @@
 package hs.project.medicine.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -22,7 +19,7 @@ import java.util.ArrayList;
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
-import hs.project.medicine.activitys.ModifyUserActivity;
+import hs.project.medicine.activitys.UserDetailActivity;
 import hs.project.medicine.databinding.ItemUserBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
@@ -124,16 +121,21 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         void bindItem(User userItem) {
             itemBinding.tvName.setText(userItem.getName());
             itemBinding.tvAge.setText(userItem.getAge());
+            itemBinding.tvRelation.setText("(" + userItem.getRelation() + ")");
 
             itemBinding.clContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getAdapterPosition();
+                    /*int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         if (userListClickListener != null) {
                             userListClickListener.onUserClick(v, position);
                         }
-                    }
+                    }*/
+                    Intent intent = new Intent(context, UserDetailActivity.class);
+                    intent.putExtra("user", userItem);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    context.startActivity(intent);
                 }
             });
 
@@ -157,7 +159,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             }*/
 
             /* 수정버튼 */
-            itemBinding.liModify.setOnClickListener(new View.OnClickListener() {
+            /*itemBinding.liModify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ModifyUserActivity.class);
@@ -166,7 +168,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                     context.startActivity(intent);
                     Toast.makeText(context, userItem.getName(), Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
 
             /* 삭제버튼 */
             /*itemBinding.liDelete.setOnClickListener(new View.OnClickListener() {
@@ -180,9 +182,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                     } else {
 
                         *//**
-                         *  1. 해당 포지션 user  ArrayList 에서 remove
-                         *  2. Preference 에 저장되어 있는 userList 에서 remove
-                         *//*
+             *  1. 해당 포지션 user  ArrayList 에서 remove
+             *  2. Preference 에 저장되어 있는 userList 에서 remove
+             *//*
 
                         AlertDialog dialog = new AlertDialog.Builder(context)
                                 .setTitle("경고")

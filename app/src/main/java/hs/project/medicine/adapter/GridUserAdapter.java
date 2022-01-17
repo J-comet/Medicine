@@ -77,8 +77,8 @@ public class GridUserAdapter extends RecyclerView.Adapter<GridUserAdapter.ViewHo
             itemBinding = ItemGridUserBinding.bind(itemView);
         }
 
-        void bindItem(User user) {
-            itemBinding.tvName.setText(user.getName());
+        void bindItem(User userItem) {
+            itemBinding.tvName.setText(userItem.getName());
 
             itemBinding.cvUserCard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -88,9 +88,8 @@ public class GridUserAdapter extends RecyclerView.Adapter<GridUserAdapter.ViewHo
 //                    intent.putExtra("item", medicineItem);
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 //                    context.startActivity(intent);
-                    Toast.makeText(context, user.getName(), Toast.LENGTH_SHORT).show();
-
                     Intent intent = new Intent(context, UserDetailActivity.class);
+                    intent.putExtra("user", userItem);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     context.startActivity(intent);
                 }
