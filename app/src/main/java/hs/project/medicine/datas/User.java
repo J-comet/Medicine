@@ -9,7 +9,8 @@ public class User implements Serializable {
     String name;
     String gender;
     String age;
-    boolean isCurrent;  // 현재 사용중인지 확인하기 위한 값
+    String relation;
+//    boolean isCurrent;  // 현재 사용중인지 확인하기 위한 값
 
     public String getName() {
         return name;
@@ -35,12 +36,12 @@ public class User implements Serializable {
         this.age = age;
     }
 
-    public boolean isCurrent() {
-        return isCurrent;
+    public String getRelation() {
+        return relation;
     }
 
-    public void setCurrent(boolean current) {
-        isCurrent = current;
+    public void setRelation(String relation) {
+        this.relation = relation;
     }
 
     public String toJSON() {
@@ -50,7 +51,7 @@ public class User implements Serializable {
             jsonObject.put("name", getName());
             jsonObject.put("gender", getGender());
             jsonObject.put("age", getAge());
-            jsonObject.put("isCurrent", isCurrent());
+            jsonObject.put("relation", getRelation());
 
             return jsonObject.toString();
         } catch (JSONException e) {

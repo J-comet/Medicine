@@ -15,6 +15,19 @@
         <item>70대이상</item>
     </array>
 
+    <array name="arr_relation">
+        <item>아버지</item>
+        <item>어머니</item>
+        <item>배우자</item>
+        <item>아들</item>
+        <item>딸</item>
+        <item>형제</item>
+        <item>자매</item>
+        <item>애인</item>
+        <item>친구</item>
+        <item>직접입력</item>
+    </array>
+
     <array name="arr_location">
         <item>서울특별시</item>
         <item>부산광역시</item>

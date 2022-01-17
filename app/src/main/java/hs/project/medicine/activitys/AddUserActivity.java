@@ -35,6 +35,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
 
     private boolean isGender = false;
     private boolean isAge = false;
+    private boolean isRelation = false;
 
     private ArrayList<String> userList;
 
@@ -59,13 +60,14 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
             userList = PreferenceUtil.getJSONArrayPreference(AddUserActivity.this, Config.PREFERENCE_KEY.USER_LIST);
         } else {
             userList = new ArrayList<>();
-            isCurrent = true;
+//            isCurrent = true;
         }
 
         LogUtil.d("userList.size()=" + userList.size());
 
         binding.tvGender.setOnClickListener(this);
         binding.tvAge.setOnClickListener(this);
+        binding.tvRelation.setOnClickListener(this);
         binding.liBack.setOnClickListener(this);
         binding.liComplete.setOnClickListener(this);
 
@@ -82,12 +84,14 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
         user.setName(binding.etName.getText().toString());
         user.setGender(binding.tvGender.getText().toString());
         user.setAge(binding.tvAge.getText().toString());
-        user.setCurrent(isCurrent);
+        user.setRelation(binding.tvRelation.getText().toString());
+//        user.setCurrent(isCurrent);
 
         LogUtil.d("user /" + user.getName());
         LogUtil.d("user /" + user.getGender());
         LogUtil.d("user /" + user.getAge());
-        LogUtil.d("user /" + user.isCurrent());
+        LogUtil.d("user /" + user.getRelation());
+//        LogUtil.d("user /" + user.isCurrent());
 
 
         /**
@@ -139,6 +143,24 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                 }).show();
     }
 
+    private void displayRelationDialog() {
+
+        String[] arrList = getResources().getStringArray(R.array.arr_relation);
+
+        new AlertDialog.Builder(this)
+                .setTitle("관계 선택")
+                .setItems(arrList, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        binding.tvRelation.setText(arrList[which]);
+                        binding.tvRelation.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        isRelation = true;
+                        dialog.dismiss();
+                    }
+                }).show();
+    }
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -147,6 +169,9 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                 break;
             case R.id.tv_age:
                 displayAgeDialog();
+                break;
+            case R.id.tv_relation:
+                displayRelationDialog();
                 break;
             case R.id.li_back:
                 finish();

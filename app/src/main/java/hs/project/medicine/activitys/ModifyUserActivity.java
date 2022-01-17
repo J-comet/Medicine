@@ -66,12 +66,14 @@ public class ModifyUserActivity extends BaseActivity implements View.OnClickList
                     user.setName(object.getString("name"));
                     user.setAge(object.getString("age"));
                     user.setGender(object.getString("gender"));
-                    user.setCurrent(object.getBoolean("isCurrent"));
+                    user.setRelation(object.getString("relation"));
+//                    user.setCurrent(object.getBoolean("isCurrent"));
 
                     LogUtil.d("user /" + user.getName());
                     LogUtil.d("user /" + user.getGender());
                     LogUtil.d("user /" + user.getAge());
-                    LogUtil.d("user /" + user.isCurrent());
+                    LogUtil.d("user /" + user.getRelation());
+//                    LogUtil.d("user /" + user.isCurrent());
 
                     userArrayList.add(user);
                 }
@@ -139,13 +141,15 @@ public class ModifyUserActivity extends BaseActivity implements View.OnClickList
             addUser.setName(userArrayList.get(i).getName());
             addUser.setGender(userArrayList.get(i).getGender());
             addUser.setAge(userArrayList.get(i).getAge());
-            addUser.setCurrent(userArrayList.get(i).isCurrent());
+            addUser.setRelation(userArrayList.get(i).getRelation());
+//            addUser.setCurrent(userArrayList.get(i).isCurrent());
 
             if (user.getName().equals(userArrayList.get(i).getName())) {
                 addUser.setName(binding.etName.getText().toString());
                 addUser.setGender(binding.tvGender.getText().toString());
                 addUser.setAge(binding.tvAge.getText().toString());
-                addUser.setCurrent(userArrayList.get(i).isCurrent());
+                addUser.setRelation(binding.tvAge.getText().toString());
+//                addUser.setCurrent(userArrayList.get(i).isCurrent());
             }
 
             strUserList.add(addUser.toJSON());

@@ -95,7 +95,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                         user.setName(object.getString("name"));
                         user.setAge(object.getString("age"));
                         user.setGender(object.getString("gender"));
-                        user.setCurrent(object.getBoolean("isCurrent"));
+//                        user.setCurrent(object.getBoolean("isCurrent"));
 
 //                        userArrayList.add(user);
                         strUserList.add(user.toJSON());
@@ -150,11 +150,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             }
 
             /* 현재 사용중인 유저 */
-            if (userItem.isCurrent()) {
+            /*if (userItem.isCurrent()) {
                 itemBinding.ivSelected.setVisibility(View.VISIBLE);
             } else {
                 itemBinding.ivSelected.setVisibility(View.GONE);
-            }
+            }*/
 
             /* 수정버튼 */
             itemBinding.liModify.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +169,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
             });
 
             /* 삭제버튼 */
-            itemBinding.liDelete.setOnClickListener(new View.OnClickListener() {
+            /*itemBinding.liDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -179,10 +179,10 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
                     } else {
 
-                        /**
+                        *//**
                          *  1. 해당 포지션 user  ArrayList 에서 remove
                          *  2. Preference 에 저장되어 있는 userList 에서 remove
-                         */
+                         *//*
 
                         AlertDialog dialog = new AlertDialog.Builder(context)
                                 .setTitle("경고")
@@ -218,7 +218,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
                     }
                 }
-            });
+            });*/
 
         }
     }
