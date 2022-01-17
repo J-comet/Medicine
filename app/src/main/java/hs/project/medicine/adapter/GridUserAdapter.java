@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import hs.project.medicine.Config;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.AddUserActivity;
+import hs.project.medicine.activitys.UserDetailActivity;
+import hs.project.medicine.activitys.UserListActivity;
 import hs.project.medicine.databinding.ItemGridUserBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
@@ -87,6 +89,10 @@ public class GridUserAdapter extends RecyclerView.Adapter<GridUserAdapter.ViewHo
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 //                    context.startActivity(intent);
                     Toast.makeText(context, user.getName(), Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(context, UserDetailActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    context.startActivity(intent);
                 }
             });
 

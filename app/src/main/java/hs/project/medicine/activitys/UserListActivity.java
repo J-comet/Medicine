@@ -83,7 +83,7 @@ public class UserListActivity extends BaseActivity implements View.OnClickListen
         userListAdapter.setOnMemberClickListener(new UserListAdapter.OnUserListClickListener() {
             @Override
             public void onUserClick(View v, int pos) {
-                Toast.makeText(UserListActivity.this, userArrayList.get(pos).getName(), Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(UserListActivity.this, userArrayList.get(pos).getName(), Toast.LENGTH_SHORT).show();
                 LogUtil.d("selected user :" + userArrayList.get(pos).getName());
 
                 strUserList = new ArrayList<>();
@@ -105,7 +105,10 @@ public class UserListActivity extends BaseActivity implements View.OnClickListen
                 }
 
                 userListAdapter.addAll(newUserList);
-                PreferenceUtil.setJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST, strUserList);
+                PreferenceUtil.setJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST, strUserList);*/
+                Intent intent = new Intent(UserListActivity.this, UserDetailActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
             }
         });
     }
