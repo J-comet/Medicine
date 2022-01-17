@@ -12,7 +12,7 @@ import hs.project.medicine.util.LogUtil;
 public class UserDetailActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityUserDetailBinding binding;
-    private User getIntentUser;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +25,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        getIntentUser = (User) getIntent().getSerializableExtra("user");
-        setData(getIntentUser);
+        user = (User) getIntent().getSerializableExtra("user");
+        setData(user);
     }
 
 
@@ -38,7 +38,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     private void setData(User user) {
         if (user != null) {
             binding.tvName.setText(user.getName());
-            binding.tvRelation.setText("(" + user.getRelation() + ")");
+            binding.tvRelation.setText(user.getRelation());
             binding.tvAge.setText(user.getAge());
         }
     }
@@ -47,7 +47,12 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_profile_setting:
-                ModifyUserDialog dialog = new ModifyUserDialog(this, getIntentUser);
+                user = new User();
+                user.setName(binding.tvName.getText().toString());
+                user.setAge(binding.tvAge.getText().toString());
+                user.setRelation(binding.tvRelation.getText().toString());
+
+                ModifyUserDialog dialog = new ModifyUserDialog(this, user);
                 dialog.setModifyUserListener(new ModifyUserDialog.ModifyUserListener() {
                     @Override
                     public void onComplete(User user) {

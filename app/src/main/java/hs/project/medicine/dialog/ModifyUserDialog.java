@@ -57,7 +57,6 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NO_FRAME, R.style.dialog_fullscreen);
         fragment = requireActivity().getSupportFragmentManager().findFragmentByTag("modifyUserDialog");
-
     }
 
     @Nullable
@@ -237,13 +236,14 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                         if (binding.etName.getText().toString().length() > 0) {
                             modifyComplete();
                             eventListener.onComplete(userItem);
+
+                            dismiss();
+//                            DialogFragment dialogFragment = (DialogFragment) fragment;
+//                            dialogFragment.dismiss();
                         } else {
                             Toast.makeText(context, "모든 정보를 입력해주세요", Toast.LENGTH_SHORT).show();
                         }
                     }
-
-                    DialogFragment dialogFragment = (DialogFragment) fragment;
-                    dialogFragment.dismiss();
 
                 }
                 /**
