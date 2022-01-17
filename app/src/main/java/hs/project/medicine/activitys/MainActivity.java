@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onTVClick() {
-                changeMainContent(Config.MAIN_BOTTOM_MENU.TV);
+                changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
             }
         });
 
@@ -89,8 +89,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (isDrawerOpen()) {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
-                changeMainContent(Config.MAIN_BOTTOM_MENU.TV);
-                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.TV);
+                changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.USER_LIST);
             }
         });
 
@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 binding.mainContentMap.setVisibility(View.VISIBLE);
 //                binding.mainContentMap.setUpUI(this);
                 break;
-            case Config.MAIN_BOTTOM_MENU.TV:
+            case Config.MAIN_BOTTOM_MENU.USER_LIST:
                 binding.mainContentTv.setVisibility(View.VISIBLE);
                 break;
         }

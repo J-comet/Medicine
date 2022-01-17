@@ -10,7 +10,8 @@
 
     <string name="str_bottom_menu_home">홈</string>
     <string name="str_bottom_menu_search">검색</string>
-    <string name="str_bottom_menu_tv">메디tv</string>
+    <string name="str_bottom_menu_tv">유저목록</string>
+    <string name="str_bottom_menu_user_list">유저목록</string>
     <string name="str_bottom_menu_map">약국위치</string>
 
     <string name="str_bottom_menu_tv_02">메디TV</string>
@@ -28,4 +29,5 @@
     <string name="str_relation">관계</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

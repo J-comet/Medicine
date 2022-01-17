@@ -23,11 +23,8 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
 
     public interface MainBottomListener {
         void onHomeClick();
-
         void onSearchClick();
-
         void onTVClick();
-
         void onMapClick();
     }
 
@@ -66,12 +63,12 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
         binding.ivHome.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
         binding.ivSearch.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
         binding.ivMap.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
-        binding.ivTv.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
+        binding.ivUserList.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
 
         binding.tvHome.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
         binding.tvSearch.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
         binding.tvMap.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
-        binding.tvTelev.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
+        binding.tvUserList.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_e2e2e2));
 
 
         switch (selectedMenu) {
@@ -87,9 +84,9 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
                 binding.ivMap.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red));
                 binding.tvMap.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red));
                 break;
-            case Config.MAIN_BOTTOM_MENU.TV:
-                binding.ivTv.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red));
-                binding.tvTelev.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red));
+            case Config.MAIN_BOTTOM_MENU.USER_LIST:
+                binding.ivUserList.setColorFilter(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red));
+                binding.tvUserList.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.color_main_red));
                 break;
         }
     }
@@ -106,7 +103,7 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
                 eventListener.onSearchClick();
                 break;
             case R.id.cl_bottom_menu_tv:
-                menuStatus(Config.MAIN_BOTTOM_MENU.TV);
+                menuStatus(Config.MAIN_BOTTOM_MENU.USER_LIST);
                 eventListener.onTVClick();
                 break;
             case R.id.cl_bottom_menu_map:

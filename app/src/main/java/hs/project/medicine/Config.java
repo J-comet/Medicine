@@ -11,6 +11,7 @@ public class Config {
         String SEARCH = "search";
         String TV = "tv";
         String MAP = "map";
+        String USER_LIST = "user_list";
     }
 
     public interface PREFERENCE_KEY {

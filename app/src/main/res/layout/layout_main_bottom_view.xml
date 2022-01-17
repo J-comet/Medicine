@@ -135,27 +135,27 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/iv_tv"
+                android:id="@+id/iv_user_list"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_tv"
-                app:layout_constraintBottom_toTopOf="@+id/tv_telev"
+                android:src="@drawable/ic_person"
+                app:layout_constraintBottom_toTopOf="@+id/tv_user_list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
 
             <TextView
-                android:id="@+id/tv_telev"
+                android:id="@+id/tv_user_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/str_bottom_menu_tv"
+                android:text="@string/str_bottom_menu_user_list"
                 android:textSize="11dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/iv_user_list" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

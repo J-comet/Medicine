@@ -128,7 +128,7 @@
                     android:layout_weight="1"
                     android:textSize="14dp"
                     android:textColor="@color/black"
-                    android:text="@string/str_bottom_menu_tv_02" />
+                    android:text="@string/str_bottom_menu_user_list" />
 
                 <ImageView
                     android:layout_width="wrap_content"
