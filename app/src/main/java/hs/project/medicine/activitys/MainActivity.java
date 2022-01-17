@@ -85,7 +85,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
 
             @Override
-            public void onTVClick() {
+            public void onMapClick() {
+                if (isDrawerOpen()) {
+                    binding.dlSlide.closeDrawer(Gravity.LEFT);
+                }
+                changeMainContent(Config.MAIN_BOTTOM_MENU.MAP);
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.MAP);
+            }
+
+            @Override
+            public void onUserListClick() {
                 if (isDrawerOpen()) {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
