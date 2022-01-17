@@ -137,5 +137,21 @@
         app:layout_constraintStart_toStartOf="@+id/tv_profile_setting"
         app:layout_constraintTop_toBottomOf="@+id/tv_profile_setting" />
 
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="삭제"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_round_01"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_age"
+        app:layout_constraintTop_toBottomOf="@+id/iv_img" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

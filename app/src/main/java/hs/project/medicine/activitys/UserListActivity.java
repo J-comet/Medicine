@@ -48,6 +48,9 @@ public class UserListActivity extends BaseActivity implements View.OnClickListen
     protected void onStart() {
         super.onStart();
 
+        binding.tvNone.setVisibility(View.INVISIBLE);
+        binding.rvUserList.setVisibility(View.INVISIBLE);
+
         userArrayList = new ArrayList<>();
 
         if (PreferenceUtil.getJSONArrayPreference(UserListActivity.this, Config.PREFERENCE_KEY.USER_LIST) != null
@@ -76,10 +79,13 @@ public class UserListActivity extends BaseActivity implements View.OnClickListen
                 }
 
                 userListAdapter.addAll(userArrayList);
+                binding.rvUserList.setVisibility(View.VISIBLE);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        } else {
+            binding.tvNone.setVisibility(View.VISIBLE);
         }
 
         userListAdapter.setOnMemberClickListener(new UserListAdapter.OnUserListClickListener() {

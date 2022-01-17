@@ -39,7 +39,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
 
     private ArrayList<String> userList;
 
-    private boolean isCurrent = false;  // 현재 선택된 유저인지 확인용 플래그
+    private boolean isFirst = false;  // 처음 등록하는 유저인지 확인용 플래그
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
             userList = PreferenceUtil.getJSONArrayPreference(AddUserActivity.this, Config.PREFERENCE_KEY.USER_LIST);
         } else {
             userList = new ArrayList<>();
-//            isCurrent = true;
+            isFirst = true;
         }
 
         LogUtil.d("userList.size()=" + userList.size());
