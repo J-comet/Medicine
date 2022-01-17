@@ -1,34 +1,18 @@
 package hs.project.medicine.activitys;
 
 
-import android.Manifest;
-import android.content.Intent;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 
-import android.widget.Toast;
-
-
-import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.overlay.CircleOverlay;
-import com.naver.maps.map.overlay.InfoWindow;
-import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.util.FusedLocationSource;
-
-import java.util.ArrayList;
 
 import hs.project.medicine.Config;
-import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
-import hs.project.medicine.custom_view.LeftSlideView;
-import hs.project.medicine.custom_view.MainBottomView;
-import hs.project.medicine.custom_view.MapFragment;
+import hs.project.medicine.main_content.LeftSlideView;
+import hs.project.medicine.main_content.MainBottomView;
+import hs.project.medicine.main_content.MapFragment;
 import hs.project.medicine.databinding.ActivityMainBinding;
-import hs.project.medicine.dialog.BottomSheetMapSearchDialog;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 

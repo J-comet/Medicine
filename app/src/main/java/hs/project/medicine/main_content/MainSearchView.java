@@ -1,4 +1,4 @@
-package hs.project.medicine.custom_view;
+package hs.project.medicine.main_content;
 
 import static hs.project.medicine.HttpRequest.getRequest;
 

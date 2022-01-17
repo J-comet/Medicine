@@ -1,4 +1,4 @@
-package hs.project.medicine.custom_view;
+package hs.project.medicine.main_content;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import hs.project.medicine.R;
 import hs.project.medicine.databinding.LayoutMainTvViewBinding;
 
 public class MainTvView extends ConstraintLayout implements View.OnClickListener {

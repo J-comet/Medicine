@@ -1,4 +1,4 @@
-package hs.project.medicine.custom_view;
+package hs.project.medicine.main_content;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -75,10 +75,8 @@ import javax.xml.xpath.XPathFactory;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.HttpRequest;
-import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.FragmentMapBinding;
-import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
 import hs.project.medicine.datas.NaverGeocodingResult;
 import hs.project.medicine.datas.Pharmacy;
 import hs.project.medicine.dialog.BottomSheetMapSearchDialog;

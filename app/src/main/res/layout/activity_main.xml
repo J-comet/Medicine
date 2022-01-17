@@ -54,19 +54,19 @@
             app:layout_constraintBottom_toTopOf="@+id/main_bottom_view"
             app:layout_constraintTop_toBottomOf="@+id/cl_main_top">
 
-            <hs.project.medicine.custom_view.MainHomeView
+            <hs.project.medicine.main_content.MainHomeView
                 android:id="@+id/main_content_home"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
 
-            <hs.project.medicine.custom_view.MainSearchView
+            <hs.project.medicine.main_content.MainSearchView
                 android:id="@+id/main_content_search"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-            <hs.project.medicine.custom_view.MainTvView
+            <hs.project.medicine.main_content.MainTvView
                 android:id="@+id/main_content_tv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -81,7 +81,7 @@
         </FrameLayout>
 
 
-        <hs.project.medicine.custom_view.MainBottomView
+        <hs.project.medicine.main_content.MainBottomView
             android:id="@+id/main_bottom_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <hs.project.medicine.custom_view.LeftSlideView
+    <hs.project.medicine.main_content.LeftSlideView
         android:id="@+id/left_slide_view"
         android:layout_width="280dp"
         android:layout_height="match_parent"

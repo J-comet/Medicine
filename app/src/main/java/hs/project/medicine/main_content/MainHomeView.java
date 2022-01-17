@@ -1,16 +1,14 @@
-package hs.project.medicine.custom_view;
+package hs.project.medicine.main_content;
 
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import org.json.JSONArray;
@@ -20,9 +18,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import hs.project.medicine.Config;
-import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
-import hs.project.medicine.activitys.AddUserActivity;
 import hs.project.medicine.activitys.UserListActivity;
 import hs.project.medicine.adapter.GridUserAdapter;
 import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
