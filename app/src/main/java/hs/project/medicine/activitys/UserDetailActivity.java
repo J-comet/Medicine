@@ -51,9 +51,9 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
         Alarm alarm = new Alarm();
         alarm.setName("이름");
-        alarm.setAmPm("AM/PM");
-        alarm.setTime("시간");
-        alarm.setDayOfWeek("월화수목금토일");
+        alarm.setAmPm("오전");
+        alarm.setTime("12:00");
+        alarm.setDayOfWeek("월,화,수,목,금,토,일");
         alarm.setAlarmON(true);
         alarm.setOk(true);
 
