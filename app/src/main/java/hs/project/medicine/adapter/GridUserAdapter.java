@@ -16,7 +16,6 @@ import hs.project.medicine.Config;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.AddUserActivity;
 import hs.project.medicine.activitys.UserDetailActivity;
-import hs.project.medicine.activitys.UserListActivity;
 import hs.project.medicine.databinding.ItemGridUserBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;

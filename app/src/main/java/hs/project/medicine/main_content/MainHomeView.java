@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.R;
-import hs.project.medicine.activitys.UserListActivity;
 import hs.project.medicine.adapter.GridUserAdapter;
 import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
 import hs.project.medicine.datas.User;
@@ -61,7 +60,7 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
     }
 
     public void setupUI() {
-        binding.tvUserList.setOnClickListener(this);
+//        binding.tvUserList.setOnClickListener(this);
         setGridRecyclerView();
         checkRegisterUser();
     }
@@ -139,11 +138,11 @@ public class MainHomeView extends ConstraintLayout implements View.OnClickListen
         Intent intent;
 
         switch (v.getId()) {
-            case R.id.tv_user_list:
-                intent = new Intent(context, UserListActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                context.startActivity(intent);
-                break;
+//            case R.id.tv_user_list:
+//                intent = new Intent(context, UserListActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                context.startActivity(intent);
+//                break;
         }
     }
 }

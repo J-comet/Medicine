@@ -21,7 +21,6 @@ import java.security.NoSuchAlgorithmException;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivitySplashBinding;
-import hs.project.medicine.databinding.ActivityUserListBinding;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.NetworkUtil;
 

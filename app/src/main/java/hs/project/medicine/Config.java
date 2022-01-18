@@ -9,7 +9,6 @@ public class Config {
     public interface MAIN_BOTTOM_MENU {
         String HOME = "home";
         String SEARCH = "search";
-        String TV = "tv";
         String MAP = "map";
         String USER_LIST = "user_list";
     }

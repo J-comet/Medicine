@@ -35,7 +35,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
          *  UserListActivity 에서 현재 유저 변경 후 값 가져오기 위해 onStart 에서 실행
          */
         binding.mainContentHome.setupUI();
-//        binding.mainContentMap.setUpUI(this);
+        binding.mainContentUserList.setUpUI();
+
+        if (getIntent().getStringExtra("MAIN_BOTTOM_MENU") != null
+                && getIntent().getStringExtra("MAIN_BOTTOM_MENU").equals(Config.MAIN_BOTTOM_MENU.USER_LIST)) {
+            changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
+        }
     }
 
     private void init() {
@@ -72,7 +77,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
                 changeMainContent(Config.MAIN_BOTTOM_MENU.HOME);
-                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
             }
 
             @Override
@@ -81,7 +85,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
                 changeMainContent(Config.MAIN_BOTTOM_MENU.SEARCH);
-                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.SEARCH);
             }
 
             @Override
@@ -90,7 +93,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
                 changeMainContent(Config.MAIN_BOTTOM_MENU.MAP);
-                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.MAP);
             }
 
             @Override
@@ -99,7 +101,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     binding.dlSlide.closeDrawer(Gravity.LEFT);
                 }
                 changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
-                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.USER_LIST);
             }
         });
 
@@ -115,16 +116,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void changeMainContent(String selectedContent) {
         binding.mainContentHome.setVisibility(View.GONE);
         binding.mainContentSearch.setVisibility(View.GONE);
-        binding.mainContentTv.setVisibility(View.GONE);
+        binding.mainContentUserList.setVisibility(View.GONE);
         binding.mainContentMap.setVisibility(View.GONE);
 
         switch (selectedContent) {
             case Config.MAIN_BOTTOM_MENU.HOME:
                 binding.mainContentHome.setVisibility(View.VISIBLE);
                 binding.mainContentHome.setupUI();
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
                 break;
             case Config.MAIN_BOTTOM_MENU.SEARCH:
                 binding.mainContentSearch.setVisibility(View.VISIBLE);
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.SEARCH);
                 break;
             case Config.MAIN_BOTTOM_MENU.MAP:
                 MapFragment mapFragment = new MapFragment();
@@ -132,10 +135,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         .add(R.id.main_content_map, mapFragment).commit();
 
                 binding.mainContentMap.setVisibility(View.VISIBLE);
-//                binding.mainContentMap.setUpUI(this);
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.MAP);
                 break;
             case Config.MAIN_BOTTOM_MENU.USER_LIST:
-                binding.mainContentTv.setVisibility(View.VISIBLE);
+                binding.mainContentUserList.setVisibility(View.VISIBLE);
+                binding.mainContentUserList.setUpUI();
+                binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.USER_LIST);
                 break;
         }
     }

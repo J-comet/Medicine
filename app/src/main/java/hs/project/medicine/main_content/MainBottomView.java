@@ -95,19 +95,19 @@ public class MainBottomView extends ConstraintLayout implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cl_bottom_menu_home:
-                menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
+//                menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
                 eventListener.onHomeClick();
                 break;
             case R.id.cl_bottom_menu_search:
-                menuStatus(Config.MAIN_BOTTOM_MENU.SEARCH);
+//                menuStatus(Config.MAIN_BOTTOM_MENU.SEARCH);
                 eventListener.onSearchClick();
                 break;
             case R.id.cl_bottom_menu_tv:
-                menuStatus(Config.MAIN_BOTTOM_MENU.USER_LIST);
+//                menuStatus(Config.MAIN_BOTTOM_MENU.USER_LIST);
                 eventListener.onTVClick();
                 break;
             case R.id.cl_bottom_menu_map:
-                menuStatus(Config.MAIN_BOTTOM_MENU.MAP);
+//                menuStatus(Config.MAIN_BOTTOM_MENU.MAP);
                 eventListener.onMapClick();
                 break;
         }

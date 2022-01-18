@@ -183,7 +183,8 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                  */
                 if (binding.etName.getText().toString().length() > 0 && isAge && isRelation) {
                     complete();
-                    Intent intent = new Intent(AddUserActivity.this, UserListActivity.class);
+                    Intent intent = new Intent(AddUserActivity.this, MainActivity.class);
+                    intent.putExtra("MAIN_BOTTOM_MENU", Config.MAIN_BOTTOM_MENU.USER_LIST);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     finish();
