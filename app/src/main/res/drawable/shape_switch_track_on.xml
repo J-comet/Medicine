@@ -14,5 +14,5 @@
         android:height="17dp" />
 
     <!-- 배경색 -->
-    <solid android:color="#2d9cdb" />
+    <solid android:color="@color/color_00FF00" />
 </shape>

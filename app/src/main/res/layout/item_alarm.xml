@@ -16,11 +16,15 @@
 
         <TextView
             android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
+            android:layout_marginEnd="16dp"
             android:textSize="16dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintBottom_toTopOf="@+id/view_diver"
+            app:layout_constraintEnd_toStartOf="@+id/switch_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="두통" />
@@ -34,7 +38,7 @@
             android:checked="true"
             android:gravity="center"
             android:thumb="@drawable/thumb_switch"
-            app:switchMinWidth="50dp"
+            app:switchMinWidth="40dp"
             app:track="@drawable/selector_switch"
             app:layout_constraintBottom_toTopOf="@+id/view_diver"
             app:layout_constraintEnd_toEndOf="parent"
