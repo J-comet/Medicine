@@ -37,6 +37,7 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
     private ArrayList<User> userArrayList; // Preference 에 저장할 유저 정보
     private Fragment fragment;
     private ModifyUserListener eventListener;
+    private boolean isDirect = false;
 
     public ModifyUserDialog(Context context, User userItem) {
         this.context = context;
@@ -168,8 +169,17 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                 .setItems(arrList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        binding.tvRelation.setText(arrList[which]);
-                        binding.tvRelation.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        if (arrList[which].equals("직접입력")) {
+                            binding.groupRelationDirect.setVisibility(View.VISIBLE);
+                            binding.tvRelation.setText(arrList[which]);
+                            binding.tvRelation.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                            isDirect = true;
+                        } else {
+                            binding.groupRelationDirect.setVisibility(View.GONE);
+                            binding.tvRelation.setText(arrList[which]);
+                            binding.tvRelation.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                            isDirect = false;
+                        }
                         dialog.dismiss();
                     }
                 }).show();
@@ -178,6 +188,13 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
     private void modifyComplete() {
 
         strUserList = new ArrayList<>();
+
+        String strRelation = binding.tvRelation.getText().toString();
+
+        /* 관계 직접입력일 때 */
+        if (isDirect) {
+            strRelation = binding.etRelation.getText().toString();
+        }
 
         /**
          * 1. Preference 에 저장된 UserList 의 User 를 업데이트
@@ -188,14 +205,12 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
 //            addUser.setGender(userArrayList.get(i).getGender());
             addUser.setAge(userArrayList.get(i).getAge());
             addUser.setRelation(userArrayList.get(i).getRelation());
-//            addUser.setCurrent(userArrayList.get(i).isCurrent());
 
             if (user.getName().equals(userArrayList.get(i).getName())) {
                 addUser.setName(binding.etName.getText().toString());
 //                addUser.setGender(binding.tvGender.getText().toString());
                 addUser.setAge(binding.tvAge.getText().toString());
-                addUser.setRelation(binding.tvRelation.getText().toString());
-//                addUser.setCurrent(userArrayList.get(i).isCurrent());
+                addUser.setRelation(strRelation);
             }
 
             strUserList.add(addUser.toJSON());
@@ -224,6 +239,13 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                 break;
             case R.id.li_modify_complete:
 
+                String strRelation = binding.tvRelation.getText().toString();
+
+                /* 관계 직접입력일 때 */
+                if (isDirect) {
+                    strRelation = binding.etRelation.getText().toString();
+                }
+
                 if (fragment != null) {
 
                     if (eventListener != null) {
@@ -231,7 +253,7 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                         userItem.setName(binding.etName.getText().toString());
 //                        userItem.setGender(binding.tvGender.getText().toString());
                         userItem.setAge(binding.tvAge.getText().toString());
-                        userItem.setRelation(binding.tvRelation.getText().toString());
+                        userItem.setRelation(strRelation);
 
                         if (binding.etName.getText().toString().length() > 0) {
                             modifyComplete();

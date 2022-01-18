@@ -33,9 +33,10 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
 
     private ActivityAddUserBinding binding;
 
-//    private boolean isGender = false;
+    //    private boolean isGender = false;
     private boolean isAge = false;
     private boolean isRelation = false;
+    private boolean isDirect = false;
 
     private ArrayList<String> userList;
 
@@ -84,14 +85,19 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
         user.setName(binding.etName.getText().toString());
 //        user.setGender(binding.tvGender.getText().toString());
         user.setAge(binding.tvAge.getText().toString());
+
         user.setRelation(binding.tvRelation.getText().toString());
-//        user.setCurrent(isCurrent);
+
+        /* 관계 직접입력일 때 */
+        if (isDirect) {
+            user.setRelation(binding.etRelation.getText().toString());
+        }
+
 
         LogUtil.d("user /" + user.getName());
 //        LogUtil.d("user /" + user.getGender());
         LogUtil.d("user /" + user.getAge());
         LogUtil.d("user /" + user.getRelation());
-//        LogUtil.d("user /" + user.isCurrent());
 
 
         /**
@@ -152,8 +158,18 @@ public class AddUserActivity extends BaseActivity implements View.OnClickListene
                 .setItems(arrList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        binding.tvRelation.setText(arrList[which]);
-                        binding.tvRelation.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                        if (arrList[which].equals("직접입력")) {
+                            binding.groupRelationDirect.setVisibility(View.VISIBLE);
+                            binding.tvRelation.setText(arrList[which]);
+                            binding.tvRelation.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                            isDirect = true;
+                        } else {
+                            binding.groupRelationDirect.setVisibility(View.GONE);
+                            binding.tvRelation.setText(arrList[which]);
+                            binding.tvRelation.setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                            isDirect = false;
+                        }
+
                         isRelation = true;
                         dialog.dismiss();
                     }

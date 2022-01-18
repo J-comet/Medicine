@@ -192,7 +192,7 @@
         android:textColor="@color/color_a09d9d"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="@+id/et_name"
-        app:layout_constraintStart_toEndOf="@+id/textView1"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/view4" />
 
     <View
@@ -205,6 +205,47 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_relation" />
+
+    <EditText
+        android:id="@+id/et_relation"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:gravity="right|center_vertical"
+        android:hint="직접입력"
+        android:letterSpacing="0.05"
+        android:maxLength="10"
+        android:maxLines="1"
+        android:paddingRight="16dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/color_a09d9d"
+        android:textSize="16dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view5" />
+
+    <View
+        android:id="@+id/view6"
+        android:layout_width="0dp"
+        android:layout_height="0.7dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_relation" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_relation_direct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="et_relation,view6" />
 
 
     <LinearLayout
