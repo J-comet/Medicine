@@ -1,6 +1,7 @@
 package hs.project.medicine.activitys;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -176,7 +177,9 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                 });*/
                 break;
             case R.id.cl_add_alarm:
-                Toast.makeText(this,"알람 추가", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(UserDetailActivity.this, AddAlarmActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
                 break;
             case R.id.tv_delete:
                 displayDeleteUserDialog(userItem);

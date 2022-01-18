@@ -20,20 +20,15 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".activitys.UserDetailActivity"
-            android:exported="false"
-
-            />
+            android:exported="false" />
         <!--<activity
             android:name=".activitys.MapActivity"
             android:exported="false" />-->
         <activity
-            android:name=".activitys.UserListActivity"
-            android:exported="false" />
-        <activity
             android:name=".activitys.AddUserActivity"
             android:exported="false" />
         <activity
-            android:name=".activitys.SettingAlarmActivity"
+            android:name=".activitys.AddAlarmActivity"
             android:exported="false" />
         <activity
             android:name=".activitys.SplashActivity"
