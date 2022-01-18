@@ -5,48 +5,144 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="@color/color_main_red"
-        app:layout_constraintEnd_toEndOf="parent"
+    <NumberPicker
+        android:id="@+id/np_am_pm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:descendantFocusability="blocksDescendants"
+        android:scaleX="1.0"
+        android:scaleY="1.0"
+        android:selectionDividerHeight="0dp"
+        android:theme="@style/CustomNumberPickerStyle02"
+        app:layout_constraintEnd_toStartOf="@+id/np_hour"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <NumberPicker
+        android:id="@+id/np_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:selectionDividerHeight="0dp"
+        android:theme="@style/CustomNumberPickerStyle"
+        app:layout_constraintBottom_toBottomOf="@+id/np_am_pm"
+        app:layout_constraintEnd_toStartOf="@+id/np_minute"
+        app:layout_constraintStart_toEndOf="@+id/np_am_pm"
+        app:layout_constraintTop_toTopOf="@+id/np_am_pm" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=":"
+        android:textColor="@color/black"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/np_hour"
+        app:layout_constraintEnd_toStartOf="@+id/np_minute"
+        app:layout_constraintStart_toEndOf="@+id/np_hour"
+        app:layout_constraintTop_toTopOf="@+id/np_hour" />
+
+    <NumberPicker
+        android:id="@+id/np_minute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:descendantFocusability="blocksDescendants"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:selectionDividerHeight="0dp"
+        android:theme="@style/CustomNumberPickerStyle"
+        app:layout_constraintBottom_toBottomOf="@+id/np_hour"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/np_hour"
+        app:layout_constraintTop_toTopOf="@+id/np_hour" />
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/constraintLayout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="120dp"-->
+    <!--        android:background="@color/color_main_red"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
 
 
-        <LinearLayout
-            android:id="@+id/li_back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:gravity="center"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/li_back"-->
+    <!--            android:layout_width="50dp"-->
+    <!--            android:layout_height="50dp"-->
+    <!--            android:gravity="center"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent">-->
 
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_back"
-                app:tint="@color/white" />
+    <!--            <ImageView-->
+    <!--                android:layout_width="25dp"-->
+    <!--                android:layout_height="25dp"-->
+    <!--                android:src="@drawable/ic_back"-->
+    <!--                app:tint="@color/white" />-->
 
+    <!--        </LinearLayout>-->
 
-        </LinearLayout>
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="알람 등록"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:textSize="20dp"-->
+    <!--            android:textStyle="bold"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="알람 등록"
-            android:textColor="@color/white"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--    <TextView-->
+    <!--        android:id="@+id/textView"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="24dp"-->
+    <!--        android:text="알람 이름"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:textSize="16dp"-->
+    <!--        android:textStyle="bold"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@+id/et_name"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/et_name" />-->
 
+    <!--    <EditText-->
+    <!--        android:id="@+id/et_name"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="50dp"-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="32dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:background="@null"-->
+    <!--        android:gravity="right|center_vertical"-->
+    <!--        android:hint="알람 이름"-->
+    <!--        android:letterSpacing="0.05"-->
+    <!--        android:maxLength="10"-->
+    <!--        android:maxLines="1"-->
+    <!--        android:textSize="16dp"-->
+    <!--        android:paddingRight="16dp"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:textColorHint="@color/color_a09d9d"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.0"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />-->
 
+    <!--    <View-->
+    <!--        android:id="@+id/view"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0.7dp"-->
+    <!--        android:background="@android:color/darker_gray"-->
+    <!--        app:layout_constraintEnd_toEndOf="@+id/et_name"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/et_name"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/et_name" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <array name="arr_am_pm">
+        <item>오전</item>
+        <item>오후</item>
+    </array>
+
     <array name="arr_gender">
         <item>남자</item>
         <item>여자</item>
