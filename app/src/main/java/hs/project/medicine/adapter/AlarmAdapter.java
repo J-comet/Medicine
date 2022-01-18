@@ -19,6 +19,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
     private Context context;
     private ArrayList<Alarm> items = new ArrayList<>();
 
+    public AlarmAdapter(Context context) {
+        this.context = context;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,6 +42,15 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         return items.size();
     }
 
+
+    public void addAll(ArrayList<Alarm> itemArrayList) {
+        if (items != null) {
+            items.clear();
+        }
+        this.items.addAll(itemArrayList);
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ItemAlarmBinding itemBinding;
@@ -48,7 +61,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         }
 
         void bindItem(Alarm alarmItem) {
-
+            itemBinding.tvName.setText(alarmItem.getName());
+            itemBinding.tvAmPm.setText(alarmItem.getAmPm());
+            itemBinding.tvDayWeek.setText(alarmItem.getDayOfWeek());
+            itemBinding.tvTime.setText(alarmItem.getTime());
         }
     }
 }

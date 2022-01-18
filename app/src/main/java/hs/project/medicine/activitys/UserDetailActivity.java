@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +18,9 @@ import java.util.ArrayList;
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.adapter.AlarmAdapter;
 import hs.project.medicine.databinding.ActivityUserDetailBinding;
+import hs.project.medicine.datas.Alarm;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.dialog.ModifyUserDialog;
 import hs.project.medicine.util.LogUtil;
@@ -27,6 +30,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
     private ActivityUserDetailBinding binding;
     private User user;
+    private AlarmAdapter alarmAdapter;
+    private ArrayList<Alarm> alarmList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,25 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         super.onStart();
         user = (User) getIntent().getSerializableExtra("user");
         setData(user);
+
+        binding.rvUserAlarm.setVisibility(View.VISIBLE);
+
+        Alarm alarm = new Alarm();
+        alarm.setName("이름");
+        alarm.setAmPm("AM/PM");
+        alarm.setTime("시간");
+        alarm.setDayOfWeek("월화수목금토일");
+        alarm.setAlarmON(true);
+        alarm.setOk(true);
+
+        alarmList = new ArrayList<>();
+        alarmList.add(alarm);
+
+        alarmAdapter = new AlarmAdapter(this);
+        binding.rvUserAlarm.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        binding.rvUserAlarm.setAdapter(alarmAdapter);
+
+        alarmAdapter.addAll(alarmList);
     }
 
 
@@ -48,6 +72,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         binding.liBack.setOnClickListener(this);
         binding.tvProfileSetting.setOnClickListener(this);
         binding.tvDelete.setOnClickListener(this);
+        binding.clAddAlarm.setOnClickListener(this);
     }
 
     private void setData(User user) {
@@ -149,6 +174,9 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
                     }
                 });*/
+                break;
+            case R.id.cl_add_alarm:
+                Toast.makeText(this,"알람 추가", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_delete:
                 displayDeleteUserDialog(userItem);
