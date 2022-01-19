@@ -99,32 +99,34 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
             for (int i = 0; i < arrayList.size(); i++) {
                 if (sunday) {
-                    result = result + arrayList.get(0);
+                    result = result + arrayList.get(0) + " ";
                     sunday = false;
                 }
 
                 if (monday) {
-                    result = result + arrayList.get(1);
+                    result = result + arrayList.get(1) + " ";
                     monday = false;
                 }
 
                 if (tuesday) {
-                    result = result + arrayList.get(2);
+                    result = result + arrayList.get(2) + " ";
                     tuesday = false;
                 }
 
                 if (wednesday) {
-                    result = result + arrayList.get(3);
+                    result = result + arrayList.get(3) + " ";
                     wednesday = false;
                 }
 
                 if (thursday) {
-                    result = result + arrayList.get(4);
+                    result = result + arrayList.get(4) + " ";
+                    ;
                     thursday = false;
                 }
 
                 if (friday) {
-                    result = result + arrayList.get(5);
+                    result = result + arrayList.get(5) + " ";
+                    ;
                     friday = false;
                 }
 
