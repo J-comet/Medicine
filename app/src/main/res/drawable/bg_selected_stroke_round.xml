@@ -6,3 +6,5 @@
     <item android:drawable="@drawable/bg_stroke_round_color_main_red" android:state_focused="true" />
     <item android:drawable="@drawable/bg_stroke_round_color_main_red_gray" />
 </selector>
+
+

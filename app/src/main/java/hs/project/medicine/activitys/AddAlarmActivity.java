@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.NumberPicker;
 
+import java.util.ArrayList;
+
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityAddAlarmBinding;
 import hs.project.medicine.util.LogUtil;
@@ -24,6 +26,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void init() {
+        binding.liBack.setOnClickListener(this);
 
         String[] arrAmPm = getResources().getStringArray(R.array.arr_am_pm);
 
@@ -33,56 +36,26 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
         binding.npHour.setMinValue(1);
         binding.npHour.setMaxValue(12);
-        binding.npHour.setWrapSelectorWheel(false);
+        binding.npHour.setWrapSelectorWheel(true);
 
         binding.npMinute.setMinValue(0);
-        binding.npMinute.setMaxValue(11);
-        binding.npMinute.setWrapSelectorWheel(false);
-        binding.npMinute.setFormatter(new NumberPicker.Formatter() {
-            @Override
-            public String format(int value) {
-                switch(value){
-                    case 0:
-                        return "00";
-                    case 1:
-                        return "05";
-                    case 2:
-                        return "10";
-                    case 3:
-                        return "15";
-                    case 4:
-                        return "20";
-                    case 5:
-                        return "25";
-                    case 6:
-                        return "30";
-                    case 7:
-                        return "35";
-                    case 8:
-                        return "40";
-                    case 9:
-                        return "45";
-                    case 10:
-                        return "50";
-                    case 11:
-                        return "55";
-                }
-                return null;
-            }
-        });
+        binding.npMinute.setMaxValue(60);
+        binding.npMinute.setWrapSelectorWheel(true);
 
-//        binding.npMinute.setDisplayedValues(arrMinute);
-
-
-
+        ArrayList<String> integerArrayList = new ArrayList<>();
+        for (int i = 0; i < 61; i++) {
+            integerArrayList.add(String.format("%02d", i));
+        }
+        String[] array = integerArrayList.toArray(new String[integerArrayList.size()]);
+        binding.npMinute.setDisplayedValues(array);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.li_back:
-//                finish();
-//                break;
+            case R.id.li_back:
+                finish();
+                break;
         }
     }
 }
