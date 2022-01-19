@@ -109,6 +109,8 @@
         android:gravity="center"
         android:padding="12dp"
         android:text="일"
+        android:textIsSelectable="true"
+        android:clickable="true"
         android:textColor="@color/white"
         android:textSize="20dp"
         app:layout_constraintEnd_toStartOf="@+id/tv_monday"
