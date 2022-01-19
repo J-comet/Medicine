@@ -54,11 +54,13 @@
     <!-- NumberPicker Theme -->
     <style name="CustomNumberPickerStyle">
         <item name="android:textSize">35dp</item>
+        <item name="colorControlNormal">@android:color/transparent</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="CustomNumberPickerStyle02">
         <item name="android:textSize">22dp</item>
+        <item name="colorControlNormal">@android:color/transparent</item>
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 

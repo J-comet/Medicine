@@ -56,4 +56,7 @@ dependencies {
 
     // lottie animation
     implementation 'com.airbnb.android:lottie:3.4.0'
+
+    // numberPicker
+    implementation 'io.github.ShawnLin013:number-picker:2.4.13'
 }

@@ -45,6 +45,8 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         binding.tvFriday.setSelected(true);
         binding.tvSaturday.setSelected(true);
 
+        binding.tvWeek.setText("매일");
+
         String[] arrAmPm = getResources().getStringArray(R.array.arr_am_pm);
 
         binding.npAmPm.setMinValue(0);
@@ -75,19 +77,65 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void resultDayOfWeek(boolean sunday, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday) {
+    private String resultDayOfWeek(boolean sunday, boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday, boolean saturday) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add(binding.tvSunday.getText().toString());
+        arrayList.add(binding.tvMonday.getText().toString());
+        arrayList.add(binding.tvTuesday.getText().toString());
+        arrayList.add(binding.tvWednesday.getText().toString());
+        arrayList.add(binding.tvThursday.getText().toString());
+        arrayList.add(binding.tvFriday.getText().toString());
+        arrayList.add(binding.tvSaturday.getText().toString());
+
         String result = "";
 
         if (sunday && monday && tuesday && wednesday && thursday && friday && saturday) {
             result = "매일";
-        } else if (monday && tuesday && wednesday && thursday && friday) {
+        } else if (!sunday && !saturday) {
             result = "주중";
-        } else if (sunday && saturday) {
+        } else if (sunday && !monday && !tuesday && !wednesday && !thursday && !friday && saturday) {
             result = "주말";
         } else {
-            result = "none";
+
+            for (int i = 0; i < arrayList.size(); i++) {
+                if (sunday) {
+                    result = result + arrayList.get(0);
+                    sunday = false;
+                }
+
+                if (monday) {
+                    result = result + arrayList.get(1);
+                    monday = false;
+                }
+
+                if (tuesday) {
+                    result = result + arrayList.get(2);
+                    tuesday = false;
+                }
+
+                if (wednesday) {
+                    result = result + arrayList.get(3);
+                    wednesday = false;
+                }
+
+                if (thursday) {
+                    result = result + arrayList.get(4);
+                    thursday = false;
+                }
+
+                if (friday) {
+                    result = result + arrayList.get(5);
+                    friday = false;
+                }
+
+                if (saturday) {
+                    result = result + arrayList.get(6);
+                    saturday = false;
+                }
+            }
         }
 
+        return result;
     }
 
     @Override
@@ -102,6 +150,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     dayOfWeekStatus(true, binding.tvSunday);
                 }
+                binding.tvWeek.setText(
+                        resultDayOfWeek(binding.tvSunday.isSelected(), binding.tvMonday.isSelected(), binding.tvTuesday.isSelected()
+                                , binding.tvWednesday.isSelected(), binding.tvThursday.isSelected(), binding.tvFriday.isSelected(), binding.tvSaturday.isSelected()));
                 break;
             case R.id.tv_monday:
                 if (binding.tvMonday.isSelected()) {
@@ -109,6 +160,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     dayOfWeekStatus(true, binding.tvMonday);
                 }
+                binding.tvWeek.setText(
+                        resultDayOfWeek(binding.tvSunday.isSelected(), binding.tvMonday.isSelected(), binding.tvTuesday.isSelected()
+                                , binding.tvWednesday.isSelected(), binding.tvThursday.isSelected(), binding.tvFriday.isSelected(), binding.tvSaturday.isSelected()));
                 break;
             case R.id.tv_tuesday:
                 if (binding.tvTuesday.isSelected()) {
@@ -116,6 +170,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     dayOfWeekStatus(true, binding.tvTuesday);
                 }
+                binding.tvWeek.setText(
+                        resultDayOfWeek(binding.tvSunday.isSelected(), binding.tvMonday.isSelected(), binding.tvTuesday.isSelected()
+                                , binding.tvWednesday.isSelected(), binding.tvThursday.isSelected(), binding.tvFriday.isSelected(), binding.tvSaturday.isSelected()));
                 break;
             case R.id.tv_wednesday:
                 if (binding.tvWednesday.isSelected()) {
@@ -123,6 +180,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     dayOfWeekStatus(true, binding.tvWednesday);
                 }
+                binding.tvWeek.setText(
+                        resultDayOfWeek(binding.tvSunday.isSelected(), binding.tvMonday.isSelected(), binding.tvTuesday.isSelected()
+                                , binding.tvWednesday.isSelected(), binding.tvThursday.isSelected(), binding.tvFriday.isSelected(), binding.tvSaturday.isSelected()));
                 break;
             case R.id.tv_thursday:
                 if (binding.tvThursday.isSelected()) {
@@ -130,6 +190,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     dayOfWeekStatus(true, binding.tvThursday);
                 }
+                binding.tvWeek.setText(
+                        resultDayOfWeek(binding.tvSunday.isSelected(), binding.tvMonday.isSelected(), binding.tvTuesday.isSelected()
+                                , binding.tvWednesday.isSelected(), binding.tvThursday.isSelected(), binding.tvFriday.isSelected(), binding.tvSaturday.isSelected()));
                 break;
             case R.id.tv_friday:
                 if (binding.tvFriday.isSelected()) {
@@ -137,6 +200,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     dayOfWeekStatus(true, binding.tvFriday);
                 }
+                binding.tvWeek.setText(
+                        resultDayOfWeek(binding.tvSunday.isSelected(), binding.tvMonday.isSelected(), binding.tvTuesday.isSelected()
+                                , binding.tvWednesday.isSelected(), binding.tvThursday.isSelected(), binding.tvFriday.isSelected(), binding.tvSaturday.isSelected()));
                 break;
             case R.id.tv_saturday:
                 if (binding.tvSaturday.isSelected()) {
@@ -144,6 +210,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 } else {
                     dayOfWeekStatus(true, binding.tvSaturday);
                 }
+                binding.tvWeek.setText(
+                        resultDayOfWeek(binding.tvSunday.isSelected(), binding.tvMonday.isSelected(), binding.tvTuesday.isSelected()
+                                , binding.tvWednesday.isSelected(), binding.tvThursday.isSelected(), binding.tvFriday.isSelected(), binding.tvSaturday.isSelected()));
                 break;
         }
     }
