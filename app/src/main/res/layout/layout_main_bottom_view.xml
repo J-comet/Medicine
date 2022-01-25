@@ -31,8 +31,8 @@
 
             <ImageView
                 android:id="@+id/iv_home"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_home"
                 app:layout_constraintBottom_toTopOf="@+id/tv_home"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/str_bottom_menu_home"
+                android:visibility="gone"
                 android:textSize="11dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -65,8 +66,8 @@
 
             <ImageView
                 android:id="@+id/iv_search"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_search"
                 app:layout_constraintBottom_toTopOf="@+id/tv_search"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -81,6 +82,7 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/str_bottom_menu_search"
                 android:textSize="11dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -100,8 +102,8 @@
 
             <ImageView
                 android:id="@+id/iv_map"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_place"
                 app:layout_constraintBottom_toTopOf="@+id/tv_map"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -116,6 +118,7 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/str_bottom_menu_map"
                 android:textSize="11dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -136,8 +139,8 @@
 
             <ImageView
                 android:id="@+id/iv_user_list"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_person"
                 app:layout_constraintBottom_toTopOf="@+id/tv_user_list"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -152,6 +155,7 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/str_bottom_menu_user_list"
                 android:textSize="11dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
