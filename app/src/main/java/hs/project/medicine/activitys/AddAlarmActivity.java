@@ -48,8 +48,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
     private void init() {
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        firstUriRingtone = Uri.parse("content://media/internal/audio/media/33?title=Bubble&canonical=1");  // Bubble 로 처음 유저 설정
+        firstUriRingtone = Uri.parse("content://media/internal/audio/media/37");  // 기본벨소리 설정
         mRtCurrent = RingtoneManager.getRingtone(this, firstUriRingtone);
+        binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(this));
 
         // 음량값 받기
         int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
@@ -327,6 +328,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         super.onPause();
 
         stopRingtone();
+        binding.ivPlayStop.setImageResource(R.drawable.ic_play);
     }
 
     @Override
@@ -337,6 +339,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.cl_bell_choice:
                 stopRingtone();
+                binding.ivPlayStop.setImageResource(R.drawable.ic_play);
                 showRingtoneChooser();
                 break;
             case R.id.li_play_stop:
