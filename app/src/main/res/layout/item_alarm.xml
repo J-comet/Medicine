@@ -100,14 +100,35 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:gravity="right"
-            android:textSize="13dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
             android:textColor="@drawable/selector_alarm"
+            android:textSize="13dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/switch_view"
+            app:layout_constraintEnd_toStartOf="@+id/li_modify"
             app:layout_constraintStart_toEndOf="@+id/tv_time"
             app:layout_constraintTop_toBottomOf="@+id/view_diver"
             tools:text="월 화 수 목 금 토 일" />
+
+
+        <LinearLayout
+            android:id="@+id/li_modify"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/switch_view"
+            app:layout_constraintTop_toBottomOf="@+id/view_diver">
+
+            <ImageView
+                android:id="@+id/iv_modify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_pencil"
+                app:tint="@drawable/selector_alarm" />
+
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

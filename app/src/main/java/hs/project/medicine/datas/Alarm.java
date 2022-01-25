@@ -5,7 +5,9 @@ import android.net.Uri;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Alarm {
+import java.io.Serializable;
+
+public class Alarm implements Serializable {
     String name;    // 두통
     String amPm;    // 오전 or 오후
     String dayOfWeek;   // 요일

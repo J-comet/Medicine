@@ -24,6 +24,7 @@ import hs.project.medicine.adapter.AlarmAdapter;
 import hs.project.medicine.databinding.ActivityUserDetailBinding;
 import hs.project.medicine.datas.Alarm;
 import hs.project.medicine.datas.User;
+import hs.project.medicine.dialog.ModifyAlarmDialog;
 import hs.project.medicine.dialog.ModifyUserDialog;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
@@ -92,7 +93,21 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         setData(user);
 
         alarmAdapter = new AlarmAdapter(this);
-        binding.rvUserAlarm.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
+        alarmAdapter.setOnModifyEventListener(new AlarmAdapter.OnModifyEventListener() {
+            @Override
+            public void onModifyClick(View view, int position) {
+                ModifyAlarmDialog modifyAlarmDialog = new ModifyAlarmDialog(UserDetailActivity.this, alarmList.get(position));
+                modifyAlarmDialog.setModifyAlarmListener(new ModifyAlarmDialog.ModifyAlarmListener() {
+                    @Override
+                    public void onComplete(Alarm alarm) {
+
+                    }
+                });
+                modifyAlarmDialog.show(getSupportFragmentManager(), "modifyAlarmDialog");
+            }
+        });
+
+        binding.rvUserAlarm.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         binding.rvUserAlarm.setAdapter(alarmAdapter);
 
         binding.liBack.setOnClickListener(this);
@@ -185,14 +200,14 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
         switch (v.getId()) {
             case R.id.tv_profile_setting:
-                ModifyUserDialog dialog = new ModifyUserDialog(this, userItem);
-                dialog.setModifyUserListener(new ModifyUserDialog.ModifyUserListener() {
+                ModifyUserDialog modifyUserDialog = new ModifyUserDialog(this, userItem);
+                modifyUserDialog.setModifyUserListener(new ModifyUserDialog.ModifyUserListener() {
                     @Override
                     public void onComplete(User user) {
                         setData(user);
                     }
                 });
-                dialog.show(getSupportFragmentManager(),"modifyUserDialog");
+                modifyUserDialog.show(getSupportFragmentManager(), "modifyUserDialog");
                 /*getFragmentManager().executePendingTransactions();
                 dialog.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override

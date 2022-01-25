@@ -1,6 +1,7 @@
 package hs.project.medicine.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import hs.project.medicine.R;
+import hs.project.medicine.activitys.UserDetailActivity;
 import hs.project.medicine.databinding.ItemAlarmBinding;
 import hs.project.medicine.datas.Alarm;
+import hs.project.medicine.datas.User;
+import hs.project.medicine.dialog.ModifyUserDialog;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> {
 
@@ -23,6 +27,16 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
     public AlarmAdapter(Context context) {
         this.context = context;
     }
+
+    public interface OnModifyEventListener {
+        void onModifyClick(View view, int position);
+    }
+
+    public void setOnModifyEventListener(OnModifyEventListener modifyEventListener) {
+        this.eventListener = modifyEventListener;
+    }
+
+    private OnModifyEventListener eventListener;
 
     @NonNull
     @Override
@@ -73,29 +87,44 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
                 itemBinding.tvDayWeek.setSelected(true);
                 itemBinding.tvTime.setSelected(true);
                 itemBinding.ivAlarm.setSelected(true);
+                itemBinding.ivModify.setSelected(true);
             } else {
                 itemBinding.tvName.setSelected(false);
                 itemBinding.tvAmPm.setSelected(false);
                 itemBinding.tvDayWeek.setSelected(false);
                 itemBinding.tvTime.setSelected(false);
                 itemBinding.ivAlarm.setSelected(false);
+                itemBinding.ivModify.setSelected(false);
             }
 
             itemBinding.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                     if (isChecked) {
                         itemBinding.tvName.setSelected(true);
                         itemBinding.tvAmPm.setSelected(true);
                         itemBinding.tvDayWeek.setSelected(true);
                         itemBinding.tvTime.setSelected(true);
                         itemBinding.ivAlarm.setSelected(true);
+                        itemBinding.ivModify.setSelected(true);
                     } else {
                         itemBinding.tvName.setSelected(false);
                         itemBinding.tvAmPm.setSelected(false);
                         itemBinding.tvDayWeek.setSelected(false);
                         itemBinding.tvTime.setSelected(false);
                         itemBinding.ivAlarm.setSelected(false);
+                        itemBinding.ivModify.setSelected(false);
+                    }
+                }
+            });
+
+            itemBinding.liModify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        eventListener.onModifyClick(v, position);
                     }
                 }
             });
