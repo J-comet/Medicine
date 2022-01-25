@@ -1,7 +1,12 @@
 package hs.project.medicine.activitys;
 
+import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -18,6 +23,11 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
     private ActivityAddAlarmBinding binding;
 
+    private String strRingtoneUri;
+    private final static int REQUEST_CODE_RINGTONE_PICKER = 1000;
+    private RingtoneManager mRtm; // 현재 재생중인 링톤
+    private Ringtone mRtCurrent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +39,8 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
     private void init() {
         binding.liBack.setOnClickListener(this);
+        binding.clBellChoice.setOnClickListener(this);
+
         binding.tvSunday.setOnClickListener(this);
         binding.tvMonday.setOnClickListener(this);
         binding.tvTuesday.setOnClickListener(this);
@@ -140,12 +152,95 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         return result;
     }
 
+    //-- 링톤을 재생하는 함수
+    private void startRingtone(Uri uriRingtone) {
+        this.releaseRingtone();
+        try {
+            mRtCurrent = mRtm.getRingtone(this, uriRingtone);
+            if (mRtCurrent == null) {
+                throw new Exception("Can't play ringtone");
+            }
+//            m_tvRingtoneUri.setText(uriRingtone.toString());
+            binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(this));
+            mRtCurrent.play();
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            LogUtil.e("AddAlarmActivity" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    //-- 재생중인 링톤을 중지 하는 함수
+    private void releaseRingtone() {
+        if (mRtCurrent != null) {
+            if (mRtCurrent.isPlaying()) {
+                mRtCurrent.stop();
+                mRtCurrent = null;
+            }
+        }
+//        m_tvRingtoneUri.setText("Choose Ringtone");
+//        m_tvRingtoneTitle.setText("");
+    }
+
+    // 벨소리 선택
+    private void showRingtoneChooser() {
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "알람소리 선택");
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL); //-- 알림 선택창이 떴을 때, 기본값으로 선택되어질 ringtone 설정
+
+        if (strRingtoneUri != null && strRingtoneUri.isEmpty()) {
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(strRingtoneUri));
+        }
+        startActivityForResult(intent, REQUEST_CODE_RINGTONE_PICKER);
+    }
+
+    //-- 알림선택창에서 넘어온 데이터를 처리하는 코드
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_RINGTONE_PICKER) {
+            if (resultCode == RESULT_OK) { // -- 알림음 재생하는 코드 -- //
+
+                Uri ring = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                if (ring != null) {
+                    strRingtoneUri = ring.toString();
+
+                    try {
+                        mRtCurrent = RingtoneManager.getRingtone(this, ring);
+                        if (mRtCurrent == null) {
+                            throw new Exception("Can't play ringtone");
+                        }
+                        binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(this));
+//                        mRtCurrent.play();
+                    } catch (Exception e) {
+                        Toast.makeText(this, "오류 발생", Toast.LENGTH_SHORT).show();
+                        LogUtil.e("AddAlarmActivity" + e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                } else if (!binding.tvRingtoneTitle.getText().equals("Telepathy")) {
+                    /* 이전에 다른 소리를 선택한 후 다음 선택할 때 아무것도 선택하지 않은 유저라면 이전에 선택했던 소리로 세팅 */
+
+                } else {
+                    strRingtoneUri = null;
+                    binding.tvRingtoneTitle.setText("Telepathy");
+                }
+            }
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.li_back:
                 finish();
                 break;
+            case R.id.cl_bell_choice:
+                showRingtoneChooser();
+                break;
+
             case R.id.tv_sunday:
                 if (binding.tvSunday.isSelected()) {
                     dayOfWeekStatus(false, binding.tvSunday);
