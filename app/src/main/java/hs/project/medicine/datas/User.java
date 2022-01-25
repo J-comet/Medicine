@@ -44,6 +44,12 @@ public class User implements Serializable {
         this.relation = relation;
     }
 
+    /* 유저 구분을 위한 알람 키 */
+    public String userAlarmKey() {
+        String result = name + "/" + relation;
+        return  result;
+    }
+
     public String toJSON() {
 
         JSONObject jsonObject = new JSONObject();
