@@ -47,6 +47,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
+        user = (User) getIntent().getSerializableExtra("user");
+        setData(user);
 
         alarmList = new ArrayList<>();
 
@@ -89,9 +91,6 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void init() {
-        user = (User) getIntent().getSerializableExtra("user");
-        setData(user);
-
         alarmAdapter = new AlarmAdapter(this);
         alarmAdapter.setOnModifyEventListener(new AlarmAdapter.OnModifyEventListener() {
             @Override
