@@ -5,27 +5,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="120dp"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="16dp"
     android:layout_marginRight="8dp"
     android:layout_marginLeft="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="0dp"
+    app:cardCornerRadius="9dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_baseline_alarm"
+            app:layout_constraintBottom_toTopOf="@+id/view_diver"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/color_a09d9d" />
+
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:textSize="16dp"
-            android:maxLines="1"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="18dp"
             app:layout_constraintBottom_toTopOf="@+id/view_diver"
             app:layout_constraintEnd_toStartOf="@+id/switch_view"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView3"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="두통" />
 
@@ -48,8 +60,8 @@
             android:id="@+id/view_diver"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:background="@color/color_a09d9d"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +73,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:textSize="12dp"
+            android:textSize="16dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_diver"
@@ -71,8 +84,9 @@
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:textSize="16dp"
+            android:layout_marginStart="8dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_am_pm"
             app:layout_constraintTop_toBottomOf="@+id/view_diver"
@@ -82,13 +96,14 @@
             android:id="@+id/tv_day_week"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:gravity="right"
-            android:textSize="16dp"
+            android:textSize="13dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/switch_view"
             app:layout_constraintStart_toEndOf="@+id/tv_time"
             app:layout_constraintTop_toBottomOf="@+id/view_diver"
-            tools:text="월,화,수,목,금,토,일" />
+            tools:text="월 화 수 목 금 토 일" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

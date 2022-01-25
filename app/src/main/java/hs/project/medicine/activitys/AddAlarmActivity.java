@@ -324,18 +324,17 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                     JSONObject object = new JSONObject(jsonArray.getString(i));
 
                     if (object.getString("name").equals(binding.etName.getText().toString())) {
-                        Toast.makeText(this,"이미 저장되어 있는 알람 이름 입니다", Toast.LENGTH_SHORT).show();
                         isSuccess = false;
                     } else {
                         isSuccess = true;
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+        } else {
+            isSuccess = true;
         }
-
         return isSuccess;
     }
 
@@ -424,18 +423,21 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                         Alarm alarm = new Alarm();
                         alarm.setName(binding.etName.getText().toString());
                         alarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
-                        alarm.setTime(binding.npHour.getValue() + "^" + binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);
+                        alarm.setHour(String.valueOf(binding.npHour.getValue()));
+                        alarm.setMinute(binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);
                         alarm.setRingtoneUri(Uri.parse(strRingtoneUri));
                         alarm.setDayOfWeek(binding.tvWeek.getText().toString());
                         alarm.setAlarmON(true);
 
                         registerAlarm(alarm);
+                        finish();
+
                     } else {
                         Toast.makeText(this, "알람 이름을 입력해주세요", Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    Toast.makeText(this, "이미 저장된 알람 이름 입니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "이미 저장되어 있는 알람 이름 입니다", Toast.LENGTH_SHORT).show();
                 }
 
                 break;

@@ -9,7 +9,8 @@ public class Alarm {
     String name;    // 두통
     String amPm;    // 오전 or 오후
     String dayOfWeek;   // 요일
-    String time;    // 6:00
+    String hour;
+    String minute;
     Uri ringtoneUri;  // Uri.parse("content://media/internal/audio/media/37")
     boolean alarmON;    // 스위치 ON or OFF
 //    boolean isOk;   // 오늘 약 먹었는지 체크
@@ -38,14 +39,6 @@ public class Alarm {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
     public boolean isAlarmON() {
         return alarmON;
     }
@@ -62,7 +55,23 @@ public class Alarm {
         this.ringtoneUri = ringtoneUri;
     }
 
-//    public boolean isOk() {
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
+
+    public String getMinute() {
+        return minute;
+    }
+
+    public void setMinute(String minute) {
+        this.minute = minute;
+    }
+
+    //    public boolean isOk() {
 //        return isOk;
 //    }
 //
@@ -78,7 +87,8 @@ public class Alarm {
             jsonObject.put("name", getName());
             jsonObject.put("amPm", getAmPm());
             jsonObject.put("dayOfWeek", getDayOfWeek());
-            jsonObject.put("time", getTime());
+            jsonObject.put("hour", getHour());
+            jsonObject.put("minute", getMinute());
             jsonObject.put("ringtoneUri", getRingtoneUri());
             jsonObject.put("alarmON", isAlarmON());
             return jsonObject.toString();

@@ -46,31 +46,55 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        user = (User) getIntent().getSerializableExtra("user");
-        setData(user);
-
-        binding.rvUserAlarm.setVisibility(View.VISIBLE);
-
-        Alarm alarm = new Alarm();
-        alarm.setName("이름");
-        alarm.setAmPm("오전");
-        alarm.setTime("12:00");
-        alarm.setDayOfWeek("월,화,수,목,금,토,일");
-        alarm.setAlarmON(true);
-        alarm.setRingtoneUri(Uri.parse("content://media/internal/audio/media/37"));
 
         alarmList = new ArrayList<>();
-        alarmList.add(alarm);
+
+        /* 해당 유저에 저장되어 있는 알람리스트 가져오기 */
+        if (PreferenceUtil.getJSONArrayPreference(this, user.userAlarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(this, user.userAlarmKey()).size() > 0) {
+
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, user.userAlarmKey()));
+
+            try {
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Alarm alarm = new Alarm();
+                    JSONObject object = new JSONObject(jsonArray.getString(i));
+                    alarm.setName(object.getString("name"));
+                    alarm.setAmPm(object.getString("amPm"));
+                    alarm.setHour(object.getString("hour"));
+                    alarm.setMinute(object.getString("minute"));
+                    alarm.setRingtoneUri(Uri.parse(object.getString("ringtoneUri")));
+                    alarm.setDayOfWeek(object.getString("dayOfWeek"));
+                    alarm.setAlarmON(object.getBoolean("alarmON"));
+
+                    LogUtil.d("alarm /" + alarm.getName());
+
+                    alarmList.add(alarm);
+                }
+
+                alarmAdapter.addAll(alarmList);
+                binding.rvUserAlarm.setVisibility(View.VISIBLE);
+                binding.tvNone.setVisibility(View.GONE);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            binding.tvNone.setVisibility(View.VISIBLE);
+            binding.rvUserAlarm.setVisibility(View.GONE);
+        }
+    }
+
+    private void init() {
+        user = (User) getIntent().getSerializableExtra("user");
+        setData(user);
 
         alarmAdapter = new AlarmAdapter(this);
         binding.rvUserAlarm.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false));
         binding.rvUserAlarm.setAdapter(alarmAdapter);
 
-        alarmAdapter.addAll(alarmList);
-    }
-
-
-    private void init() {
         binding.liBack.setOnClickListener(this);
         binding.tvProfileSetting.setOnClickListener(this);
         binding.tvDelete.setOnClickListener(this);

@@ -64,7 +64,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
             itemBinding.tvName.setText(alarmItem.getName());
             itemBinding.tvAmPm.setText(alarmItem.getAmPm());
             itemBinding.tvDayWeek.setText(alarmItem.getDayOfWeek());
-            itemBinding.tvTime.setText(alarmItem.getTime());
+            itemBinding.tvTime.setText(alarmItem.getHour() + " : " + alarmItem.getMinute());
         }
     }
 }
