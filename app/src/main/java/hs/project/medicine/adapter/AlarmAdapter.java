@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,6 +66,39 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
             itemBinding.tvAmPm.setText(alarmItem.getAmPm());
             itemBinding.tvDayWeek.setText(alarmItem.getDayOfWeek());
             itemBinding.tvTime.setText(alarmItem.getHour() + " : " + alarmItem.getMinute());
+
+            if (alarmItem.isAlarmON()) {
+                itemBinding.tvName.setSelected(true);
+                itemBinding.tvAmPm.setSelected(true);
+                itemBinding.tvDayWeek.setSelected(true);
+                itemBinding.tvTime.setSelected(true);
+                itemBinding.ivAlarm.setSelected(true);
+            } else {
+                itemBinding.tvName.setSelected(false);
+                itemBinding.tvAmPm.setSelected(false);
+                itemBinding.tvDayWeek.setSelected(false);
+                itemBinding.tvTime.setSelected(false);
+                itemBinding.ivAlarm.setSelected(false);
+            }
+
+            itemBinding.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        itemBinding.tvName.setSelected(true);
+                        itemBinding.tvAmPm.setSelected(true);
+                        itemBinding.tvDayWeek.setSelected(true);
+                        itemBinding.tvTime.setSelected(true);
+                        itemBinding.ivAlarm.setSelected(true);
+                    } else {
+                        itemBinding.tvName.setSelected(false);
+                        itemBinding.tvAmPm.setSelected(false);
+                        itemBinding.tvDayWeek.setSelected(false);
+                        itemBinding.tvTime.setSelected(false);
+                        itemBinding.ivAlarm.setSelected(false);
+                    }
+                }
+            });
         }
     }
 }
