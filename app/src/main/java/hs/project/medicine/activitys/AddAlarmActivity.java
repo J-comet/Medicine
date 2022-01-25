@@ -12,8 +12,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import hs.project.medicine.Config;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityAddAlarmBinding;
 import hs.project.medicine.datas.Alarm;
@@ -37,6 +42,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     private User currentUser;
 
     private ArrayList<String> alarmList;
+    private boolean isSuccess = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,16 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
     private void init() {
         currentUser = (User) getIntent().getSerializableExtra("user");
+
+        /* 기존에 저장되어 있는 Preference 가 있는지 확인하기 */
+        if (PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey()).size() > 0) {
+            alarmList = PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey());
+        } else {
+            alarmList = new ArrayList<>();
+        }
+
+
         strRingtoneUri = "content://media/internal/audio/media/37";
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -283,26 +299,44 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     }
 
     /*
-    *   1. Preference 에 Alarm 을 저장 (유저의 이름 + 관계 값으로 알람을 비교)
-    *   2. RecyclerView 에 추가
-    *   3. RecyclerView 출력
-    * */
+     *   1. Preference 에 Alarm 을 저장 (유저의 이름 + 관계 값으로 알람을 비교)
+     *   2. RecyclerView 에 추가
+     *   3. RecyclerView 출력
+     * */
     private void registerAlarm(Alarm alarm) {
-
-        /* 기존에 저장되어 있는 Preference 가 있는지 확인하기 */
-        if (PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey()) != null
-                && PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey()).size() > 0) {
-            alarmList = PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey());
-        } else {
-            alarmList = new ArrayList<>();
-        }
-
         alarmList.add(alarm.toJSON());
 
         // Preference 에 저장
         PreferenceUtil.setJSONArrayPreference(this, currentUser.userAlarmKey(), alarmList);
 
         Toast.makeText(this, "알람 등록완료", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean checkAlarmName() {
+        /* 해당 유저의 알람중에 같은 알람이 있는지 검사하는 코드 */
+        if (PreferenceUtil.getJSONArrayPreference(this, currentUser.userAlarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(this, currentUser.userAlarmKey()).size() > 0) {
+
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, currentUser.userAlarmKey()));
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    JSONObject object = new JSONObject(jsonArray.getString(i));
+
+                    if (object.getString("name").equals(binding.etName.getText().toString())) {
+                        Toast.makeText(this,"이미 저장되어 있는 알람 이름 입니다", Toast.LENGTH_SHORT).show();
+                        isSuccess = false;
+                    } else {
+                        isSuccess = true;
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return isSuccess;
     }
 
 
@@ -360,7 +394,6 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 //        return false;
 //    }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -385,21 +418,26 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.li_complete:
 
-                /* 해당 유저의 알람중에 같은 알람이 있는지 검사하는 코드 작성 필요 */
-                if (binding.etName.getText().length() > 0) {
+                if (checkAlarmName()) {
 
-                    Alarm alarm = new Alarm();
-                    alarm.setName(binding.etName.getText().toString());
-                    alarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
-                    alarm.setTime(binding.npHour.getValue() + "^" + binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);
-                    alarm.setRingtoneUri(Uri.parse(strRingtoneUri));
-                    alarm.setDayOfWeek(binding.tvWeek.getText().toString());
-                    alarm.setAlarmON(true);
+                    if (binding.etName.getText().length() > 0) {
+                        Alarm alarm = new Alarm();
+                        alarm.setName(binding.etName.getText().toString());
+                        alarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
+                        alarm.setTime(binding.npHour.getValue() + "^" + binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);
+                        alarm.setRingtoneUri(Uri.parse(strRingtoneUri));
+                        alarm.setDayOfWeek(binding.tvWeek.getText().toString());
+                        alarm.setAlarmON(true);
 
-                    registerAlarm(alarm);
+                        registerAlarm(alarm);
+                    } else {
+                        Toast.makeText(this, "알람 이름을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
-                    Toast.makeText(this, "알람 이름을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "이미 저장된 알람 이름 입니다", Toast.LENGTH_SHORT).show();
                 }
+
                 break;
             case R.id.tv_sunday:
                 if (binding.tvSunday.isSelected()) {
