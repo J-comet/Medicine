@@ -162,6 +162,12 @@ public class PreferenceUtil {
         return list;
     }
 
+    public static void removeKey(Context context, String key) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.remove(key);
+        edit.apply();
+    }
 
 
     /*public static void setUserInfo(Context context, String key, User user) {

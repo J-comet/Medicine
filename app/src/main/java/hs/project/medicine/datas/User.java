@@ -45,7 +45,7 @@ public class User implements Serializable {
     }
 
     /* 유저 구분을 위한 알람 키 */
-    public String userAlarmKey() {
+    public String alarmKey() {
         String result = name + "/" + relation;
         return  result;
     }

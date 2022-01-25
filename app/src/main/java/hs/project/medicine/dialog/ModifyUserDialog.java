@@ -2,6 +2,7 @@ package hs.project.medicine.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,9 @@ import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.DialogModifyUserBinding;
+import hs.project.medicine.datas.Alarm;
 import hs.project.medicine.datas.User;
+import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
 public class ModifyUserDialog extends DialogFragment implements View.OnClickListener {
@@ -34,7 +37,10 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
     private Context context;
     private User user;
     private ArrayList<String> strUserList;
+    private ArrayList<String> strAlarmList;
+
     private ArrayList<User> userArrayList; // Preference 에 저장할 유저 정보
+    private ArrayList<Alarm> alarmArrayList; // Preference 에 저장할 알람 정보
     private Fragment fragment;
     private ModifyUserListener eventListener;
     private boolean isDirect = false;
@@ -45,7 +51,7 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
     }
 
     public void setModifyUserListener(ModifyUserListener dialogResult) {
-        eventListener = dialogResult;
+        this.eventListener = dialogResult;
     }
 
     public interface ModifyUserListener {
@@ -185,7 +191,7 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                 }).show();
     }
 
-    private void modifyComplete() {
+    private void modifyUserComplete() {
 
         strUserList = new ArrayList<>();
 
@@ -222,6 +228,52 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
         Toast.makeText(context, "수정완료", Toast.LENGTH_SHORT).show();
     }
 
+    /* 기존 유저정보의 알람데이터 가져오기 */
+    private ArrayList<String> getAlarmList(User user) {
+//        alarmArrayList = new ArrayList<>();
+        strAlarmList = new ArrayList<>();
+
+        if (PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()).size() > 0) {
+
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()));
+
+            try {
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Alarm alarm = new Alarm();
+                    JSONObject object = new JSONObject(jsonArray.getString(i));
+                    alarm.setName(object.getString("name"));
+                    alarm.setAmPm(object.getString("amPm"));
+                    alarm.setHour(object.getString("hour"));
+                    alarm.setMinute(object.getString("minute"));
+                    alarm.setRingtoneUri(Uri.parse(object.getString("ringtoneUri")));
+                    alarm.setDayOfWeek(object.getString("dayOfWeek"));
+                    alarm.setAlarmON(object.getBoolean("alarmON"));
+
+                    LogUtil.d("alarm /" + alarm.getName());
+                    strAlarmList.add(alarm.toJSON());
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return strAlarmList;
+    }
+
+    private void modifyAlarmKey(User user, User modifyUser) {
+        /**
+         *  1. 수정된 유저의 Key 로 저장되어 있던 알람 정보 새로 저장
+         *  2. 기존 유저의 알람정보 삭제
+         */
+
+        PreferenceUtil.setJSONArrayPreference(context, modifyUser.alarmKey(), getAlarmList(user));
+        PreferenceUtil.removeKey(context, user.alarmKey());
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -249,15 +301,16 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                 if (fragment != null) {
 
                     if (eventListener != null) {
-                        User userItem = new User();
-                        userItem.setName(binding.etName.getText().toString());
+                        User modifyUser = new User();
+                        modifyUser.setName(binding.etName.getText().toString());
 //                        userItem.setGender(binding.tvGender.getText().toString());
-                        userItem.setAge(binding.tvAge.getText().toString());
-                        userItem.setRelation(strRelation);
+                        modifyUser.setAge(binding.tvAge.getText().toString());
+                        modifyUser.setRelation(strRelation);
 
                         if (binding.etName.getText().toString().length() > 0) {
-                            modifyComplete();
-                            eventListener.onComplete(userItem);
+                            modifyUserComplete();
+                            modifyAlarmKey(user, modifyUser);
+                            eventListener.onComplete(modifyUser);
 
                             dismiss();
 //                            DialogFragment dialogFragment = (DialogFragment) fragment;

@@ -59,9 +59,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         currentUser = (User) getIntent().getSerializableExtra("user");
 
         /* 기존에 저장되어 있는 Preference 가 있는지 확인하기 */
-        if (PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey()) != null
-                && PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey()).size() > 0) {
-            alarmList = PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.userAlarmKey());
+        if (PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.alarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.alarmKey()).size() > 0) {
+            alarmList = PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, currentUser.alarmKey());
         } else {
             alarmList = new ArrayList<>();
         }
@@ -307,17 +307,17 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         alarmList.add(alarm.toJSON());
 
         // Preference 에 저장
-        PreferenceUtil.setJSONArrayPreference(this, currentUser.userAlarmKey(), alarmList);
+        PreferenceUtil.setJSONArrayPreference(this, currentUser.alarmKey(), alarmList);
 
         Toast.makeText(this, "알람 등록완료", Toast.LENGTH_SHORT).show();
     }
 
     private boolean checkAlarmName() {
         /* 해당 유저의 알람중에 같은 알람이 있는지 검사하는 코드 */
-        if (PreferenceUtil.getJSONArrayPreference(this, currentUser.userAlarmKey()) != null
-                && PreferenceUtil.getJSONArrayPreference(this, currentUser.userAlarmKey()).size() > 0) {
+        if (PreferenceUtil.getJSONArrayPreference(this, currentUser.alarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(this, currentUser.alarmKey()).size() > 0) {
 
-            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, currentUser.userAlarmKey()));
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, currentUser.alarmKey()));
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {

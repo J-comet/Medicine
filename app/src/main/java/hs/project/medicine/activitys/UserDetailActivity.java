@@ -51,10 +51,10 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         alarmList = new ArrayList<>();
 
         /* 해당 유저에 저장되어 있는 알람리스트 가져오기 */
-        if (PreferenceUtil.getJSONArrayPreference(this, user.userAlarmKey()) != null
-                && PreferenceUtil.getJSONArrayPreference(this, user.userAlarmKey()).size() > 0) {
+        if (PreferenceUtil.getJSONArrayPreference(this, user.alarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(this, user.alarmKey()).size() > 0) {
 
-            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, user.userAlarmKey()));
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, user.alarmKey()));
 
             try {
 
