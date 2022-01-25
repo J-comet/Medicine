@@ -202,7 +202,7 @@
                 android:text="일"
                 android:textColor="@color/white"
                 android:textIsSelectable="true"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 app:layout_constraintEnd_toStartOf="@+id/tv_monday"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView18" />
@@ -217,7 +217,7 @@
                 android:padding="12dp"
                 android:text="월"
                 android:textColor="@color/white"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_sunday"
                 app:layout_constraintEnd_toStartOf="@+id/tv_tuesday"
                 app:layout_constraintStart_toEndOf="@+id/tv_sunday"
@@ -233,7 +233,7 @@
                 android:padding="12dp"
                 android:text="화"
                 android:textColor="@color/white"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_monday"
                 app:layout_constraintEnd_toStartOf="@+id/tv_wednesday"
                 app:layout_constraintStart_toEndOf="@+id/tv_monday"
@@ -249,7 +249,7 @@
                 android:padding="12dp"
                 android:text="수"
                 android:textColor="@color/white"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_tuesday"
                 app:layout_constraintEnd_toStartOf="@+id/tv_thursday"
                 app:layout_constraintStart_toEndOf="@+id/tv_tuesday"
@@ -265,7 +265,7 @@
                 android:padding="12dp"
                 android:text="목"
                 android:textColor="@color/white"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_wednesday"
                 app:layout_constraintEnd_toStartOf="@+id/tv_friday"
                 app:layout_constraintStart_toEndOf="@+id/tv_wednesday"
@@ -281,7 +281,7 @@
                 android:padding="12dp"
                 android:text="금"
                 android:textColor="@color/white"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_thursday"
                 app:layout_constraintEnd_toStartOf="@+id/tv_saturday"
                 app:layout_constraintStart_toEndOf="@+id/tv_thursday"
@@ -297,7 +297,7 @@
                 android:padding="12dp"
                 android:text="토"
                 android:textColor="@color/white"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_friday"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_friday"
@@ -329,7 +329,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:background="@drawable/bg_round_03"
+            android:background="@drawable/bg_top_round_01"
             android:paddingLeft="16dp"
             android:paddingTop="12dp"
             android:paddingRight="16dp"
@@ -353,15 +353,17 @@
                 android:id="@+id/tv_ringtone_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Telepathy"
+                android:text="Bubble"
                 android:textColor="@color/color_main_red"
                 android:textSize="16dp"
                 app:layout_constraintStart_toStartOf="@+id/textView1"
                 app:layout_constraintTop_toBottomOf="@+id/textView1" />
 
+
             <ImageView
+                android:id="@+id/imageView2"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_arrow_right"
@@ -369,6 +371,75 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/color_a09d9d" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0.7dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@color/color_a09d9d"
+            app:layout_constraintBottom_toBottomOf="@+id/cl_bell_choice"
+            app:layout_constraintEnd_toEndOf="@+id/cl_bell_choice"
+            app:layout_constraintStart_toStartOf="@+id/cl_bell_choice"
+            app:layout_constraintTop_toBottomOf="@+id/cl_bell_choice" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_bottom_round_01"
+            app:layout_constraintEnd_toEndOf="@+id/cl_bell_choice"
+            app:layout_constraintStart_toStartOf="@+id/cl_bell_choice"
+            app:layout_constraintTop_toBottomOf="@+id/cl_bell_choice">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:src="@drawable/ic_volume_up"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black" />
+
+            <SeekBar
+                android:id="@+id/sb_volume"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:thumb="@drawable/seekbar_thumb"
+                android:progressDrawable="@drawable/seekbar"
+                android:splitTrack="false"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintEnd_toStartOf="@+id/li_play_stop"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+
+            <LinearLayout
+                android:id="@+id/li_play_stop"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="24dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_play_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_play"
+                    app:tint="@color/black" />
+
+
+            </LinearLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

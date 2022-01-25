@@ -1,14 +1,17 @@
 package hs.project.medicine.activitys;
 
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.NumberPicker;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,10 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     private RingtoneManager mRtm; // 현재 재생중인 링톤
     private Ringtone mRtCurrent;
 
+    private AudioManager audioManager;
+
+    private Uri firstUriRingtone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +42,42 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         setContentView(binding.getRoot());
 
         init();
+
+
     }
 
     private void init() {
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        firstUriRingtone = Uri.parse("content://media/internal/audio/media/33?title=Bubble&canonical=1");  // Bubble 로 처음 유저 설정
+        mRtCurrent = RingtoneManager.getRingtone(this, firstUriRingtone);
+
+        // 음량값 받기
+        int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
+        binding.sbVolume.setMax(maxVol);
+        binding.sbVolume.setProgress(maxVol);
+
+        binding.sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //음악 음량 변경
+                audioManager.setStreamVolume(AudioManager.STREAM_RING, progress, 0);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mRtCurrent.play();
+                binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
+            }
+        });
+
         binding.liBack.setOnClickListener(this);
         binding.clBellChoice.setOnClickListener(this);
+        binding.liPlayStop.setOnClickListener(this);
 
         binding.tvSunday.setOnClickListener(this);
         binding.tvMonday.setOnClickListener(this);
@@ -132,13 +170,11 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
                 if (thursday) {
                     result = result + arrayList.get(4) + " ";
-                    ;
                     thursday = false;
                 }
 
                 if (friday) {
                     result = result + arrayList.get(5) + " ";
-                    ;
                     friday = false;
                 }
 
@@ -154,9 +190,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
     //-- 링톤을 재생하는 함수
     private void startRingtone(Uri uriRingtone) {
-        this.releaseRingtone();
+        this.stopRingtone();
         try {
-            mRtCurrent = mRtm.getRingtone(this, uriRingtone);
+            mRtCurrent = RingtoneManager.getRingtone(this, uriRingtone);
             if (mRtCurrent == null) {
                 throw new Exception("Can't play ringtone");
             }
@@ -164,22 +200,20 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
             binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(this));
             mRtCurrent.play();
         } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             LogUtil.e("AddAlarmActivity" + e.getMessage());
             e.printStackTrace();
         }
     }
 
     //-- 재생중인 링톤을 중지 하는 함수
-    private void releaseRingtone() {
+    private void stopRingtone() {
         if (mRtCurrent != null) {
             if (mRtCurrent.isPlaying()) {
                 mRtCurrent.stop();
-                mRtCurrent = null;
+//                mRtCurrent = null;
             }
         }
-//        m_tvRingtoneUri.setText("Choose Ringtone");
-//        m_tvRingtoneTitle.setText("");
     }
 
     // 벨소리 선택
@@ -188,7 +222,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "알람소리 선택");
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL); //-- 알림 선택창이 떴을 때, 기본값으로 선택되어질 ringtone 설정
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE); //-- 알림 선택창이 떴을 때, 기본값으로 선택되어질 ringtone 설정
 
         if (strRingtoneUri != null && strRingtoneUri.isEmpty()) {
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(strRingtoneUri));
@@ -200,12 +234,13 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_RINGTONE_PICKER) {
-            if (resultCode == RESULT_OK) { // -- 알림음 재생하는 코드 -- //
 
+        if (requestCode == REQUEST_CODE_RINGTONE_PICKER) {
+            if (resultCode == RESULT_OK) {
                 Uri ring = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
                 if (ring != null) {
                     strRingtoneUri = ring.toString();
+                    LogUtil.d("strRingtoneUri=" + strRingtoneUri);
 
                     try {
                         mRtCurrent = RingtoneManager.getRingtone(this, ring);
@@ -220,15 +255,78 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                         e.printStackTrace();
                     }
 
-                } else if (!binding.tvRingtoneTitle.getText().equals("Telepathy")) {
+                } else if (!binding.tvRingtoneTitle.getText().equals("Bubble")) {
                     /* 이전에 다른 소리를 선택한 후 다음 선택할 때 아무것도 선택하지 않은 유저라면 이전에 선택했던 소리로 세팅 */
 
                 } else {
                     strRingtoneUri = null;
-                    binding.tvRingtoneTitle.setText("Telepathy");
+                    binding.tvRingtoneTitle.setText("Bubble");
                 }
             }
         }
+    }
+
+
+//  버튼으로 음량조절
+//  현재 seekBar 와 안맞음
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        int currentVol = audioManager
+//                .getStreamVolume(AudioManager.STREAM_MUSIC);
+//
+//        switch (keyCode) {
+//            case KeyEvent.KEYCODE_VOLUME_UP :
+//                audioManager.adjustStreamVolume(AudioManager.STREAM_RING,
+//                        AudioManager.ADJUST_RAISE,
+//                        AudioManager.FLAG_SHOW_UI);
+//
+//                binding.sbVolume.setProgress(currentVol);
+//                return true;
+//            case KeyEvent.KEYCODE_VOLUME_DOWN:
+//                audioManager.adjustStreamVolume(AudioManager.STREAM_RING,
+//                        AudioManager.ADJUST_LOWER,
+//                        AudioManager.FLAG_SHOW_UI);
+//
+//                binding.sbVolume.setProgress(currentVol);
+//                return true;
+//            case KeyEvent.KEYCODE_BACK:
+//                return true;
+//        }
+//
+//        return false;
+//    }
+//
+//    public boolean onKeyUp(int keyCode, KeyEvent event) {
+//        int currentVol = audioManager
+//                .getStreamVolume(AudioManager.STREAM_MUSIC);
+//
+//        switch (keyCode) {
+//            case KeyEvent.KEYCODE_VOLUME_UP :
+//                audioManager.adjustStreamVolume(AudioManager.STREAM_RING,
+//                        AudioManager.ADJUST_SAME,
+//                        AudioManager.FLAG_SHOW_UI);
+//
+//                binding.sbVolume.setProgress(currentVol);
+//                return true;
+//            case KeyEvent.KEYCODE_VOLUME_DOWN:
+//                audioManager.adjustStreamVolume(AudioManager.STREAM_RING,
+//                        AudioManager.ADJUST_SAME,
+//                        AudioManager.FLAG_SHOW_UI);
+//
+//                binding.sbVolume.setProgress(currentVol);
+//                return true;
+//            case KeyEvent.KEYCODE_BACK:
+//                finish();
+//                return true;
+//        }
+//        return false;
+//    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        stopRingtone();
     }
 
     @Override
@@ -238,7 +336,19 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.cl_bell_choice:
+                stopRingtone();
                 showRingtoneChooser();
+                break;
+            case R.id.li_play_stop:
+                if (mRtCurrent != null) {
+                    if (mRtCurrent.isPlaying()) {
+                        stopRingtone();
+                        binding.ivPlayStop.setImageResource(R.drawable.ic_play);
+                    } else {
+                        mRtCurrent.play();
+                        binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
+                    }
+                }
                 break;
 
             case R.id.tv_sunday:

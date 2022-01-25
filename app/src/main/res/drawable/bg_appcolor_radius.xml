@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item >
+        <shape android:shape="rectangle">
+            <corners android:radius="10dp"/>
+            <solid android:color="@color/color_main_red"/>
+
+            <!-- 얇아보이게 하기위해 흰색배경을 줌 -->
+            <stroke android:color="@color/white" android:width="4dp"/>
+        </shape>
+    </item>
+</selector>
