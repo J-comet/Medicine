@@ -425,6 +425,8 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                         alarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
                         alarm.setHour(String.valueOf(binding.npHour.getValue()));
                         alarm.setMinute(binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);
+                        alarm.setVolume(binding.sbVolume.getProgress());
+                        alarm.setRingtoneName(binding.tvRingtoneTitle.getText().toString());
                         alarm.setRingtoneUri(Uri.parse(strRingtoneUri));
                         alarm.setDayOfWeek(binding.tvWeek.getText().toString());
                         alarm.setAlarmON(true);

@@ -247,6 +247,8 @@ public class ModifyUserDialog extends DialogFragment implements View.OnClickList
                     alarm.setAmPm(object.getString("amPm"));
                     alarm.setHour(object.getString("hour"));
                     alarm.setMinute(object.getString("minute"));
+                    alarm.setRingtoneName(object.getString("ringtoneName"));
+                    alarm.setVolume(object.getInt("volume"));
                     alarm.setRingtoneUri(Uri.parse(object.getString("ringtoneUri")));
                     alarm.setDayOfWeek(object.getString("dayOfWeek"));
                     alarm.setAlarmON(object.getBoolean("alarmON"));

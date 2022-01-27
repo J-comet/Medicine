@@ -13,6 +13,8 @@ public class Alarm implements Serializable {
     String dayOfWeek;   // 요일
     String hour;
     String minute;
+    String ringtoneName;  // 벨소리
+    int volume; // 볼륨
     Uri ringtoneUri;  // Uri.parse("content://media/internal/audio/media/37")
     boolean alarmON;    // 스위치 ON or OFF
 //    boolean isOk;   // 오늘 약 먹었는지 체크
@@ -73,6 +75,22 @@ public class Alarm implements Serializable {
         this.minute = minute;
     }
 
+    public String getRingtoneName() {
+        return ringtoneName;
+    }
+
+    public void setRingtoneName(String ringtoneName) {
+        this.ringtoneName = ringtoneName;
+    }
+
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
+    }
+
     //    public boolean isOk() {
 //        return isOk;
 //    }
@@ -91,6 +109,8 @@ public class Alarm implements Serializable {
             jsonObject.put("dayOfWeek", getDayOfWeek());
             jsonObject.put("hour", getHour());
             jsonObject.put("minute", getMinute());
+            jsonObject.put("volume", getVolume());
+            jsonObject.put("ringtoneName", getRingtoneName());
             jsonObject.put("ringtoneUri", getRingtoneUri());
             jsonObject.put("alarmON", isAlarmON());
             return jsonObject.toString();
