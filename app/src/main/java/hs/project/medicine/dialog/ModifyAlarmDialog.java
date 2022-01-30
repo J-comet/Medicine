@@ -69,6 +69,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         if (alarm != null) {
             binding.etName.setText(alarm.getName());
 
+
         }
     }
 

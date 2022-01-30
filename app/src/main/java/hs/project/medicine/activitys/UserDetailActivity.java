@@ -92,7 +92,12 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
     private void init() {
         alarmAdapter = new AlarmAdapter(this);
-        alarmAdapter.setOnModifyEventListener(new AlarmAdapter.OnModifyEventListener() {
+        alarmAdapter.setOnEventListener(new AlarmAdapter.OnEventListener() {
+            @Override
+            public void onRemoveClick(View view, int position) {
+                Toast.makeText(UserDetailActivity.this,"제거", Toast.LENGTH_SHORT).show();
+            }
+
             @Override
             public void onModifyClick(View view, int position) {
                 ModifyAlarmDialog modifyAlarmDialog = new ModifyAlarmDialog(UserDetailActivity.this, alarmList.get(position));

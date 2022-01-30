@@ -17,6 +17,7 @@ import hs.project.medicine.activitys.UserDetailActivity;
 import hs.project.medicine.databinding.ItemAlarmBinding;
 import hs.project.medicine.datas.Alarm;
 import hs.project.medicine.datas.User;
+import hs.project.medicine.dialog.ModifyAlarmDialog;
 import hs.project.medicine.dialog.ModifyUserDialog;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> {
@@ -28,15 +29,16 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         this.context = context;
     }
 
-    public interface OnModifyEventListener {
+    public interface OnEventListener {
+        void onRemoveClick(View view, int position);
         void onModifyClick(View view, int position);
     }
 
-    public void setOnModifyEventListener(OnModifyEventListener modifyEventListener) {
-        this.eventListener = modifyEventListener;
+    public void setOnEventListener(OnEventListener eventListener) {
+        this.eventListener = eventListener;
     }
 
-    private OnModifyEventListener eventListener;
+    private OnEventListener eventListener;
 
     @NonNull
     @Override
@@ -87,15 +89,25 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
                 itemBinding.tvDayWeek.setSelected(true);
                 itemBinding.tvTime.setSelected(true);
                 itemBinding.ivAlarm.setSelected(true);
-                itemBinding.ivModify.setSelected(true);
+                itemBinding.ivRemove.setSelected(true);
             } else {
                 itemBinding.tvName.setSelected(false);
                 itemBinding.tvAmPm.setSelected(false);
                 itemBinding.tvDayWeek.setSelected(false);
                 itemBinding.tvTime.setSelected(false);
                 itemBinding.ivAlarm.setSelected(false);
-                itemBinding.ivModify.setSelected(false);
+                itemBinding.ivRemove.setSelected(false);
             }
+
+            itemBinding.clContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        eventListener.onModifyClick(v, position);
+                    }
+                }
+            });
 
             itemBinding.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -107,24 +119,24 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
                         itemBinding.tvDayWeek.setSelected(true);
                         itemBinding.tvTime.setSelected(true);
                         itemBinding.ivAlarm.setSelected(true);
-                        itemBinding.ivModify.setSelected(true);
+                        itemBinding.ivRemove.setSelected(true);
                     } else {
                         itemBinding.tvName.setSelected(false);
                         itemBinding.tvAmPm.setSelected(false);
                         itemBinding.tvDayWeek.setSelected(false);
                         itemBinding.tvTime.setSelected(false);
                         itemBinding.ivAlarm.setSelected(false);
-                        itemBinding.ivModify.setSelected(false);
+                        itemBinding.ivRemove.setSelected(false);
                     }
                 }
             });
 
-            itemBinding.liModify.setOnClickListener(new View.OnClickListener() {
+            itemBinding.liRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        eventListener.onModifyClick(v, position);
+                        eventListener.onRemoveClick(v, position);
                     }
                 }
             });
