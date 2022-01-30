@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -44,11 +45,14 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     private Fragment fragment;
     private ModifyAlarmListener eventListener;
 
-    private Ringtone mRtCurrent;
+//    private Ringtone mRtCurrent;
     private AudioManager audioManager;
     private String[] arrAmPm;
     private String[] arrMinute;
     private ArrayList<String> integerArrayList;
+
+    private MediaPlayer mediaPlayer;
+    private String strRingtoneUri;
 
     public ModifyAlarmDialog(Context context, Alarm alarmItem) {
         this.context = context;
@@ -86,6 +90,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
 
     private void init() {
         binding.liBack.setOnClickListener(this);
+        binding.liPlayStop.setOnClickListener(this);
 
         binding.tvSunday.setOnClickListener(this);
         binding.tvMonday.setOnClickListener(this);
@@ -96,6 +101,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         binding.tvSaturday.setOnClickListener(this);
 
         audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
+        mediaPlayer = MediaPlayer.create(context, alarm.getRingtoneUri());
 
         // 음량값 받기
         int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
@@ -104,7 +110,10 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         binding.sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                NotificationManager notificationManager;
+                //음악 음량 변경
+                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
+
+                /*NotificationManager notificationManager;
                 notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -118,7 +127,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
 
                 } else {
                     audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
-                }
+                }*/
             }
 
             @Override
@@ -128,11 +137,30 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mRtCurrent.play();
+                if (strRingtoneUri == null) {
+                    startMediaPlayer(alarm.getRingtoneUri());
+                } else {
+                    startMediaPlayer(Uri.parse(strRingtoneUri));
+                }
+
                 binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
             }
         });
 
+    }
+
+
+    // 미디어플레이어 재생
+    private void startMediaPlayer(Uri uri) {
+        mediaPlayer = MediaPlayer.create(context, uri);
+        mediaPlayer.start();
+        mediaPlayer.setLooping(true);
+    }
+
+    // 미디어플레이어 멈춤
+    private void stopMediaPlayer() {
+        mediaPlayer.stop();
+        mediaPlayer.reset();
     }
 
     private void setData() {
@@ -148,8 +176,8 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
 
         if (alarm != null) {
             binding.etName.setText(alarm.getName());
-            mRtCurrent = RingtoneManager.getRingtone(context, alarm.getRingtoneUri());
-            binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(context));
+//            mRtCurrent = RingtoneManager.getRingtone(context, alarm.getRingtoneUri());
+            binding.tvRingtoneTitle.setText(alarm.getRingtoneName());
             binding.tvWeek.setText(alarm.getDayOfWeek());
             binding.sbVolume.setProgress(alarm.getVolume());
 
@@ -321,19 +349,19 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     }
 
     //-- 재생중인 링톤을 중지 하는 함수
-    private void stopRingtone() {
+    /*private void stopRingtone() {
         if (mRtCurrent != null) {
             if (mRtCurrent.isPlaying()) {
                 mRtCurrent.stop();
 //                mRtCurrent = null;
             }
         }
-    }
+    }*/
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        stopRingtone();
+        stopMediaPlayer();
     }
 
     @Override
@@ -341,6 +369,19 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         switch (v.getId()) {
             case R.id.li_back:
                 dismiss();
+                break;
+            case R.id.li_play_stop:
+                if (mediaPlayer.isPlaying()) {
+                    stopMediaPlayer();
+                    binding.ivPlayStop.setImageResource(R.drawable.ic_play);
+                } else {
+                    if (strRingtoneUri != null) {
+                        startMediaPlayer(Uri.parse(strRingtoneUri));
+                    } else {
+                        startMediaPlayer(alarm.getRingtoneUri());
+                    }
+                    binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
+                }
                 break;
             case R.id.tv_sunday:
                 if (binding.tvSunday.isSelected()) {
