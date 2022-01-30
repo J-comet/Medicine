@@ -67,6 +67,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                     alarm.setAmPm(object.getString("amPm"));
                     alarm.setHour(object.getString("hour"));
                     alarm.setMinute(object.getString("minute"));
+                    alarm.setVolume(object.getInt("volume"));
+                    alarm.setRingtoneName(object.getString("ringtoneName"));
                     alarm.setRingtoneUri(Uri.parse(object.getString("ringtoneUri")));
                     alarm.setDayOfWeek(object.getString("dayOfWeek"));
                     alarm.setAlarmON(object.getBoolean("alarmON"));

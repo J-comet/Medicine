@@ -4,6 +4,7 @@ import static android.content.Context.AUDIO_SERVICE;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.Ringtone;
@@ -84,6 +85,8 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     }
 
     private void init() {
+        binding.liBack.setOnClickListener(this);
+
         binding.tvSunday.setOnClickListener(this);
         binding.tvMonday.setOnClickListener(this);
         binding.tvTuesday.setOnClickListener(this);
@@ -95,7 +98,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
 
         // 음량값 받기
-        int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
+        int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
         binding.sbVolume.setMax(maxVol);
 
         binding.sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -110,11 +113,11 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
                         context.startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
                     } else {
                         //음악 음량 변경
-                        audioManager.setStreamVolume(AudioManager.STREAM_RING, progress, 0);
+                        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
                     }
 
                 } else {
-                    audioManager.setStreamVolume(AudioManager.STREAM_RING, progress, 0);
+                    audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
                 }
             }
 
@@ -317,6 +320,21 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         return result;
     }
 
+    //-- 재생중인 링톤을 중지 하는 함수
+    private void stopRingtone() {
+        if (mRtCurrent != null) {
+            if (mRtCurrent.isPlaying()) {
+                mRtCurrent.stop();
+//                mRtCurrent = null;
+            }
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        stopRingtone();
+    }
 
     @Override
     public void onClick(View v) {
