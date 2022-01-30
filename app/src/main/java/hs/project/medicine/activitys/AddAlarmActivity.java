@@ -1,5 +1,7 @@
 package hs.project.medicine.activitys;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.Ringtone;
@@ -7,10 +9,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +38,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
     private String strRingtoneUri;
     private final static int REQUEST_CODE_RINGTONE_PICKER = 1000;
+    private final static int ON_DO_NOT_DISTURB_CALLBACK_CODE = 1001;
     private RingtoneManager mRtm; // 현재 재생중인 링톤
     private Ringtone mRtCurrent;
 
@@ -82,8 +88,23 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         binding.sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                //음악 음량 변경
-                audioManager.setStreamVolume(AudioManager.STREAM_RING, progress, 0);
+
+                NotificationManager notificationManager;
+                notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!notificationManager.isNotificationPolicyAccessGranted()) {
+                        Toast.makeText(getApplicationContext(), "방해금지 권한을 허용해주세요", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+                    } else {
+                        //음악 음량 변경
+                        audioManager.setStreamVolume(AudioManager.STREAM_RING, progress, 0);
+                    }
+
+                } else {
+                    audioManager.setStreamVolume(AudioManager.STREAM_RING, progress, 0);
+                }
+
             }
 
             @Override
@@ -254,10 +275,38 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         startActivityForResult(intent, REQUEST_CODE_RINGTONE_PICKER);
     }
 
+    /* 사용자가 음소거모드일 때 권한 획득 필요 */
+//    private void requestMutePermissions() {
+//        try {
+//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//                AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+//                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+//            } else {
+//                NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+//                // if user granted access else ask for permission
+//                if (notificationManager.isNotificationPolicyAccessGranted()) {
+//                    AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+//                    audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+//                } else {
+//                    // Open Setting screen to ask for permisssion
+//                    Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+//                    startActivityForResult(intent, ON_DO_NOT_DISTURB_CALLBACK_CODE);
+//                }
+//            }
+//        } catch (SecurityException e) {
+//
+//        }
+//    }
+
+
     //-- 알림선택창에서 넘어온 데이터를 처리하는 코드
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+//        if (requestCode == ON_DO_NOT_DISTURB_CALLBACK_CODE) {
+//            requestMutePermissions();
+//        }
 
         if (requestCode == REQUEST_CODE_RINGTONE_PICKER) {
             if (resultCode == RESULT_OK) {
