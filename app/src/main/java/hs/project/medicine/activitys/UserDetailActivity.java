@@ -49,7 +49,40 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         super.onStart();
         user = (User) getIntent().getSerializableExtra("user");
         setData(user);
+        getAlarmList();
+    }
 
+    private void init() {
+        alarmAdapter = new AlarmAdapter(this);
+        alarmAdapter.setOnEventListener(new AlarmAdapter.OnEventListener() {
+            @Override
+            public void onRemoveClick(View view, int position) {
+                Toast.makeText(UserDetailActivity.this,"제거", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onModifyClick(View view, int position) {
+                ModifyAlarmDialog modifyAlarmDialog = new ModifyAlarmDialog(UserDetailActivity.this, alarmList.get(position), user);
+                modifyAlarmDialog.setModifyAlarmListener(new ModifyAlarmDialog.ModifyAlarmListener() {
+                    @Override
+                    public void onComplete() {
+                        getAlarmList();
+                    }
+                });
+                modifyAlarmDialog.show(getSupportFragmentManager(), "modifyAlarmDialog");
+            }
+        });
+
+        binding.rvUserAlarm.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        binding.rvUserAlarm.setAdapter(alarmAdapter);
+
+        binding.liBack.setOnClickListener(this);
+        binding.tvProfileSetting.setOnClickListener(this);
+        binding.tvDelete.setOnClickListener(this);
+        binding.clAddAlarm.setOnClickListener(this);
+    }
+
+    private void getAlarmList() {
         alarmList = new ArrayList<>();
 
         /* 해당 유저에 저장되어 있는 알람리스트 가져오기 */
@@ -92,42 +125,16 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    private void init() {
-        alarmAdapter = new AlarmAdapter(this);
-        alarmAdapter.setOnEventListener(new AlarmAdapter.OnEventListener() {
-            @Override
-            public void onRemoveClick(View view, int position) {
-                Toast.makeText(UserDetailActivity.this,"제거", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onModifyClick(View view, int position) {
-                ModifyAlarmDialog modifyAlarmDialog = new ModifyAlarmDialog(UserDetailActivity.this, alarmList.get(position));
-                modifyAlarmDialog.setModifyAlarmListener(new ModifyAlarmDialog.ModifyAlarmListener() {
-                    @Override
-                    public void onComplete(Alarm alarm) {
-
-                    }
-                });
-                modifyAlarmDialog.show(getSupportFragmentManager(), "modifyAlarmDialog");
-            }
-        });
-
-        binding.rvUserAlarm.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        binding.rvUserAlarm.setAdapter(alarmAdapter);
-
-        binding.liBack.setOnClickListener(this);
-        binding.tvProfileSetting.setOnClickListener(this);
-        binding.tvDelete.setOnClickListener(this);
-        binding.clAddAlarm.setOnClickListener(this);
-    }
-
     private void setData(User user) {
         if (user != null) {
             binding.tvName.setText(user.getName());
             binding.tvRelation.setText(user.getRelation());
             binding.tvAge.setText(user.getAge());
         }
+    }
+
+    private void modifyAlarmData() {
+
     }
 
     private ArrayList<String> getRemovePreferenceList(User userItem) {

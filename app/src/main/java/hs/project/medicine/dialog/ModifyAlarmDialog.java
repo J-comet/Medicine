@@ -28,19 +28,27 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.DialogModifyAlarmBinding;
 import hs.project.medicine.datas.Alarm;
+import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;
+import hs.project.medicine.util.PreferenceUtil;
 
 public class ModifyAlarmDialog extends DialogFragment implements View.OnClickListener {
 
     private DialogModifyAlarmBinding binding;
     private Context context;
     private Alarm alarm;
+    private User user;
     private ArrayList<String> strAlarmList;
     private ArrayList<Alarm> alarmArrayList; // Preference 에 저장할 알람 정보
     private Fragment fragment;
@@ -57,9 +65,10 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
 
     private final static int REQUEST_CODE_RINGTONE_PICKER = 1000;
 
-    public ModifyAlarmDialog(Context context, Alarm alarmItem) {
+    public ModifyAlarmDialog(Context context, Alarm alarmItem, User userItem) {
         this.context = context;
         this.alarm = alarmItem;
+        this.user = userItem;
     }
 
     public void setModifyAlarmListener(ModifyAlarmListener dialogResult) {
@@ -67,7 +76,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     }
 
     public interface ModifyAlarmListener {
-        void onComplete(Alarm alarm);
+        void onComplete();
     }
 
     @Override
@@ -95,6 +104,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         binding.liBack.setOnClickListener(this);
         binding.liPlayStop.setOnClickListener(this);
         binding.clBellChoice.setOnClickListener(this);
+        binding.liComplete.setOnClickListener(this);
 
         binding.tvSunday.setOnClickListener(this);
         binding.tvMonday.setOnClickListener(this);
@@ -103,6 +113,40 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         binding.tvThursday.setOnClickListener(this);
         binding.tvFriday.setOnClickListener(this);
         binding.tvSaturday.setOnClickListener(this);
+
+        /* 기존에 저장되어 있는 리스트 가져오기 */
+        alarmArrayList = new ArrayList<>();
+
+        if (PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()).size() > 0) {
+
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()));
+
+            try {
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Alarm alarm = new Alarm();
+                    JSONObject object = new JSONObject(jsonArray.getString(i));
+                    alarm.setName(object.getString("name"));
+                    alarm.setAmPm(object.getString("amPm"));
+                    alarm.setDayOfWeek(object.getString("dayOfWeek"));
+                    alarm.setHour(object.getString("hour"));
+                    alarm.setMinute(object.getString("minute"));
+                    alarm.setVolume(object.getInt("volume"));
+                    alarm.setRingtoneName(object.getString("ringtoneName"));
+                    alarm.setRingtoneUri(Uri.parse(object.getString("ringtoneUri")));
+                    alarm.setAlarmON(object.getBoolean("alarmON"));
+
+                    alarmArrayList.add(alarm);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
 
         audioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
         mediaPlayer = MediaPlayer.create(context, alarm.getRingtoneUri());
@@ -362,6 +406,50 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         }
     }*/
 
+    private void modifyAlarmComplete() {
+
+        strAlarmList = new ArrayList<>();
+
+        /**
+         * 1. Preference 에 저장된 AlarmList 의 Alarm 업데이트
+         */
+        for (int i = 0; i < alarmArrayList.size(); i++) {
+            Alarm addAlarm = new Alarm();
+            addAlarm.setName(alarmArrayList.get(i).getName());
+            addAlarm.setAmPm(alarmArrayList.get(i).getAmPm());
+            addAlarm.setHour(alarmArrayList.get(i).getHour());
+            addAlarm.setMinute(alarmArrayList.get(i).getMinute());
+            addAlarm.setVolume(alarmArrayList.get(i).getVolume());
+            addAlarm.setRingtoneName(alarmArrayList.get(i).getRingtoneName());
+            addAlarm.setRingtoneUri(alarmArrayList.get(i).getRingtoneUri());
+            addAlarm.setDayOfWeek(alarmArrayList.get(i).getDayOfWeek());
+            addAlarm.setAlarmON(alarmArrayList.get(i).isAlarmON());
+
+            if (alarm.getName().equals(alarmArrayList.get(i).getName())) {
+                addAlarm.setName(binding.etName.getText().toString());
+                addAlarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
+                addAlarm.setHour(String.valueOf(binding.npHour.getValue()));
+                addAlarm.setMinute(binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);
+                addAlarm.setVolume(binding.sbVolume.getProgress());
+                addAlarm.setRingtoneName(binding.tvRingtoneTitle.getText().toString());
+
+                if (strRingtoneUri == null) {
+                    addAlarm.setRingtoneUri(alarm.getRingtoneUri());
+                } else {
+                    addAlarm.setRingtoneUri(Uri.parse(strRingtoneUri));
+                }
+                addAlarm.setDayOfWeek(binding.tvWeek.getText().toString());
+                addAlarm.setAlarmON(alarmArrayList.get(i).isAlarmON());
+            }
+
+            strAlarmList.add(addAlarm.toJSON());
+        }
+
+        // Preference 에 저장
+        PreferenceUtil.setJSONArrayPreference(context, user.alarmKey(), strAlarmList);
+        Toast.makeText(context, "수정완료", Toast.LENGTH_SHORT).show();
+    }
+
     // 벨소리 선택
     private void showRingtoneChooser() {
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
@@ -437,6 +525,19 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
                     }
                     binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
                 }
+                break;
+            case R.id.li_complete:
+                /* (유저/관계) 로 된 Preference 안의 리스트 키 중에서 알람이름이 같은 것을 리스트에서 찾은 후 수정 후 다시 저장 */
+                if (binding.etName.getText().toString().length() > 0) {
+                    modifyAlarmComplete();
+                    eventListener.onComplete();
+                    dismiss();
+//                            DialogFragment dialogFragment = (DialogFragment) fragment;
+//                            dialogFragment.dismiss();
+                } else {
+                    Toast.makeText(context, "모든 정보를 입력해주세요", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.tv_sunday:
                 if (binding.tvSunday.isSelected()) {
