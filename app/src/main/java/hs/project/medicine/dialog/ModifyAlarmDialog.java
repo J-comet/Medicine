@@ -1,5 +1,6 @@
 package hs.project.medicine.dialog;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.AUDIO_SERVICE;
 
 import android.app.NotificationManager;
@@ -45,7 +46,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     private Fragment fragment;
     private ModifyAlarmListener eventListener;
 
-//    private Ringtone mRtCurrent;
+    private Ringtone mRtCurrent;
     private AudioManager audioManager;
     private String[] arrAmPm;
     private String[] arrMinute;
@@ -53,6 +54,8 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
 
     private MediaPlayer mediaPlayer;
     private String strRingtoneUri;
+
+    private final static int REQUEST_CODE_RINGTONE_PICKER = 1000;
 
     public ModifyAlarmDialog(Context context, Alarm alarmItem) {
         this.context = context;
@@ -91,6 +94,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     private void init() {
         binding.liBack.setOnClickListener(this);
         binding.liPlayStop.setOnClickListener(this);
+        binding.clBellChoice.setOnClickListener(this);
 
         binding.tvSunday.setOnClickListener(this);
         binding.tvMonday.setOnClickListener(this);
@@ -358,9 +362,55 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         }
     }*/
 
+    // 벨소리 선택
+    private void showRingtoneChooser() {
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "알람소리 선택");
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE); //-- 알림 선택창이 떴을 때, 기본값으로 선택되어질 ringtone 설정
+
+        if (strRingtoneUri != null && strRingtoneUri.isEmpty()) {
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(strRingtoneUri));
+        }
+        startActivityForResult(intent, REQUEST_CODE_RINGTONE_PICKER);
+    }
+
     @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_RINGTONE_PICKER) {
+            if (resultCode == RESULT_OK) {
+                Uri ring = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                mediaPlayer = MediaPlayer.create(context, ring);
+
+                if (ring != null) {
+                    strRingtoneUri = ring.toString();
+                    LogUtil.d("strRingtoneUri=" + strRingtoneUri);
+
+                    try {
+                        mRtCurrent = RingtoneManager.getRingtone(context, ring);
+                        if (mRtCurrent == null) {
+                            throw new Exception("Can't play ringtone");
+                        }
+                        binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(context));
+                    } catch (Exception e) {
+                        Toast.makeText(context, "오류 발생", Toast.LENGTH_SHORT).show();
+                        LogUtil.e("AddAlarmActivity" + e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(context));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         stopMediaPlayer();
     }
 
@@ -369,6 +419,11 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         switch (v.getId()) {
             case R.id.li_back:
                 dismiss();
+                break;
+            case R.id.cl_bell_choice:
+                stopMediaPlayer();
+                binding.ivPlayStop.setImageResource(R.drawable.ic_play);
+                showRingtoneChooser();
                 break;
             case R.id.li_play_stop:
                 if (mediaPlayer.isPlaying()) {

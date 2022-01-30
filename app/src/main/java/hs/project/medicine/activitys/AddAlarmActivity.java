@@ -369,6 +369,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         super.onPause();
 
 //        stopRingtone();
+        stopMediaPlayer();
         binding.ivPlayStop.setImageResource(R.drawable.ic_play);
     }
 
@@ -474,7 +475,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.cl_bell_choice:
-//                stopRingtone();
+                stopMediaPlayer();
                 binding.ivPlayStop.setImageResource(R.drawable.ic_play);
                 showRingtoneChooser();
                 break;
