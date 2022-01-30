@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -39,8 +40,10 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     private String strRingtoneUri;
     private final static int REQUEST_CODE_RINGTONE_PICKER = 1000;
     private final static int ON_DO_NOT_DISTURB_CALLBACK_CODE = 1001;
-    private RingtoneManager mRtm; // 현재 재생중인 링톤
-    private Ringtone mRtCurrent;
+
+    private Ringtone mRtCurrent; // 노래 제목받아올 용도로 사용
+
+    private MediaPlayer mediaPlayer;
 
     private AudioManager audioManager;
 
@@ -81,11 +84,12 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         firstUriRingtone = Uri.parse("content://media/internal/audio/media/37");  // 기본벨소리 설정
+        mediaPlayer = MediaPlayer.create(this, firstUriRingtone);
         mRtCurrent = RingtoneManager.getRingtone(this, firstUriRingtone);
         binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(this));
 
         // 음량값 받기
-        int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+        int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         binding.sbVolume.setMax(maxVol);
         binding.sbVolume.setProgress(maxVol);
 
@@ -93,18 +97,20 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (!notificationManager.isNotificationPolicyAccessGranted()) {
                         Toast.makeText(getApplicationContext(), "방해금지 권한을 허용해주세요", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
                     } else {
                         //음악 음량 변경
-                        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
                     }
 
                 } else {
-                    audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
-                }
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+                }*/
 
             }
 
@@ -135,7 +141,13 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                         break;
                 }*/
 
-                mRtCurrent.play();
+//                mRtCurrent.play();
+                if (strRingtoneUri == null) {
+                    startMediaPlayer(firstUriRingtone);
+                } else {
+                    startMediaPlayer(Uri.parse(strRingtoneUri));
+                }
+
                 binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
 
             }
@@ -255,8 +267,21 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         return result;
     }
 
+    // 미디어플레이어 재생
+    private void startMediaPlayer(Uri uri) {
+        mediaPlayer = MediaPlayer.create(this, uri);
+        mediaPlayer.start();
+        mediaPlayer.setLooping(true);
+    }
+
+    // 미디어플레이어 멈춤
+    private void stopMediaPlayer() {
+        mediaPlayer.stop();
+        mediaPlayer.reset();
+    }
+
     //-- 링톤을 재생하는 함수
-    private void startRingtone(Uri uriRingtone) {
+ /*   private void startRingtone(Uri uriRingtone) {
         this.stopRingtone();
         try {
             mRtCurrent = RingtoneManager.getRingtone(this, uriRingtone);
@@ -271,15 +296,24 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
             LogUtil.e("AddAlarmActivity" + e.getMessage());
             e.printStackTrace();
         }
-    }
+    }*/
 
     //-- 재생중인 링톤을 중지 하는 함수
-    private void stopRingtone() {
+/*    private void stopRingtone() {
         if (mRtCurrent != null) {
             if (mRtCurrent.isPlaying()) {
                 mRtCurrent.stop();
 //                mRtCurrent = null;
             }
+        }
+    }*/
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 
@@ -297,42 +331,16 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         startActivityForResult(intent, REQUEST_CODE_RINGTONE_PICKER);
     }
 
-    /* 사용자가 음소거모드일 때 권한 획득 필요 */
-//    private void requestMutePermissions() {
-//        try {
-//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//                AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-//                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-//            } else {
-//                NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-//                // if user granted access else ask for permission
-//                if (notificationManager.isNotificationPolicyAccessGranted()) {
-//                    AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-//                    audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-//                } else {
-//                    // Open Setting screen to ask for permisssion
-//                    Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-//                    startActivityForResult(intent, ON_DO_NOT_DISTURB_CALLBACK_CODE);
-//                }
-//            }
-//        } catch (SecurityException e) {
-//
-//        }
-//    }
-
-
     //-- 알림선택창에서 넘어온 데이터를 처리하는 코드
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        if (requestCode == ON_DO_NOT_DISTURB_CALLBACK_CODE) {
-//            requestMutePermissions();
-//        }
-
         if (requestCode == REQUEST_CODE_RINGTONE_PICKER) {
             if (resultCode == RESULT_OK) {
                 Uri ring = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                mediaPlayer = MediaPlayer.create(this, ring);
+
                 if (ring != null) {
                     strRingtoneUri = ring.toString();
                     LogUtil.d("strRingtoneUri=" + strRingtoneUri);
@@ -343,18 +351,13 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                             throw new Exception("Can't play ringtone");
                         }
                         binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(this));
-//                        mRtCurrent.play();
                     } catch (Exception e) {
                         Toast.makeText(this, "오류 발생", Toast.LENGTH_SHORT).show();
                         LogUtil.e("AddAlarmActivity" + e.getMessage());
                         e.printStackTrace();
                     }
 
-                } else if (!binding.tvRingtoneTitle.getText().equals("Bubble")) {
-                    /* 이전에 다른 소리를 선택한 후 다음 선택할 때 아무것도 선택하지 않은 유저라면 이전에 선택했던 소리로 세팅 */
-
                 } else {
-//                    strRingtoneUri = "content://media/internal/audio/media/37";
                     binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(this));
                 }
             }
@@ -365,7 +368,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     protected void onPause() {
         super.onPause();
 
-        stopRingtone();
+//        stopRingtone();
         binding.ivPlayStop.setImageResource(R.drawable.ic_play);
     }
 
@@ -414,18 +417,18 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 //  현재 seekBar 와 안맞음
 //    public boolean onKeyDown(int keyCode, KeyEvent event) {
 //        int currentVol = audioManager
-//                .getStreamVolume(AudioManager.STREAM_ALARM);
+//                .getStreamVolume(AudioManager.STREAM_MUSIC);
 //
 //        switch (keyCode) {
 //            case KeyEvent.KEYCODE_VOLUME_UP :
-//                audioManager.adjustStreamVolume(AudioManager.STREAM_ALARM,
+//                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
 //                        AudioManager.ADJUST_RAISE,
 //                        AudioManager.FLAG_SHOW_UI);
 //
 //                binding.sbVolume.setProgress(currentVol);
 //                return true;
 //            case KeyEvent.KEYCODE_VOLUME_DOWN:
-//                audioManager.adjustStreamVolume(AudioManager.STREAM_ALARM,
+//                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
 //                        AudioManager.ADJUST_LOWER,
 //                        AudioManager.FLAG_SHOW_UI);
 //
@@ -440,18 +443,18 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 //
 //    public boolean onKeyUp(int keyCode, KeyEvent event) {
 //        int currentVol = audioManager
-//                .getStreamVolume(AudioManager.STREAM_ALARM);
+//                .getStreamVolume(AudioManager.STREAM_MUSIC);
 //
 //        switch (keyCode) {
 //            case KeyEvent.KEYCODE_VOLUME_UP :
-//                audioManager.adjustStreamVolume(AudioManager.STREAM_ALARM,
+//                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
 //                        AudioManager.ADJUST_SAME,
 //                        AudioManager.FLAG_SHOW_UI);
 //
 //                binding.sbVolume.setProgress(currentVol);
 //                return true;
 //            case KeyEvent.KEYCODE_VOLUME_DOWN:
-//                audioManager.adjustStreamVolume(AudioManager.STREAM_ALARM,
+//                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
 //                        AudioManager.ADJUST_SAME,
 //                        AudioManager.FLAG_SHOW_UI);
 //
@@ -471,18 +474,30 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.cl_bell_choice:
-                stopRingtone();
+//                stopRingtone();
                 binding.ivPlayStop.setImageResource(R.drawable.ic_play);
                 showRingtoneChooser();
                 break;
             case R.id.li_play_stop:
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (mediaPlayer.isPlaying()) {
+                    stopMediaPlayer();
+                    binding.ivPlayStop.setImageResource(R.drawable.ic_play);
+                } else {
+                    if (strRingtoneUri != null) {
+                        startMediaPlayer(Uri.parse(strRingtoneUri));
+                    } else {
+                        startMediaPlayer(firstUriRingtone);
+                    }
+                    binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
+                }
+
+
+               /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (!notificationManager.isNotificationPolicyAccessGranted()) {
                         Toast.makeText(getApplicationContext(), "방해금지 권한을 허용해주세요", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
                     } else {
-
                         if (mRtCurrent != null) {
                             if (mRtCurrent.isPlaying()) {
                                 stopRingtone();
@@ -492,7 +507,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                                 mRtCurrent.play();
                                 binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
 
-                                /*switch (audioManager.getRingerMode()) {
+                                switch (audioManager.getRingerMode()) {
                                     case AudioManager.RINGER_MODE_NORMAL:  // 벨소리모드
                                         mRtCurrent.play();
                                         binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
@@ -509,7 +524,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                                         mRtCurrent.play();
                                         binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
                                         break;
-                                }*/
+                                }
                             }
                         }
                     }
@@ -524,7 +539,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                             binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
                         }
                     }
-                }
+                }*/
 
 
                 break;
