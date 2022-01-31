@@ -57,7 +57,61 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         alarmAdapter.setOnEventListener(new AlarmAdapter.OnEventListener() {
             @Override
             public void onRemoveClick(View view, int position) {
-                Toast.makeText(UserDetailActivity.this,"제거", Toast.LENGTH_SHORT).show();
+                /* 1. 기존에 저장되어 있는 알람의 이름으로 비교 후 Preference 에서 삭제
+                 *  2. RecyclerView 아이템 position 으로 삭제 */
+
+                AlertDialog dialog = new AlertDialog.Builder(UserDetailActivity.this)
+                        .setTitle("알람")
+                        .setMessage("정말 삭제하시겠습니까?")
+                        .setCancelable(false)
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                ArrayList<String> strAlarmList = new ArrayList<>();
+                                alarmList.remove(position);
+
+                                for (int i = 0; i < alarmList.size(); i++) {
+                                    Alarm alarm = new Alarm();
+                                    alarm.setName(alarmList.get(i).getName());
+                                    alarm.setAmPm(alarmList.get(i).getAmPm());
+                                    alarm.setHour(alarmList.get(i).getHour());
+                                    alarm.setMinute(alarmList.get(i).getMinute());
+                                    alarm.setVolume(alarmList.get(i).getVolume());
+                                    alarm.setRingtoneName(alarmList.get(i).getRingtoneName());
+                                    alarm.setRingtoneUri(alarmList.get(i).getRingtoneUri());
+                                    alarm.setDayOfWeek(alarmList.get(i).getDayOfWeek());
+                                    alarm.setAlarmON(alarmList.get(i).isAlarmON());
+
+                                    strAlarmList.add(alarm.toJSON());
+                                }
+
+                                PreferenceUtil.setJSONArrayPreference(UserDetailActivity.this, user.alarmKey(), strAlarmList);
+
+                                alarmAdapter.removeAt(position);
+
+                                if (alarmList.size() < 1) {
+                                    binding.tvNone.setVisibility(View.VISIBLE);
+                                    binding.rvUserAlarm.setVisibility(View.GONE);
+                                } else {
+                                    binding.tvNone.setVisibility(View.GONE);
+                                    binding.rvUserAlarm.setVisibility(View.VISIBLE);
+                                }
+
+                                dialog.dismiss();
+                            }
+                        }).create();
+
+                dialog.show();
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+
             }
 
             @Override
@@ -131,10 +185,6 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
             binding.tvRelation.setText(user.getRelation());
             binding.tvAge.setText(user.getAge());
         }
-    }
-
-    private void modifyAlarmData() {
-
     }
 
     private ArrayList<String> getRemovePreferenceList(User userItem) {

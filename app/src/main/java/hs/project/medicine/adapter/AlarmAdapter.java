@@ -1,6 +1,8 @@
 package hs.project.medicine.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.UserDetailActivity;
 import hs.project.medicine.databinding.ItemAlarmBinding;
@@ -31,6 +35,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
 
     public interface OnEventListener {
         void onRemoveClick(View view, int position);
+
         void onModifyClick(View view, int position);
     }
 
@@ -66,6 +71,12 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
         }
         this.items.addAll(itemArrayList);
         notifyDataSetChanged();
+    }
+
+    public void removeAt(int position) {
+        items.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, items.size());
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
