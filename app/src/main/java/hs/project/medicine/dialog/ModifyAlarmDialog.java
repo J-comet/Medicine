@@ -64,6 +64,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     private String strRingtoneUri;
 
     private final static int REQUEST_CODE_RINGTONE_PICKER = 1000;
+    private boolean isSuccess = false;
 
     public ModifyAlarmDialog(Context context, Alarm alarmItem, User userItem) {
         this.context = context;
@@ -496,6 +497,38 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         }
     }
 
+    private boolean checkAlarmName() {
+        /* 해당 유저의 알람중에 같은 알람이 있는지 검사하는 코드 */
+        if (PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()) != null
+                && PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()).size() > 0) {
+
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()));
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    JSONObject object = new JSONObject(jsonArray.getString(i));
+
+                    /* 기존과 동일한 이름은 저장 가능 */
+                    if (alarm.getName().equals(binding.etName.getText().toString())){
+                        isSuccess = true;
+                    } else {
+                        if (object.getString("name").equals(binding.etName.getText().toString())) {
+                            isSuccess = false;
+                        } else {
+                            isSuccess = true;
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            isSuccess = true;
+        }
+        return isSuccess;
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -528,15 +561,21 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
                 break;
             case R.id.li_complete:
                 /* (유저/관계) 로 된 Preference 안의 리스트 키 중에서 알람이름이 같은 것을 리스트에서 찾은 후 수정 후 다시 저장 */
-                if (binding.etName.getText().toString().length() > 0) {
-                    modifyAlarmComplete();
-                    eventListener.onComplete();
-                    dismiss();
+                if (checkAlarmName()) {
+                    if (binding.etName.getText().toString().length() > 0) {
+                        modifyAlarmComplete();
+                        eventListener.onComplete();
+                        dismiss();
 //                            DialogFragment dialogFragment = (DialogFragment) fragment;
 //                            dialogFragment.dismiss();
+                    } else {
+                        Toast.makeText(context, "모든 정보를 입력해주세요", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(context, "모든 정보를 입력해주세요", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "이미 저장되어 있는 알람 이름 입니다", Toast.LENGTH_SHORT).show();
                 }
+
+
 
                 break;
             case R.id.tv_sunday:
