@@ -202,7 +202,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     private void startMediaPlayer(Uri uri) {
         mediaPlayer = MediaPlayer.create(context, uri);
         mediaPlayer.start();
-        mediaPlayer.setLooping(true);
+        mediaPlayer.setLooping(false);
     }
 
     // 미디어플레이어 멈춤
