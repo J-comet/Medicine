@@ -54,6 +54,14 @@
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_client_id" />
+
+
+        <receiver android:name=".AlarmReciver" />
+
+        <service
+            android:name=".RingtonePlayingService"
+            android:enabled="true"/>
+
     </application>
 
 </manifest>
