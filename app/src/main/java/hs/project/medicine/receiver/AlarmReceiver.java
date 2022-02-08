@@ -4,11 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.PowerManager;
 
-import hs.project.medicine.datas.Alarm;
-import hs.project.medicine.datas.User;
+import hs.project.medicine.activitys.AlarmViewActivity;
 import hs.project.medicine.service.RingtonePlayingService;
+import hs.project.medicine.util.LogUtil;
 
 
 /**
@@ -23,18 +24,18 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         this.context = context;
 
-        Alarm alarm = (Alarm) intent.getSerializableExtra("alarm");
+//        Alarm alarm = (Alarm) intent.getSerializableExtra("alarm");
 
-        // intent로부터 전달받은 string
+        // intent 로부터 전달받은 string
         String strState = intent.getExtras().getString("state");
-        String ringtoneName = alarm.getRingtoneName();
+        String strRingtoneUri = intent.getExtras().getString("uri");
+
+        LogUtil.d("strState=" + strState + "/" + "uri=" + strRingtoneUri);
 
         // RingtonePlayingService 서비스 intent 생성
         Intent serviceIntent = new Intent(context, RingtonePlayingService.class);
-
-        // RingtonePlayinService로 extra string 값 보내기
         serviceIntent.putExtra("state", strState);
-        serviceIntent.putExtra("ringtoneName", ringtoneName);
+        serviceIntent.putExtra("uri", strRingtoneUri);
 
         // start the ringtone service
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -59,6 +60,15 @@ public class AlarmReceiver extends BroadcastReceiver {
             sCpuWakeLock.release();
             sCpuWakeLock = null;
         }
+
+
+
+        Intent alarmIntent = new Intent("android.intent.action.sec");
+        alarmIntent.setClass(context, AlarmViewActivity.class);
+        alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Start the popup activity
+        context.startActivity(alarmIntent);
+
     }
 
 }

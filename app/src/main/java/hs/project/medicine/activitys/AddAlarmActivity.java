@@ -401,7 +401,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
         // 알람리시버 intent 생성
         Intent alarmIntent = new Intent(AddAlarmActivity.this, AlarmReceiver.class);
-        alarmIntent.putExtra("alarm", alarm);
+        alarmIntent.putExtra("uri", alarm.getRingtoneUri().toString());
         alarmIntent.putExtra("state","ON");
 
         // calendar에 시간 셋팅
@@ -418,7 +418,8 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         // 알람셋팅
-        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
     }
 
     private boolean checkAlarmName() {
