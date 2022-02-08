@@ -94,6 +94,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         firstUriRingtone = Uri.parse("content://media/internal/audio/media/37");  // 기본벨소리 설정
         mediaPlayer = MediaPlayer.create(this, firstUriRingtone);
+//        mediaPlayer = MediaPlayer.create(this, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
         mRtCurrent = RingtoneManager.getRingtone(this, firstUriRingtone);
         binding.tvRingtoneTitle.setText(mRtCurrent.getTitle(this));
 
@@ -196,11 +197,11 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         binding.npHour.setWrapSelectorWheel(true);
 
         binding.npMinute.setMinValue(0);
-        binding.npMinute.setMaxValue(60);
+        binding.npMinute.setMaxValue(59);
         binding.npMinute.setWrapSelectorWheel(true);
 
         ArrayList<String> integerArrayList = new ArrayList<>();
-        for (int i = 0; i < 61; i++) {
+        for (int i = 0; i < 60; i++) {
             integerArrayList.add(String.format("%02d", i));
         }
         String[] arrMinute = integerArrayList.toArray(new String[integerArrayList.size()]);
@@ -402,7 +403,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         // 알람리시버 intent 생성
         Intent alarmIntent = new Intent(AddAlarmActivity.this, AlarmReceiver.class);
         alarmIntent.putExtra("uri", alarm.getRingtoneUri().toString());
-        alarmIntent.putExtra("state","ON");
+//        alarmIntent.putExtra("state","ON");
 
         // calendar에 시간 셋팅
         calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(alarm.getHour()));
@@ -418,8 +419,8 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         // 알람셋팅
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-//        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
     }
 
     private boolean checkAlarmName() {
