@@ -1,6 +1,8 @@
 package hs.project.medicine.activitys;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -10,6 +12,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.SeekBar;
@@ -23,12 +26,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityAddAlarmBinding;
 import hs.project.medicine.datas.Alarm;
 import hs.project.medicine.datas.User;
+import hs.project.medicine.receiver.AlarmReceiver;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
@@ -54,6 +59,10 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     private boolean isSuccess = false;
 
     private NotificationManager notificationManager;
+
+    /* 알람등록 관련 변수 */
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -384,7 +393,32 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         // Preference 에 저장
         PreferenceUtil.setJSONArrayPreference(this, currentUser.alarmKey(), alarmList);
 
-        Toast.makeText(this, "알람 등록완료", Toast.LENGTH_SHORT).show();
+        // 알람매니저 설정
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        // Calendar 객체 생성
+        Calendar calendar = Calendar.getInstance();
+
+        // 알람리시버 intent 생성
+        Intent alarmIntent = new Intent(AddAlarmActivity.this, AlarmReceiver.class);
+        alarmIntent.putExtra("alarm", alarm);
+        alarmIntent.putExtra("state","ON");
+
+        // calendar에 시간 셋팅
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(alarm.getHour()));
+        calendar.set(Calendar.MINUTE, Integer.parseInt(alarm.getMinute()));
+
+        // 시간 가져옴
+        int hour = Integer.parseInt(alarm.getHour());
+        int minute = Integer.parseInt(alarm.getMinute());
+        Toast.makeText(AddAlarmActivity.this,"알람 등록 " + hour + "시 " + minute + "분",Toast.LENGTH_SHORT).show();
+
+
+        pendingIntent = PendingIntent.getBroadcast(AddAlarmActivity.this, 0, alarmIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // 알람셋팅
+        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
     }
 
     private boolean checkAlarmName() {

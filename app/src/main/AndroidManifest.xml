@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.VIBLATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -56,10 +57,10 @@
             android:value="@string/naver_client_id" />
 
 
-        <receiver android:name=".AlarmReciver" />
+        <receiver android:name=".receiver.AlarmReceiver" />
 
         <service
-            android:name=".RingtonePlayingService"
+            android:name=".service.RingtonePlayingService"
             android:enabled="true"/>
 
     </application>
