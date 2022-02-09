@@ -1,6 +1,7 @@
 package hs.project.medicine.activitys;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -8,11 +9,13 @@ import android.view.View;
 
 
 import hs.project.medicine.Config;
+import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.main_content.LeftSlideView;
 import hs.project.medicine.main_content.MainBottomView;
 import hs.project.medicine.main_content.MapFragment;
 import hs.project.medicine.databinding.ActivityMainBinding;
+import hs.project.medicine.service.WeekCheckService;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -25,6 +28,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(binding.getRoot());
 
         init();
+
+        // start service
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            this.startForegroundService(new Intent(this, WeekCheckService.class));
+        } else {
+            this.startService(new Intent(this, WeekCheckService.class));
+        }
     }
 
     @Override
