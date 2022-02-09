@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -77,6 +78,14 @@ public class MainSearchView extends ConstraintLayout {
 
     private void initView(Context context) {
         binding = LayoutMainSearchViewBinding.inflate(LayoutInflater.from(context), this, true);
+        binding.clLoading.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // ignore all touch events
+                return true;
+            }
+        });
+
 
         initRecyclerView(context);
 
