@@ -443,7 +443,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
         // 알람셋팅
 //        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
+//        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
     }
 
     private boolean checkAlarmName() {
