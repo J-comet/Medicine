@@ -406,8 +406,31 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 //        alarmIntent.putExtra("state","ON");
 
         // calendar에 시간 셋팅
-        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(alarm.getHour()));
-        calendar.set(Calendar.MINUTE, Integer.parseInt(alarm.getMinute()));
+//        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(alarm.getHour()));
+//        calendar.set(Calendar.MINUTE, Integer.parseInt(alarm.getMinute()));
+
+
+        /**
+         * 매일 밤 12:00 에 울려야 하는 알람이 있는지 체크해서 추가하기
+         *
+         * 1. 매일 밤 12:00 에 울릴 알람이 있는지 체크 할 Service
+         * 2. 만약 울릴 알람이 있다면 알람리시버에서 등록
+        */
+
+
+       /* long aTime = System.currentTimeMillis();
+        long bTime = calendar.getTimeInMillis();
+
+        //하루의 시간을 나타냄
+        long interval = 1000 * 60 * 60  * 24;
+
+        //만일 내가 설정한 시간이 현재 시간보다 작다면 알람이 바로 울려버리기 때문에 이미 시간이 지난 알람은 다음날 울려야 한다.
+        while(aTime>bTime){
+            bTime += interval;
+        }
+
+        //알람 매니저를 통한 반복알람 설정
+        alarmManager.setRepeating(AlarmManager.RTC, bTime, interval, pendingIntent);*/
 
         // 시간 가져옴
         int hour = Integer.parseInt(alarm.getHour());

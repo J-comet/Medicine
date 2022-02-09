@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MediApplication"
@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Medicine"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".activitys.AlarmViewActivity"
             android:exported="false" />
@@ -62,16 +63,21 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="@string/naver_client_id" />
 
-        <receiver android:name=".receiver.AlarmReceiver"
+        <receiver
+            android:name=".receiver.AlarmReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.sec" />
             </intent-filter>
         </receiver>
 
+<!--        <service-->
+<!--            android:name=".service.RingtonePlayingService"-->
+<!--            android:enabled="true" />-->
         <service
-            android:name=".service.RingtonePlayingService"
-            android:enabled="true" />
+            android:name=".service.WeekCheckService"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest>
