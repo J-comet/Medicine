@@ -30,11 +30,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         init();
 
         // start service
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            this.startForegroundService(new Intent(this, WeekCheckService.class));
-        } else {
-            this.startService(new Intent(this, WeekCheckService.class));
-        }
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            this.startForegroundService(new Intent(this, WeekCheckService.class));
+//        } else {
+//            this.startService(new Intent(this, WeekCheckService.class));
+//        }
     }
 
     @Override
@@ -73,10 +73,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 changeMainContent(Config.MAIN_BOTTOM_MENU.MAP);
             }
 
-            @Override
-            public void onTVClick() {
-                changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
-            }
+//            @Override
+//            public void onUserListClick() {
+//                changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
+//            }
         });
 
         /* LeftSlide 메뉴클릭 리스너 */
