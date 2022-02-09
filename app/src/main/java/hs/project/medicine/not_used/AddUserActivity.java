@@ -1,29 +1,21 @@
-package hs.project.medicine.activitys;
+package hs.project.medicine.not_used;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.material.textfield.TextInputLayout;
-
-import org.json.JSONArray;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.activitys.BaseActivity;
+import hs.project.medicine.activitys.MainActivity;
 import hs.project.medicine.databinding.ActivityAddUserBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;

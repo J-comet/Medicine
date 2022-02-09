@@ -38,7 +38,7 @@
             android:exported="false" />
         -->
         <activity
-            android:name=".activitys.AddUserActivity"
+            android:name=".not_used.AddUserActivity"
             android:exported="false" />
         <activity
             android:name=".activitys.AddAlarmActivity"

@@ -18,8 +18,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import hs.project.medicine.Config;
-import hs.project.medicine.R;
-import hs.project.medicine.adapter.GridUserAdapter;
+import hs.project.medicine.not_used.GridUserAdapter;
 import hs.project.medicine.databinding.LayoutMainHomeViewBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;

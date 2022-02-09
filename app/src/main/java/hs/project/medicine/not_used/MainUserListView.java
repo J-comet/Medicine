@@ -1,4 +1,4 @@
-package hs.project.medicine.main_content;
+package hs.project.medicine.not_used;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.R;
-import hs.project.medicine.activitys.AddUserActivity;
+import hs.project.medicine.not_used.AddUserActivity;
 import hs.project.medicine.activitys.UserDetailActivity;
 import hs.project.medicine.adapter.UserListAdapter;
 import hs.project.medicine.databinding.LayoutMainUserListViewBinding;
