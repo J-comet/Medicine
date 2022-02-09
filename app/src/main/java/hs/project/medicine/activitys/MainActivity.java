@@ -44,7 +44,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         /**
          *  UserListActivity 에서 현재 유저 변경 후 값 가져오기 위해 onStart 에서 실행
          */
-        binding.mainContentHome.setupUI();
+        binding.mainContentAlarm.setUpUI();
         binding.mainContentUserList.setUpUI();
 
         if (getIntent().getStringExtra("MAIN_BOTTOM_MENU") != null
@@ -124,15 +124,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void changeMainContent(String selectedContent) {
-        binding.mainContentHome.setVisibility(View.GONE);
+        binding.mainContentAlarm.setVisibility(View.GONE);
         binding.mainContentSearch.setVisibility(View.GONE);
-        binding.mainContentUserList.setVisibility(View.GONE);
+//        binding.mainContentUserList.setVisibility(View.GONE);
         binding.mainContentMap.setVisibility(View.GONE);
 
         switch (selectedContent) {
             case Config.MAIN_BOTTOM_MENU.HOME:
-                binding.mainContentHome.setVisibility(View.VISIBLE);
-                binding.mainContentHome.setupUI();
+                binding.mainContentAlarm.setVisibility(View.VISIBLE);
+                binding.mainContentAlarm.setUpUI();
                 binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
                 break;
             case Config.MAIN_BOTTOM_MENU.SEARCH:
@@ -147,11 +147,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 binding.mainContentMap.setVisibility(View.VISIBLE);
                 binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.MAP);
                 break;
-            case Config.MAIN_BOTTOM_MENU.USER_LIST:
+            /*case Config.MAIN_BOTTOM_MENU.USER_LIST:
                 binding.mainContentUserList.setVisibility(View.VISIBLE);
                 binding.mainContentUserList.setUpUI();
                 binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.USER_LIST);
-                break;
+                break;*/
         }
     }
 

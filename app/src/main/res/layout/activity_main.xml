@@ -54,8 +54,8 @@
             app:layout_constraintBottom_toTopOf="@+id/main_bottom_view"
             app:layout_constraintTop_toBottomOf="@+id/cl_main_top">
 
-            <hs.project.medicine.main_content.MainHomeView
-                android:id="@+id/main_content_home"
+            <hs.project.medicine.main_content.MainAlarmView
+                android:id="@+id/main_content_alarm"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
