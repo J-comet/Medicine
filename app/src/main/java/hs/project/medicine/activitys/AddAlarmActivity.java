@@ -392,7 +392,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         alarmList.add(alarm.toJSON());
 
         // Preference 에 저장
-        PreferenceUtil.setJSONArrayPreference(this, "alarmKey", alarmList);
+        PreferenceUtil.setJSONArrayPreference(this, Config.PREFERENCE_KEY.ALARM_LIST, alarmList);
 
         // 알람매니저 설정
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -448,10 +448,10 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
     private boolean checkAlarmName() {
         /* 해당 유저의 알람중에 같은 알람이 있는지 검사하는 코드 */
-        if (PreferenceUtil.getJSONArrayPreference(this, "alarmKey") != null
-                && PreferenceUtil.getJSONArrayPreference(this, "alarmKey").size() > 0) {
+        if (PreferenceUtil.getJSONArrayPreference(this, Config.PREFERENCE_KEY.ALARM_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(this, Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
 
-            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, "alarmKey"));
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, Config.PREFERENCE_KEY.ALARM_LIST));
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {

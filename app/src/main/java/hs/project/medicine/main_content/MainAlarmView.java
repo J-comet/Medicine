@@ -158,10 +158,10 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         alarmArrayList = new ArrayList<>();
 
         /* 저장되어 있는 알람리스트 가져오기 */
-        if (PreferenceUtil.getJSONArrayPreference(context, "alarmKey") != null
-                && PreferenceUtil.getJSONArrayPreference(context, "alarmKey").size() > 0) {
+        if (PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
 
-            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, "alarmKey"));
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST));
 
             try {
 
