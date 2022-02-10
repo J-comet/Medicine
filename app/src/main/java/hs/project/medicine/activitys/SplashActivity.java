@@ -14,15 +14,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
+import android.util.Log;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Calendar;
 
+import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivitySplashBinding;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.NetworkUtil;
+import hs.project.medicine.util.PreferenceUtil;
 
 public class SplashActivity extends BaseActivity {
 
@@ -39,8 +44,8 @@ public class SplashActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
         // 인터넷 연결 체크 후 앱 실행
         if (NetworkUtil.checkConnectedNetwork(this)) {
@@ -50,24 +55,72 @@ public class SplashActivity extends BaseActivity {
 
                     binding.lottieView.addAnimatorListener(new Animator.AnimatorListener() {
                         @Override
-                        public void onAnimationStart(Animator animation) { }
+                        public void onAnimationStart(Animator animation) {
+                        }
+
                         @Override
                         public void onAnimationEnd(Animator animation) {
+                            setDayOfWeek();
                             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                             startActivity(intent);
                             finish();
                         }
+
                         @Override
-                        public void onAnimationCancel(Animator animation) { }
+                        public void onAnimationCancel(Animator animation) {
+                        }
+
                         @Override
-                        public void onAnimationRepeat(Animator animation) { }
+                        public void onAnimationRepeat(Animator animation) {
+                        }
                     });
                 }
             }, 1500);
         } else {
             NetworkUtil.networkErrorDialogShow(SplashActivity.this, true);
         }
+    }
+
+    /* 요일 값 세팅 */
+    private void setDayOfWeek() {
+        if (PreferenceUtil.getSharedPreference(SplashActivity.this, Config.PREFERENCE_KEY.DAY_OF_WEEK) == null
+                || PreferenceUtil.getSharedPreference(SplashActivity.this, Config.PREFERENCE_KEY.DAY_OF_WEEK).length() < 1) {
+
+            PreferenceUtil.putSharedPreference(this,Config.PREFERENCE_KEY.DAY_OF_WEEK, doDayOfWeek());
+        }
+    }
+
+    public String doDayOfWeek() {
+        Calendar calendar = Calendar.getInstance();
+        String week = "";
+
+        int calendarWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        switch (calendarWeek) {
+            case 1:
+                week = "일";
+                break;
+            case 2:
+                week = "월";
+                break;
+            case 3:
+                week = "화";
+                break;
+            case 4:
+                week = "수";
+                break;
+            case 5:
+                week = "목";
+                break;
+            case 6:
+                week = "금";
+                break;
+            case 7:
+                week = "토";
+                break;
+        }
+
+        return week;
     }
 
     /* debug hash key */

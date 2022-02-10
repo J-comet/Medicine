@@ -16,5 +16,6 @@ public class Config {
     public interface PREFERENCE_KEY {
         String USER_LIST = "user_list";
         String ALARM_LIST = "alarm_list";
+        String DAY_OF_WEEK = "day_of_the_week";
     }
 }

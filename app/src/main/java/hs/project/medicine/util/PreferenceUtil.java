@@ -22,7 +22,7 @@ public class PreferenceUtil {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     public static String getSharedPreference(Context context, String key) {
@@ -48,7 +48,7 @@ public class PreferenceUtil {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(key, value);
-        editor.commit();
+        editor.apply();
     }
 
     /**
