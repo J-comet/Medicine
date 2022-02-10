@@ -81,9 +81,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         /* 기존에 저장되어 있는 Preference 가 있는지 확인하기 */
-        if (PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, "alarmKey") != null
-                && PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, "alarmKey").size() > 0) {
-            alarmList = PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, "alarmKey");
+        if (PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, Config.PREFERENCE_KEY.ALARM_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
+            alarmList = PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, Config.PREFERENCE_KEY.ALARM_LIST);
         } else {
             alarmList = new ArrayList<>();
         }
@@ -349,9 +349,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         if (requestCode == REQUEST_CODE_RINGTONE_PICKER) {
             if (resultCode == RESULT_OK) {
                 Uri ring = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                mediaPlayer = MediaPlayer.create(this, ring);
 
                 if (ring != null) {
+                    mediaPlayer = MediaPlayer.create(this, ring);
                     strRingtoneUri = ring.toString();
                     LogUtil.d("strRingtoneUri=" + strRingtoneUri);
 

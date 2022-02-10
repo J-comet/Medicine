@@ -32,7 +32,7 @@ import hs.project.medicine.util.PreferenceUtil;
 public class UserDetailActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityUserDetailBinding binding;
-    private User user;
+//    private User user;
     private AlarmAdapter alarmAdapter;
     private ArrayList<Alarm> alarmList;
 
@@ -47,8 +47,8 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        user = (User) getIntent().getSerializableExtra("user");
-        setData(user);
+//        user = (User) getIntent().getSerializableExtra("user");
+//        setData(user);
         getAlarmList();
     }
 
@@ -92,7 +92,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                                     strAlarmList.add(alarm.toJSON());
                                 }
 
-                                PreferenceUtil.setJSONArrayPreference(UserDetailActivity.this, user.alarmKey(), strAlarmList);
+                                PreferenceUtil.setJSONArrayPreference(UserDetailActivity.this, Config.PREFERENCE_KEY.ALARM_LIST, strAlarmList);
 
                                 alarmAdapter.removeAt(position);
 
@@ -116,7 +116,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
             @Override
             public void onModifyClick(View view, int position) {
-                ModifyAlarmDialog modifyAlarmDialog = new ModifyAlarmDialog(UserDetailActivity.this, alarmList.get(position), user);
+                ModifyAlarmDialog modifyAlarmDialog = new ModifyAlarmDialog(UserDetailActivity.this, alarmList.get(position));
                 modifyAlarmDialog.setModifyAlarmListener(new ModifyAlarmDialog.ModifyAlarmListener() {
                     @Override
                     public void onComplete() {
@@ -140,10 +140,10 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         alarmList = new ArrayList<>();
 
         /* 해당 유저에 저장되어 있는 알람리스트 가져오기 */
-        if (PreferenceUtil.getJSONArrayPreference(this, user.alarmKey()) != null
-                && PreferenceUtil.getJSONArrayPreference(this, user.alarmKey()).size() > 0) {
+        if (PreferenceUtil.getJSONArrayPreference(this, Config.PREFERENCE_KEY.ALARM_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(this, Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
 
-            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, user.alarmKey()));
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(this, Config.PREFERENCE_KEY.ALARM_LIST));
 
             try {
 

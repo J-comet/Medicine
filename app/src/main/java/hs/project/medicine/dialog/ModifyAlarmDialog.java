@@ -48,7 +48,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     private DialogModifyAlarmBinding binding;
     private Context context;
     private Alarm alarm;
-    private User user;
+//    private User user;
     private ArrayList<String> strAlarmList;
     private ArrayList<Alarm> alarmArrayList; // Preference 에 저장할 알람 정보
     private Fragment fragment;
@@ -66,10 +66,10 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
     private final static int REQUEST_CODE_RINGTONE_PICKER = 1000;
     private boolean isSuccess = false;
 
-    public ModifyAlarmDialog(Context context, Alarm alarmItem, User userItem) {
+    public ModifyAlarmDialog(Context context, Alarm alarmItem) {
         this.context = context;
         this.alarm = alarmItem;
-        this.user = userItem;
+//        this.user = userItem;
     }
 
     public void setModifyAlarmListener(ModifyAlarmListener dialogResult) {
@@ -118,10 +118,10 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         /* 기존에 저장되어 있는 리스트 가져오기 */
         alarmArrayList = new ArrayList<>();
 
-        if (PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()) != null
-                && PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()).size() > 0) {
+        if (PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
 
-            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()));
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST));
 
             try {
 
@@ -447,7 +447,7 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
         }
 
         // Preference 에 저장
-        PreferenceUtil.setJSONArrayPreference(context, user.alarmKey(), strAlarmList);
+        PreferenceUtil.setJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST, strAlarmList);
         Toast.makeText(context, "수정완료", Toast.LENGTH_SHORT).show();
     }
 
@@ -499,10 +499,10 @@ public class ModifyAlarmDialog extends DialogFragment implements View.OnClickLis
 
     private boolean checkAlarmName() {
         /* 해당 유저의 알람중에 같은 알람이 있는지 검사하는 코드 */
-        if (PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()) != null
-                && PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()).size() > 0) {
+        if (PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
 
-            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, user.alarmKey()));
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST));
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
