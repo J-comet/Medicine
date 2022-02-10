@@ -546,33 +546,40 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                     if (binding.etName.getText().length() > 0) {
                         Alarm alarm = new Alarm();
                         alarm.setName(binding.etName.getText().toString());
-                        /*alarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
+
+                        alarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
                         alarm.setHour(String.valueOf(binding.npHour.getValue()));
-                        alarm.setMinute(binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);*/
+                        alarm.setMinute(binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            alarm.setHour(String.valueOf(binding.timePicker.getHour()));
-                            alarm.setMinute(String.valueOf(binding.timePicker.getMinute()));
+//                        if (binding.npHour.getValue() > 12) {
+//                                alarm.setHour(String.valueOf(binding.npHour.getValue() - 12));
+//                            } else {
+//                                alarm.setHour(String.valueOf(binding.npHour.getValue()));
+//                            }
 
-                            if (binding.timePicker.getHour() > 12) {
-                                alarm.setAmPm("오후");
-                                alarm.setHour(String.valueOf(binding.timePicker.getHour() - 12));
-                            } else {
-                                alarm.setAmPm("오전");
-                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour()));
-                            }
-
-                        } else {
-
-                            if (binding.timePicker.getCurrentHour() > 12) {
-                                alarm.setAmPm("오후");
-                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour() - 12));
-                            } else {
-                                alarm.setAmPm("오전");
-                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour()));
-                            }
-                            alarm.setMinute(String.valueOf(binding.timePicker.getCurrentMinute()));
-                        }
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            alarm.setHour(String.valueOf(binding.timePicker.getHour()));
+//                            alarm.setMinute(String.valueOf(binding.timePicker.getMinute()));
+//
+//                            if (binding.timePicker.getHour() > 12) {
+//                                alarm.setAmPm("오후");
+//                                alarm.setHour(String.valueOf(binding.timePicker.getHour() - 12));
+//                            } else {
+//                                alarm.setAmPm("오전");
+//                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour()));
+//                            }
+//
+//                        } else {
+//
+//                            if (binding.timePicker.getCurrentHour() > 12) {
+//                                alarm.setAmPm("오후");
+//                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour() - 12));
+//                            } else {
+//                                alarm.setAmPm("오전");
+//                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour()));
+//                            }
+//                            alarm.setMinute(String.valueOf(binding.timePicker.getCurrentMinute()));
+//                        }
 
                         alarm.setVolume(binding.sbVolume.getProgress());
                         alarm.setRingtoneName(binding.tvRingtoneTitle.getText().toString());
