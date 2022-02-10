@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import hs.project.medicine.R;
-import hs.project.medicine.activitys.UserDetailActivity;
 import hs.project.medicine.databinding.ItemGridUserBinding;
 import hs.project.medicine.datas.User;
 

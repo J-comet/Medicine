@@ -1,6 +1,7 @@
 package hs.project.medicine.activitys;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -21,11 +22,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityMainBinding binding;
 
+    public static Context mainActivityContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        mainActivityContext = this;
 
         init();
 

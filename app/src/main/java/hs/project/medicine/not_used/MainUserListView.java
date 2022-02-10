@@ -19,8 +19,6 @@ import java.util.ArrayList;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.R;
-import hs.project.medicine.not_used.AddUserActivity;
-import hs.project.medicine.activitys.UserDetailActivity;
 import hs.project.medicine.adapter.UserListAdapter;
 import hs.project.medicine.databinding.LayoutMainUserListViewBinding;
 import hs.project.medicine.datas.User;

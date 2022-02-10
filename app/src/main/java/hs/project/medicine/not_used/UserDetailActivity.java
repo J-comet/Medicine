@@ -1,4 +1,4 @@
-package hs.project.medicine.activitys;
+package hs.project.medicine.not_used;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.activitys.AddAlarmActivity;
+import hs.project.medicine.activitys.BaseActivity;
 import hs.project.medicine.adapter.AlarmAdapter;
 import hs.project.medicine.databinding.ActivityUserDetailBinding;
 import hs.project.medicine.datas.Alarm;

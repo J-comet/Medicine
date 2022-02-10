@@ -1,6 +1,7 @@
 package hs.project.medicine.main_content;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.AttributeSet;
@@ -9,7 +10,9 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import org.json.JSONArray;
@@ -19,14 +22,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import hs.project.medicine.Config;
+import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.AddAlarmActivity;
+import hs.project.medicine.activitys.MainActivity;
 import hs.project.medicine.adapter.AlarmAdapter;
 import hs.project.medicine.databinding.LayoutMainAlarmViewBinding;
-import hs.project.medicine.activitys.UserDetailActivity;
-import hs.project.medicine.adapter.UserListAdapter;
 import hs.project.medicine.datas.Alarm;
-import hs.project.medicine.datas.User;
+import hs.project.medicine.dialog.ModifyAlarmDialog;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
@@ -63,6 +66,78 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         binding = LayoutMainAlarmViewBinding.inflate(LayoutInflater.from(context), this, true);
 
         alarmAdapter = new AlarmAdapter(context);
+        alarmAdapter.setOnEventListener(new AlarmAdapter.OnEventListener() {
+            @Override
+            public void onRemoveClick(View view, int position) {
+                /* 1. 기존에 저장되어 있는 알람의 이름으로 비교 후 Preference 에서 삭제
+                 *  2. RecyclerView 아이템 position 으로 삭제 */
+
+                AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setTitle("알람")
+                        .setMessage("정말 삭제하시겠습니까?")
+                        .setCancelable(false)
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                ArrayList<String> strAlarmList = new ArrayList<>();
+                                alarmArrayList.remove(position);
+
+                                for (int i = 0; i < alarmArrayList.size(); i++) {
+                                    Alarm alarm = new Alarm();
+                                    alarm.setName(alarmArrayList.get(i).getName());
+                                    alarm.setAmPm(alarmArrayList.get(i).getAmPm());
+                                    alarm.setHour(alarmArrayList.get(i).getHour());
+                                    alarm.setMinute(alarmArrayList.get(i).getMinute());
+                                    alarm.setVolume(alarmArrayList.get(i).getVolume());
+                                    alarm.setRingtoneName(alarmArrayList.get(i).getRingtoneName());
+                                    alarm.setRingtoneUri(alarmArrayList.get(i).getRingtoneUri());
+                                    alarm.setDayOfWeek(alarmArrayList.get(i).getDayOfWeek());
+                                    alarm.setAlarmON(alarmArrayList.get(i).isAlarmON());
+
+                                    strAlarmList.add(alarm.toJSON());
+                                }
+
+                                PreferenceUtil.setJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST, strAlarmList);
+
+                                alarmAdapter.removeAt(position);
+
+                                if (alarmArrayList.size() < 1) {
+                                    binding.tvNone.setVisibility(View.VISIBLE);
+                                    binding.clAlarmList.setVisibility(View.GONE);
+                                } else {
+                                    binding.tvNone.setVisibility(View.GONE);
+                                    binding.clAlarmList.setVisibility(View.VISIBLE);
+                                }
+
+                                dialog.dismiss();
+                            }
+                        }).create();
+
+                dialog.show();
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+                dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(MediApplication.ApplicationContext(), R.color.black));
+
+            }
+
+            @Override
+            public void onModifyClick(View view, int position) {
+                ModifyAlarmDialog modifyAlarmDialog = new ModifyAlarmDialog(context, alarmArrayList.get(position));
+                modifyAlarmDialog.setModifyAlarmListener(new ModifyAlarmDialog.ModifyAlarmListener() {
+                    @Override
+                    public void onComplete() {
+                        getAlarmList();
+                    }
+                });
+                modifyAlarmDialog.show(((MainActivity) MainActivity.mainActivityContext).getSupportFragmentManager(), "modifyAlarmDialog");
+            }
+        });
 
         binding.rvAlarmList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         binding.rvAlarmList.setAdapter(alarmAdapter);

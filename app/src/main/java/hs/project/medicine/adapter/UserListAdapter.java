@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
@@ -17,9 +16,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import hs.project.medicine.Config;
-import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
-import hs.project.medicine.activitys.UserDetailActivity;
+import hs.project.medicine.not_used.UserDetailActivity;
 import hs.project.medicine.databinding.ItemUserBinding;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.util.LogUtil;

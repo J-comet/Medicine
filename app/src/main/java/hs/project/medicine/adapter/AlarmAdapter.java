@@ -1,28 +1,19 @@
 package hs.project.medicine.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
-import hs.project.medicine.activitys.UserDetailActivity;
 import hs.project.medicine.databinding.ItemAlarmBinding;
 import hs.project.medicine.datas.Alarm;
-import hs.project.medicine.datas.User;
-import hs.project.medicine.dialog.ModifyAlarmDialog;
-import hs.project.medicine.dialog.ModifyUserDialog;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> {
 

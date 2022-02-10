@@ -30,7 +30,7 @@
             android:name=".activitys.AlarmViewActivity"
             android:exported="false" />
         <activity
-            android:name=".activitys.UserDetailActivity"
+            android:name=".not_used.UserDetailActivity"
             android:exported="false" />
         <!--
 <activity
