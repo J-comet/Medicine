@@ -16,7 +16,7 @@ import hs.project.medicine.main_content.LeftSlideView;
 import hs.project.medicine.main_content.MainBottomView;
 import hs.project.medicine.main_content.MapFragment;
 import hs.project.medicine.databinding.ActivityMainBinding;
-import hs.project.medicine.service.WeekCheckService;
+import hs.project.medicine.service.DayOfWeekCheckService;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -33,12 +33,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         init();
 
-        // start service
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            this.startForegroundService(new Intent(this, WeekCheckService.class));
-//        } else {
-//            this.startService(new Intent(this, WeekCheckService.class));
-//        }
+        startDayOfWeekService();
+//        Intent intent = new Intent(MediApplication.ApplicationContext(), .class);
+//        intent.putExtra("command", "show");
+//        intent.putExtra("text", text);
+//        startService(intent);
     }
 
     @Override
@@ -125,6 +124,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 return true;
             }
         });
+    }
+
+    public void startDayOfWeekService() {
+        // start service
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(MediApplication.ApplicationContext(), DayOfWeekCheckService.class));
+        } else {
+            startService(new Intent(MediApplication.ApplicationContext(), DayOfWeekCheckService.class));
+        }
     }
 
     private void changeMainContent(String selectedContent) {

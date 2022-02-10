@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ItemAlarmBinding;
@@ -83,7 +84,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
             itemBinding.tvName.setText(alarmItem.getName());
             itemBinding.tvAmPm.setText(alarmItem.getAmPm());
             itemBinding.tvDayWeek.setText(alarmItem.getDayOfWeek());
-            itemBinding.tvTime.setText(alarmItem.getHour() + " : " + alarmItem.getMinute());
+
+            Locale locale = context.getResources().getConfiguration().locale;
+            String strTime = String.format(locale, "%02d : %02d", Integer.parseInt(alarmItem.getHour()), Integer.parseInt(alarmItem.getMinute()));
+            itemBinding.tvTime.setText(strTime);
 
             if (alarmItem.isAlarmON()) {
                 itemBinding.tvName.setSelected(true);

@@ -42,7 +42,8 @@
             android:exported="false" />
         <activity
             android:name=".activitys.AddAlarmActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activitys.SplashActivity"
             android:exported="true">
@@ -71,13 +72,11 @@
             </intent-filter>
         </receiver>
 
-<!--        <service-->
-<!--            android:name=".service.RingtonePlayingService"-->
-<!--            android:enabled="true" />-->
         <service
-            android:name=".service.WeekCheckService"
+            android:name=".service.DayOfWeekCheckService"
             android:enabled="true"
             android:exported="true"/>
+
     </application>
 
 </manifest>

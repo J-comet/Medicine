@@ -1,5 +1,7 @@
 package hs.project.medicine.activitys;
 
+import static hs.project.medicine.activitys.MainActivity.mainActivityContext;
+
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,28 +14,21 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.RequiresApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityAddAlarmBinding;
 import hs.project.medicine.datas.Alarm;
-import hs.project.medicine.datas.User;
-import hs.project.medicine.receiver.AlarmReceiver;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
@@ -63,6 +58,9 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
     /* 알람등록 관련 변수 */
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
+    int getHourTimePicker;
+    int getMinuteTimePicker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +77,8 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 //        currentUser = (User) getIntent().getSerializableExtra("user");
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
 
         /* 기존에 저장되어 있는 Preference 가 있는지 확인하기 */
         if (PreferenceUtil.getJSONArrayPreference(AddAlarmActivity.this, Config.PREFERENCE_KEY.ALARM_LIST) != null
@@ -108,19 +108,6 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
-
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (!notificationManager.isNotificationPolicyAccessGranted()) {
-                        Toast.makeText(getApplicationContext(), "방해금지 권한을 허용해주세요", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
-                    } else {
-                        //음악 음량 변경
-                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
-                    }
-
-                } else {
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
-                }*/
 
             }
 
@@ -393,57 +380,6 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
         // Preference 에 저장
         PreferenceUtil.setJSONArrayPreference(this, Config.PREFERENCE_KEY.ALARM_LIST, alarmList);
-
-        // 알람매니저 설정
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        // Calendar 객체 생성
-        Calendar calendar = Calendar.getInstance();
-
-        // 알람리시버 intent 생성
-        Intent alarmIntent = new Intent(AddAlarmActivity.this, AlarmReceiver.class);
-        alarmIntent.putExtra("uri", alarm.getRingtoneUri().toString());
-//        alarmIntent.putExtra("state","ON");
-
-        // calendar에 시간 셋팅
-//        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(alarm.getHour()));
-//        calendar.set(Calendar.MINUTE, Integer.parseInt(alarm.getMinute()));
-
-
-        /**
-         * 매일 밤 12:00 에 울려야 하는 알람이 있는지 체크해서 추가하기
-         *
-         * 1. 매일 밤 12:00 에 울릴 알람이 있는지 체크 할 Service
-         * 2. 만약 울릴 알람이 있다면 알람리시버에서 등록
-        */
-
-
-       /* long aTime = System.currentTimeMillis();
-        long bTime = calendar.getTimeInMillis();
-
-        //하루의 시간을 나타냄
-        long interval = 1000 * 60 * 60  * 24;
-
-        //만일 내가 설정한 시간이 현재 시간보다 작다면 알람이 바로 울려버리기 때문에 이미 시간이 지난 알람은 다음날 울려야 한다.
-        while(aTime>bTime){
-            bTime += interval;
-        }
-
-        //알람 매니저를 통한 반복알람 설정
-        alarmManager.setRepeating(AlarmManager.RTC, bTime, interval, pendingIntent);*/
-
-        // 시간 가져옴
-        int hour = Integer.parseInt(alarm.getHour());
-        int minute = Integer.parseInt(alarm.getMinute());
-        Toast.makeText(AddAlarmActivity.this,"알람 등록 " + hour + "시 " + minute + "분",Toast.LENGTH_SHORT).show();
-
-
-        pendingIntent = PendingIntent.getBroadcast(AddAlarmActivity.this, 0, alarmIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // 알람셋팅
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-//        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
     }
 
     private boolean checkAlarmName() {
@@ -610,14 +546,41 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                     if (binding.etName.getText().length() > 0) {
                         Alarm alarm = new Alarm();
                         alarm.setName(binding.etName.getText().toString());
-                        alarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
+                        /*alarm.setAmPm(binding.npAmPm.getDisplayedValues()[binding.npAmPm.getValue()]);
                         alarm.setHour(String.valueOf(binding.npHour.getValue()));
-                        alarm.setMinute(binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);
+                        alarm.setMinute(binding.npMinute.getDisplayedValues()[binding.npMinute.getValue()]);*/
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            alarm.setHour(String.valueOf(binding.timePicker.getHour()));
+                            alarm.setMinute(String.valueOf(binding.timePicker.getMinute()));
+
+                            if (binding.timePicker.getHour() > 12) {
+                                alarm.setAmPm("오후");
+                                alarm.setHour(String.valueOf(binding.timePicker.getHour() - 12));
+                            } else {
+                                alarm.setAmPm("오전");
+                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour()));
+                            }
+
+                        } else {
+
+                            if (binding.timePicker.getCurrentHour() > 12) {
+                                alarm.setAmPm("오후");
+                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour() - 12));
+                            } else {
+                                alarm.setAmPm("오전");
+                                alarm.setHour(String.valueOf(binding.timePicker.getCurrentHour()));
+                            }
+                            alarm.setMinute(String.valueOf(binding.timePicker.getCurrentMinute()));
+                        }
+
                         alarm.setVolume(binding.sbVolume.getProgress());
                         alarm.setRingtoneName(binding.tvRingtoneTitle.getText().toString());
                         alarm.setRingtoneUri(Uri.parse(strRingtoneUri));
                         alarm.setDayOfWeek(binding.tvWeek.getText().toString());
                         alarm.setAlarmON(true);
+
+                        ((MainActivity) mainActivityContext).startDayOfWeekService();
 
                         registerAlarm(alarm);
                         finish();
