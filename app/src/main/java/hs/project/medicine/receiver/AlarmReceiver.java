@@ -15,7 +15,6 @@ import hs.project.medicine.util.LogUtil;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    private static final String TAG = AlarmReceiver.class.getSimpleName();
     Context mContext;
 
     PowerManager powerManager;

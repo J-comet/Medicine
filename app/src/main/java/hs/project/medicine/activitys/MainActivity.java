@@ -4,9 +4,12 @@ package hs.project.medicine.activitys;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 
 import hs.project.medicine.Config;
@@ -17,12 +20,16 @@ import hs.project.medicine.main_content.MainBottomView;
 import hs.project.medicine.main_content.MapFragment;
 import hs.project.medicine.databinding.ActivityMainBinding;
 import hs.project.medicine.service.DayOfWeekCheckService;
+import hs.project.medicine.util.LogUtil;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityMainBinding binding;
 
     public static Context mainActivityContext;
+
+    boolean isSetAlarm = false;
+    boolean oneTime = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +41,87 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         init();
 
         startDayOfWeekService();
-//        Intent intent = new Intent(MediApplication.ApplicationContext(), .class);
-//        intent.putExtra("command", "show");
-//        intent.putExtra("text", text);
-//        startService(intent);
+        binding.digitalClock.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String result = String.valueOf(s);
+                String[] splitText = result.split(":");
+
+                /*if (result.contains("오후") || result.contains("PM")) {
+
+                    for (int i = 0; i < splitText.length; i++) {
+                        int time = -1;
+                        String splitResult = splitText[0].replace("오후", "").trim();
+                        splitResult = splitResult.replace("PM", "").trim();
+                        time = Integer.parseInt(splitResult) + 12;
+                        LogUtil.d("time = [" + time + "]");
+                    }
+
+                } else */
+
+
+                if (result.contains("오전") || result.contains("AM")) {
+                    int time = -1;
+                    boolean isSetAlarm = false;
+
+                    for (int i = 0; i < splitText.length; i++) {
+
+                        String splitResult = splitText[0].replace("오전", "").trim();
+                        splitResult = splitResult.replace("AM", "").trim();
+                        time = Integer.parseInt(splitResult);
+                        LogUtil.d("time = [" + time + "]");
+                    }
+
+                    if (time == 0) {
+                        isSetAlarm = true;
+                    } else {
+                        isSetAlarm = false;
+                    }
+
+                    if (time == 12) {
+                        LogUtil.d("밤열두시");
+//                        ((MainActivity) mainActivityContext).startDayOfWeekService();
+                    }
+
+                } else {
+                    /*  24시간 형식 사용할 때 */
+
+                    int time = -1;
+
+                    for (int i = 0; i < splitText.length; i++) {
+                        time = Integer.parseInt(splitText[0]);
+                        LogUtil.d("time = [" + time + "]");
+                    }
+
+                    if (time == 0) {
+                        isSetAlarm = true;
+                    } else {
+                        isSetAlarm = false;
+                    }
+
+                    /*  24 일 때 계속 실행됨 한번만 실행되도록 수정 필요  */
+                    if (time == 0 && isSetAlarm ) {
+
+                        if (oneTime) {
+                            LogUtil.d("밤열두시");
+                        }
+
+                        oneTime = false;
+//                        ((MainActivity) mainActivityContext).startDayOfWeekService();
+                    }
+
+                }
+            }
+        });
     }
 
     @Override

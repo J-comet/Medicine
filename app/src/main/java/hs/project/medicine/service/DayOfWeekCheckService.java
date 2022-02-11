@@ -19,8 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+gimport java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
@@ -105,10 +107,6 @@ public class DayOfWeekCheckService extends Service {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                /* 밤 12시마다 요일 변경 */
-                PreferenceUtil.putSharedPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.DAY_OF_WEEK, doDayOfWeek());
-
-                strDoDayOfWeek = PreferenceUtil.getSharedPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.DAY_OF_WEEK);
 
                 /* 알람목록 가져오기 */
                 getAlarmList();
@@ -213,9 +211,6 @@ public class DayOfWeekCheckService extends Service {
 
         // Calendar 객체 생성
         final Calendar calendar = Calendar.getInstance();
-
-        // calendar 에 시간 셋팅
-
 
         // 시간 가져옴
         if (alarm.getAmPm().equals("오후")) {
