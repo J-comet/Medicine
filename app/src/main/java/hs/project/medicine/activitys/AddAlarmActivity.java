@@ -14,6 +14,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -23,7 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import hs.project.medicine.Config;
 import hs.project.medicine.R;
@@ -193,6 +196,36 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
         }
         String[] arrMinute = integerArrayList.toArray(new String[integerArrayList.size()]);
         binding.npMinute.setDisplayedValues(arrMinute);
+
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat formatHour = new SimpleDateFormat("HH");
+        SimpleDateFormat formatMinute = new SimpleDateFormat("mm");
+        SimpleDateFormat formatAmPm = new SimpleDateFormat("a");
+
+        String strCurHour = formatHour.format(date);
+        String strCurMinute = formatMinute.format(date);
+        String strCurAmPm = formatAmPm.format(date);
+
+        LogUtil.d(strCurHour);
+        LogUtil.d(strCurMinute);
+        LogUtil.d(strCurAmPm);
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (strCurAmPm.equals("AM") || strCurAmPm.equals("오전")) {
+                    binding.npAmPm.setValue(0);
+                    binding.npHour.setValue(Integer.parseInt(strCurHour));
+                } else {
+                    binding.npAmPm.setValue(1);
+                    binding.npHour.setValue(Integer.parseInt(strCurHour) - 12);
+                }
+
+                binding.npMinute.setValue(Integer.parseInt(strCurMinute));
+            }
+        });
+
+
     }
 
     private void dayOfWeekStatus(boolean isSelected, TextView textView) {
