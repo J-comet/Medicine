@@ -6,8 +6,8 @@
     <!-- 트랙의 width / height
     사실 width는 위젯 속성 중 'app:switchMinWidth'에 의해 설정되므로 크게 상관은 없습니다.-->
     <size
-        android:width="51dp"
-        android:height="43dp" />
+        android:width="26dp"
+        android:height="17dp" />
 
 <!--    <size-->
 <!--        android:width="26dp"-->

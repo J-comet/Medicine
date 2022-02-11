@@ -1,5 +1,7 @@
 package hs.project.medicine.main_content;
 
+import static hs.project.medicine.activitys.MainActivity.mainActivityContext;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +9,7 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +42,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
     private ArrayList<Alarm> alarmArrayList;
     private AlarmAdapter alarmAdapter;
+    private ArrayList<String> strAlarmList;
 
     public MainAlarmView(@NonNull Context context) {
         super(context);
@@ -109,10 +113,10 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                 alarmAdapter.removeAt(position);
 
                                 if (alarmArrayList.size() < 1) {
-                                    binding.tvNone.setVisibility(View.VISIBLE);
+                                    binding.clNone.setVisibility(View.VISIBLE);
                                     binding.clAlarmList.setVisibility(View.GONE);
                                 } else {
-                                    binding.tvNone.setVisibility(View.GONE);
+                                    binding.clNone.setVisibility(View.GONE);
                                     binding.clAlarmList.setVisibility(View.VISIBLE);
                                 }
 
@@ -137,6 +141,48 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 });
                 modifyAlarmDialog.show(((MainActivity) MainActivity.mainActivityContext).getSupportFragmentManager(), "modifyAlarmDialog");
             }
+
+            /*@Override
+            public void onSwitchViewClick(boolean isChecked, int position) {
+
+                strAlarmList = new ArrayList<>();
+
+                if (isChecked) {
+                    Toast.makeText(context, alarmArrayList.get(position).getName() + " 알람 활성", Toast.LENGTH_SHORT).show();
+                }
+
+                for (int i = 0; i < alarmArrayList.size(); i++) {
+                    Alarm alarm = new Alarm();
+                    alarm.setName(alarmArrayList.get(i).getName());
+                    alarm.setAmPm(alarmArrayList.get(i).getAmPm());
+                    alarm.setDayOfWeek(alarmArrayList.get(i).getDayOfWeek());
+                    alarm.setHour(alarmArrayList.get(i).getHour());
+                    alarm.setMinute(alarmArrayList.get(i).getMinute());
+                    alarm.setVolume(alarmArrayList.get(i).getVolume());
+                    alarm.setRingtoneName(alarmArrayList.get(i).getRingtoneName());
+                    alarm.setRingtoneUri(alarmArrayList.get(i).getRingtoneUri());
+
+                    if (position == i) {
+                        if (isChecked) {
+                            alarm.setAlarmON(true);
+                        } else {
+                            alarm.setAlarmON(false);
+                        }
+                    } else {
+                        alarm.setAlarmON(alarmArrayList.get(i).isAlarmON());
+                    }
+
+//                    if (position == i) {
+//                        alarm.setAlarmON(isChecked);
+//                    }
+
+                    strAlarmList.add(alarm.toJSON());
+                }
+
+                // Preference 에 저장
+                PreferenceUtil.setJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST, strAlarmList);
+                ((MainActivity) mainActivityContext).startDayOfWeekService();
+            }*/
         });
 
         binding.rvAlarmList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));

@@ -126,6 +126,11 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
                 });
                 modifyAlarmDialog.show(getSupportFragmentManager(), "modifyAlarmDialog");
             }
+
+            /*@Override
+            public void onSwitchViewClick(boolean isChecked, int position) {
+
+            }*/
         });
 
         binding.rvUserAlarm.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
