@@ -27,7 +27,6 @@ import hs.project.medicine.databinding.ActivityUserDetailBinding;
 import hs.project.medicine.datas.Alarm;
 import hs.project.medicine.datas.User;
 import hs.project.medicine.dialog.ModifyAlarmDialog;
-import hs.project.medicine.dialog.ModifyUserDialog;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.PreferenceUtil;
 

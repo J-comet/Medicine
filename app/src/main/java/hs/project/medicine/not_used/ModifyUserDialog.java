@@ -1,4 +1,4 @@
-package hs.project.medicine.dialog;
+package hs.project.medicine.not_used;
 
 import android.content.Context;
 import android.content.DialogInterface;
