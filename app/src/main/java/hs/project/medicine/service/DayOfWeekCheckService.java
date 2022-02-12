@@ -112,7 +112,7 @@ public class DayOfWeekCheckService extends Service {
             }
         });*/
 
-        /* 밤 12시마다 요일 변경 */
+        /* MainActivity 에서 밤 12시마다 Service 실행으로 요일 변경 */
         PreferenceUtil.putSharedPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.DAY_OF_WEEK, doDayOfWeek());
 
         strDoDayOfWeek = PreferenceUtil.getSharedPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.DAY_OF_WEEK);
