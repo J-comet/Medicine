@@ -183,16 +183,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onStart() {
         super.onStart();
 
-        /**
-         *  UserListActivity 에서 현재 유저 변경 후 값 가져오기 위해 onStart 에서 실행
-         */
         binding.mainContentAlarm.setUpUI();
-        binding.mainContentUserList.setUpUI();
+//        binding.mainContentUserList.setUpUI();
 
-        if (getIntent().getStringExtra("MAIN_BOTTOM_MENU") != null
-                && getIntent().getStringExtra("MAIN_BOTTOM_MENU").equals(Config.MAIN_BOTTOM_MENU.USER_LIST)) {
-            changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
-        }
+//        if (getIntent().getStringExtra("MAIN_BOTTOM_MENU") != null
+//                && getIntent().getStringExtra("MAIN_BOTTOM_MENU").equals(Config.MAIN_BOTTOM_MENU.USER_LIST)) {
+//            changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
+//        }
     }
 
     private void init() {

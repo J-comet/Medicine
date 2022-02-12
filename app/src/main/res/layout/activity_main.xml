@@ -67,11 +67,11 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-            <hs.project.medicine.not_used.MainUserListView
-                android:id="@+id/main_content_user_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
+<!--            <hs.project.medicine.not_used.MainUserListView-->
+<!--                android:id="@+id/main_content_user_list"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:visibility="gone" />-->
 
             <FrameLayout
                 android:id="@+id/main_content_map"
