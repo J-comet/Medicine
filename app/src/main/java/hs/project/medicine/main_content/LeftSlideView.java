@@ -23,7 +23,7 @@ public class LeftSlideView extends ConstraintLayout implements View.OnClickListe
         void onHomeClick();
         void onSearchClick();
         void onMapClick();
-        void onUserListClick();
+//        void onUserListClick();
     }
 
     public void setLeftMenuEventListener(LeftSlideView.LeftSlideListener listener) {
@@ -69,9 +69,9 @@ public class LeftSlideView extends ConstraintLayout implements View.OnClickListe
             case R.id.ll_map:
                 eventListener.onMapClick();
                 break;
-            case R.id.ll_user_list:
-                eventListener.onUserListClick();
-                break;
+//            case R.id.ll_user_list:
+//                eventListener.onUserListClick();
+//                break;
         }
 
     }
