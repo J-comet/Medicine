@@ -44,7 +44,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -274,7 +276,13 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
         LogUtil.e("todayDate=" + todayDate + " currentTime=" + currentTime);
 
+        if (currentTime.equals("2300")) {
+            todayDate = getYesterday();
+        }
+
         if (NetworkUtil.checkConnectedNetwork(context)) {
+
+            String finalTodayDate = todayDate;
 
             Runnable runnable = new Runnable() {
                 @Override
@@ -283,7 +291,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                     Map<String, Object> parameter = new HashMap<>();
                     parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
                     parameter.put("dataType", "JSON");
-                    parameter.put("base_date", todayDate);
+                    parameter.put("base_date", finalTodayDate);
                     parameter.put("base_time", currentTime);
                     parameter.put("nx", nX);
                     parameter.put("ny", nY);
@@ -491,6 +499,16 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                         } catch (JSONException e) {
                             e.printStackTrace();
                             LogUtil.e("파싱 에러");
+
+                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binding.clWeatherLoading.setVisibility(View.GONE);
+                                    binding.liWeatherUpdate.setVisibility(View.GONE);
+                                    binding.clWeatherRetry.setVisibility(View.VISIBLE);
+                                }
+                            },300);
+
                         }
                     }
 
@@ -573,40 +591,14 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         }
     }
 
-    /*private void readExcel(String localName) {
+    private String getYesterday() {
+        Calendar calendar = new GregorianCalendar();
+        SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMdd");
+        calendar.add(Calendar.DATE, -1);
+        String chkDate = SDF.format(calendar.getTime());
 
-        try {
-            InputStream is = context.getResources().getAssets().open("weather_location_info.xlsx");
-            Workbook wb = Workbook.getWorkbook(is);
-
-            if (wb != null) {
-                Sheet sheet = wb.getSheet(0);   // 시트 불러오기
-                if (sheet != null) {
-                    int colTotal = sheet.getColumns();    // 전체 컬럼
-                    int rowIndexStart = 1;                  // row 인덱스 시작
-                    int rowTotal = sheet.getColumn(colTotal - 1).length;
-
-                    for (int row = rowIndexStart; row < rowTotal; row++) {
-                        String contents = sheet.getCell(0, row).getContents();
-
-                        if (contents.contains(localName)) {
-                            strNx = sheet.getCell(1, row).getContents();
-                            strNy = sheet.getCell(2, row).getContents();
-                            row = rowTotal;
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            LogUtil.d("READ_EXCEL1 = " + e.getMessage());
-            e.printStackTrace();
-        } catch (BiffException e) {
-            LogUtil.d("READ_EXCEL1 = " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        LogUtil.e("격자값/ x = " + strNx + "  y = " + strNy);
-    }*/
+        return chkDate;
+    }
 
     private String getTodayDate() {
         Date date = new Date(System.currentTimeMillis());
@@ -627,46 +619,43 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         SimpleDateFormat dateFormat = new SimpleDateFormat("kk");
 
         switch (dateFormat.format(date)) {
-            case "00":
-            case "01":
-            case "02":
-                baseTime = "2300";
-                break;
-            case "03":
-            case "04":
-            case "05":
+            case "0200":
+            case "0300":
+            case "0400":
                 baseTime = "0200";
                 break;
-            case "06":
-            case "07":
-            case "08":
+            case "0500":
+            case "0600":
+            case "0700":
                 baseTime = "0500";
                 break;
-            case "09":
-            case "10":
-            case "11":
+            case "0800":
+            case "0900":
+            case "1000":
                 baseTime = "0800";
                 break;
-            case "12":
-            case "13":
-            case "14":
+            case "1100":
+            case "1200":
+            case "1300":
                 baseTime = "1100";
                 break;
-            case "15":
-            case "16":
-            case "17":
+            case "1400":
+            case "1500":
+            case "1600":
                 baseTime = "1400";
                 break;
-            case "18":
-            case "19":
-            case "20":
+            case "1700":
+            case "1800":
+            case "1900":
                 baseTime = "1700";
                 break;
-            case "21":
-            case "22":
-            case "23":
+            case "2000":
+            case "2100":
+            case "2200":
                 baseTime = "2000";
                 break;
+            default:
+                baseTime = "2300";
         }
 
         return baseTime;
