@@ -29,8 +29,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public static Context mainActivityContext;
 
-    boolean isSetAlarm = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +40,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         startDayOfWeekService();
 
-        binding.digitalClock02.addTextChangedListener(new TextWatcher() {
+        binding.digitalClock.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
