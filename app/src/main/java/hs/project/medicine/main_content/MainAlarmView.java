@@ -47,7 +47,9 @@ import org.xml.sax.SAXException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -229,6 +231,8 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
         binding.clNone.setOnClickListener(this);
         binding.liAddAlarm.setOnClickListener(this);
+
+        getWeatherData();
     }
 
     public void setUpUI() {
@@ -238,28 +242,90 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         binding.clAlarmList.setVisibility(View.INVISIBLE);
         binding.clNone.setVisibility(View.INVISIBLE);
 
-        getWeatherData();
         getAlarmList();
-
-
 
     }
 
     private void changeColorLottieView() {
-        int lotteColor = ContextCompat.getColor(getContext(),R.color.white);
+        int lotteColor = ContextCompat.getColor(getContext(), R.color.white);
         SimpleColorFilter filter = new SimpleColorFilter(lotteColor);
         KeyPath keyPath = new KeyPath("**");
         LottieValueCallback<ColorFilter> callback = new LottieValueCallback<ColorFilter>(filter);
         binding.lottieView.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback);
     }
 
+    private String getTodayDate() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+
+        return dateFormat.format(date);
+    }
+
+    private String getBaseTime() {
+
+        /* 단기예보 base_time */
+//        Base_time : 0200, 0500, 0800, 1100, 1400, 1700, 2000, 2300 (1일 8회)
+
+        String baseTime = "";
+
+        /* 현재시간과 비교해서 baseTime 요청 값 결정  */
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("kk");
+
+        switch (dateFormat.format(date)) {
+            case "00":
+            case "01":
+            case "02":
+                baseTime = "2300";
+                break;
+            case "03":
+            case "04":
+            case "05":
+                baseTime = "0200";
+                break;
+            case "06":
+            case "07":
+            case "08":
+                baseTime = "0500";
+                break;
+            case "09":
+            case "10":
+            case "11":
+                baseTime = "0800";
+                break;
+            case "12":
+            case "13":
+            case "14":
+                baseTime = "1100";
+                break;
+            case "15":
+            case "16":
+            case "17":
+                baseTime = "1400";
+                break;
+            case "18":
+            case "19":
+            case "20":
+                baseTime = "1700";
+                break;
+            case "21":
+            case "22":
+            case "23":
+                baseTime = "2000";
+                break;
+        }
+
+        return baseTime;
+    }
+
     private void getWeatherData() {
 
-        String todayDate = "20220212";
-        String currentTime = "1400";
-
+        String todayDate = getTodayDate();
+        String currentTime = getBaseTime();
         String strNx = "55";
         String strNy = "127";
+
+        LogUtil.e("todayDate=" + todayDate + " currentTime=" + currentTime);
 
         if (NetworkUtil.checkConnectedNetwork(context)) {
 
@@ -287,7 +353,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                         public void run() {
                             binding.clWeatherLoading.setVisibility(View.GONE);
                         }
-                    }, 1500);
+                    }, 500);
 
 //                    _MAIN_ACTIVITY.runOnUiThread(new Runnable() {
 //                        @Override
