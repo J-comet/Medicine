@@ -8,8 +8,8 @@
 
     <string name="str_main_text">사용자 정보</string>
 
-    <string name="str_bottom_menu_home">홈</string>
-    <string name="str_bottom_menu_search">검색</string>
+    <string name="str_bottom_menu_home">알람설정</string>
+    <string name="str_bottom_menu_search">약 검색</string>
     <string name="str_bottom_menu_tv">유저목록</string>
     <string name="str_bottom_menu_user_list">유저목록</string>
     <string name="str_bottom_menu_map">약국위치</string>
