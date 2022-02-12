@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 
@@ -62,8 +63,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
         if (wakeLock != null) {
-            wakeLock.release();
-            wakeLock = null;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    wakeLock.release();
+                    wakeLock = null;
+                }
+            }, 60000);
+
         }
 
         /* 데이터 보내기 */

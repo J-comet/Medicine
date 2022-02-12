@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,7 +30,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public static Context mainActivityContext;
 
     boolean isSetAlarm = false;
-    boolean oneTime = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,66 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         init();
 
         startDayOfWeekService();
-        binding.digitalClock.addTextChangedListener(new TextWatcher() {
+
+        binding.digitalClock02.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+//                LogUtil.d(s.toString());
+                String result = String.valueOf(s);
+                String[] splitText = result.split(":");
+
+                int hour = -1;
+                int minute = -1;
+                int seconds = -1;
+                String amPm = "-1";
+
+
+                /*  24시간 형식을 사용 중인 사용자 일때 */
+                if (DateFormat.is24HourFormat(MediApplication.ApplicationContext())) {
+
+                    for (int i = 0; i < splitText.length; i++) {
+                        hour = Integer.parseInt(splitText[0]);
+                        minute = Integer.parseInt(splitText[1]);
+                        seconds = Integer.parseInt(splitText[2]);
+//                        amPm = splitText[3];
+                    }
+
+//                    LogUtil.d("hour =[" + hour + "]" + " minute =[" + minute + "]" + " seconds =[" + seconds + "]");
+
+                    if (hour == 0 && minute == 0 && seconds == 0) {
+                        LogUtil.d("밤열두시");
+                        startDayOfWeekService();
+                    }
+                } else {
+
+                    for (int i = 0; i < splitText.length; i++) {
+                        hour = Integer.parseInt(splitText[0]);
+                        minute = Integer.parseInt(splitText[1]);
+                        seconds = Integer.parseInt(splitText[2]);
+                        amPm = splitText[3];
+                    }
+
+//                    LogUtil.d("hour =[" + hour + "]" + " minute =[" + minute + "]" + " seconds =[" + seconds + "]" + " amPm =[" + amPm + "]");
+
+                    if (hour == 12 && minute == 0 && seconds == 0 && amPm.equals("오전") || amPm.equals("AM")) {
+                        LogUtil.d("밤열두시");
+                        startDayOfWeekService();
+                    }
+                }
+
+
+
+
+            }
+        });
+
+        /*binding.digitalClock.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -56,7 +115,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 String result = String.valueOf(s);
                 String[] splitText = result.split(":");
 
-                /*if (result.contains("오후") || result.contains("PM")) {
+                *//*if (result.contains("오후") || result.contains("PM")) {
 
                     for (int i = 0; i < splitText.length; i++) {
                         int time = -1;
@@ -66,7 +125,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         LogUtil.d("time = [" + time + "]");
                     }
 
-                } else */
+                } else *//*
 
 
                 if (result.contains("오전") || result.contains("AM")) {
@@ -93,35 +152,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }
 
                 } else {
-                    /*  24시간 형식 사용할 때 */
+                    *//*  24시간 형식 사용할 때 *//*
 
-                    int time = -1;
+                    int hour = -1;
+                    int minute = -1;
 
                     for (int i = 0; i < splitText.length; i++) {
-                        time = Integer.parseInt(splitText[0]);
-                        LogUtil.d("time = [" + time + "]");
+                        hour = Integer.parseInt(splitText[0]);
+                        minute = Integer.parseInt(splitText[1]);
+                        LogUtil.d("hour = [" + hour + "]" + "minute = [" + minute + "]");
                     }
 
-                    if (time == 0) {
+                    if (hour == 0 && minute == 0) {
                         isSetAlarm = true;
                     } else {
                         isSetAlarm = false;
                     }
 
-                    /*  24 일 때 계속 실행됨 한번만 실행되도록 수정 필요  */
-                    if (time == 0 && isSetAlarm ) {
+                    *//*  24 일 때 계속 실행됨 한번만 실행되도록 수정 필요  *//*
+                    if (isSetAlarm) {
 
-                        if (oneTime) {
-                            LogUtil.d("밤열두시");
-                        }
-
-                        oneTime = false;
+                        LogUtil.d("밤열두시");
 //                        ((MainActivity) mainActivityContext).startDayOfWeekService();
                     }
 
                 }
             }
-        });
+        });*/
     }
 
     @Override

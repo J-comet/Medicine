@@ -78,35 +78,16 @@ public class DayOfWeekCheckService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        /* 밤 12시마다 요일 변경 */
-//        PreferenceUtil.putSharedPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.DAY_OF_WEEK, doDayOfWeek());
-//
-//        strDoDayOfWeek = PreferenceUtil.getSharedPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.DAY_OF_WEEK);
-//
-//        /* 알람목록 가져오기 */
-//        getAlarmList();
-//        LogUtil.d("allAlarmList.size=" + allAlarmList.size());
-//
-//        /* 오늘 요일이 포함되어 있는 알람들만 추려서 새로운 알람리스트 생성 */
-//        setPlayAlarmList();
-//
-//
-//        // 알람 등록후 알람제거 후 다시 등록해주기
-//        if (playAlarmList.size() > 0) {
-//            for (int i = 0; i < playAlarmList.size(); i++) {
-//
-//                /* 알람 ON 인 것만 알람등록 */
-//                if (playAlarmList.get(i).isAlarmON()) {
-//                    setAlarm(playAlarmList.get(i), i);
-//                    LogUtil.d("setAlarm=" + playAlarmList.get(i).getName());
-//                }
-//
-//            }
-//        }
+
 
         new Handler().post(new Runnable() {
             @Override
             public void run() {
+
+                /* 밤 12시마다 요일 변경 */
+                PreferenceUtil.putSharedPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.DAY_OF_WEEK, doDayOfWeek());
+
+                strDoDayOfWeek = PreferenceUtil.getSharedPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.DAY_OF_WEEK);
 
                 /* 알람목록 가져오기 */
                 getAlarmList();
@@ -132,6 +113,28 @@ public class DayOfWeekCheckService extends Service {
                 }
             }
         });
+
+        //
+//        /* 알람목록 가져오기 */
+//        getAlarmList();
+//        LogUtil.d("allAlarmList.size=" + allAlarmList.size());
+//
+//        /* 오늘 요일이 포함되어 있는 알람들만 추려서 새로운 알람리스트 생성 */
+//        setPlayAlarmList();
+//
+//
+//        // 알람 등록후 알람제거 후 다시 등록해주기
+//        if (playAlarmList.size() > 0) {
+//            for (int i = 0; i < playAlarmList.size(); i++) {
+//
+//                /* 알람 ON 인 것만 알람등록 */
+//                if (playAlarmList.get(i).isAlarmON()) {
+//                    setAlarm(playAlarmList.get(i), i);
+//                    LogUtil.d("setAlarm=" + playAlarmList.get(i).getName());
+//                }
+//
+//            }
+//        }
 
         return START_STICKY;
     }
