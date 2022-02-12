@@ -1,11 +1,17 @@
 package hs.project.medicine.main_content;
 
+import static hs.project.medicine.HttpRequest.getRequest;
 import static hs.project.medicine.activitys.MainActivity.mainActivityContext;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.ColorFilter;
+import android.graphics.PointF;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +24,44 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.airbnb.lottie.LottieProperty;
+import com.airbnb.lottie.SimpleColorFilter;
+import com.airbnb.lottie.model.KeyPath;
+import com.airbnb.lottie.value.LottieValueCallback;
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraAnimation;
+import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.overlay.InfoWindow;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import hs.project.medicine.Config;
+import hs.project.medicine.HttpRequest;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.activitys.AddAlarmActivity;
@@ -32,8 +69,10 @@ import hs.project.medicine.activitys.MainActivity;
 import hs.project.medicine.adapter.AlarmAdapter;
 import hs.project.medicine.databinding.LayoutMainAlarmViewBinding;
 import hs.project.medicine.datas.Alarm;
+import hs.project.medicine.datas.Pharmacy;
 import hs.project.medicine.dialog.ModifyAlarmDialog;
 import hs.project.medicine.util.LogUtil;
+import hs.project.medicine.util.NetworkUtil;
 import hs.project.medicine.util.PreferenceUtil;
 
 public class MainAlarmView extends ConstraintLayout implements View.OnClickListener {
@@ -193,11 +232,78 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
     }
 
     public void setUpUI() {
+        changeColorLottieView();
+
+        binding.clWeatherLoading.setVisibility(View.VISIBLE);
         binding.clAlarmList.setVisibility(View.INVISIBLE);
         binding.clNone.setVisibility(View.INVISIBLE);
 
+        getWeatherData();
         getAlarmList();
 
+
+
+    }
+
+    private void changeColorLottieView() {
+        int lotteColor = ContextCompat.getColor(getContext(),R.color.white);
+        SimpleColorFilter filter = new SimpleColorFilter(lotteColor);
+        KeyPath keyPath = new KeyPath("**");
+        LottieValueCallback<ColorFilter> callback = new LottieValueCallback<ColorFilter>(filter);
+        binding.lottieView.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback);
+    }
+
+    private void getWeatherData() {
+
+        String todayDate = "20220212";
+        String currentTime = "1400";
+
+        String strNx = "55";
+        String strNy = "127";
+
+        if (NetworkUtil.checkConnectedNetwork(context)) {
+
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+
+                    Map<String, Object> parameter = new HashMap<>();
+                    parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                    parameter.put("dataType", "JSON");
+                    parameter.put("base_date", todayDate);
+                    parameter.put("base_time", currentTime);
+                    parameter.put("nx", strNx);
+                    parameter.put("ny", strNy);
+                    parameter.put("pageNo", 1);
+                    parameter.put("numOfRows", 1000);
+
+
+                    String response = getRequest(Config.URL_GET_VILLAGE_FCST, HttpRequest.HttpType.GET, parameter);
+                    LogUtil.e(response);
+
+
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            binding.clWeatherLoading.setVisibility(View.GONE);
+                        }
+                    }, 1500);
+
+//                    _MAIN_ACTIVITY.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            binding.clWeatherLoading.setVisibility(View.GONE);
+//                        }
+//                    });
+
+                }
+            };
+            new Thread(runnable).start();
+
+        } else {
+            NetworkUtil.networkErrorDialogShow((MainActivity) mainActivityContext, false);
+            binding.clWeatherLoading.setVisibility(View.GONE);
+        }
     }
 
     private void getAlarmList() {

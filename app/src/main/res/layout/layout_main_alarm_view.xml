@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="날씨 정보"
             android:textColor="@color/white"
             android:textSize="16dp"
@@ -28,16 +28,71 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/tv_reh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="날씨 정보데이터"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="습도"
             android:textColor="@color/white"
             android:textSize="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/tv_pop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="강수확률"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:layout_constraintStart_toStartOf="@+id/tv_reh"
+            app:layout_constraintTop_toBottomOf="@+id/tv_reh" />
+
+        <TextView
+            android:id="@+id/tv_pty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="강수형태"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:layout_constraintStart_toStartOf="@+id/tv_pop"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pop" />
+
+        <TextView
+            android:id="@+id/tv_sky"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="하늘상태"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            app:layout_constraintStart_toStartOf="@+id/tv_pop"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pty" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_weather_loading"
+        android:layout_width="0dp"
+        android:layout_height="110dp"
+        android:layout_marginTop="40dp"
+        android:visibility="gone"
+        android:background="@color/color_main_red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
