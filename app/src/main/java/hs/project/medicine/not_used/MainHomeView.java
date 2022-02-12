@@ -1,4 +1,4 @@
-package hs.project.medicine.main_content;
+package hs.project.medicine.not_used;
 
 import android.content.Context;
 import android.content.Intent;
