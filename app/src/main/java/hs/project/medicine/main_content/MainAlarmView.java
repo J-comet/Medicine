@@ -233,10 +233,8 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
         binding.clNone.setOnClickListener(this);
         binding.liAddAlarm.setOnClickListener(this);
-        binding.tvWeatherUpdate.setOnClickListener(this);
+        binding.liWeatherUpdate.setOnClickListener(this);
         binding.clWeatherRetry.setOnClickListener(this);
-
-        binding.clWeatherLoading.setVisibility(View.VISIBLE);
 
         getWeatherData();
     }
@@ -260,6 +258,10 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
     }
 
     private void getWeatherData() {
+
+        binding.clWeatherLoading.setVisibility(View.VISIBLE);
+        binding.clWeatherRetry.setVisibility(View.GONE);
+        binding.liWeatherUpdate.setVisibility(View.GONE);
 
         getNxNy();
 
@@ -299,6 +301,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                             public void run() {
                                 binding.clWeatherRetry.setVisibility(View.VISIBLE);
                                 binding.clWeatherLoading.setVisibility(View.GONE);
+                                binding.liWeatherUpdate.setVisibility(View.GONE);
                             }
                         });
 
@@ -375,38 +378,103 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                     resultSearchTime = "0000";
                                 }
 
+                                String resultSky = "";
+                                String resultREH = "";
+                                String resultPOP = "";
+                                String resultPTY = "";
+                                String resultTMP = "";
+
                                 for (int i = 0; i < weatherItems.size(); i++) {
 
                                     if (weatherItems.get(i).getFcstDate().equals(getTodayDate()) && weatherItems.get(i).getFcstTime().equals(resultSearchTime)) {
 
-
+                                        // 하늘상태
                                         if (weatherItems.get(i).getCategory().equals("SKY")) {
                                             weatherItems.get(i).getFcstValue();
-                                            LogUtil.e("111111  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                            resultSky = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("111111  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
                                         }
 
+                                        // 습도
                                         if (weatherItems.get(i).getCategory().equals("REH")) {
                                             weatherItems.get(i).getFcstValue();
-                                            LogUtil.e("2222222  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                            resultREH = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("2222222  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
                                         }
 
+                                        // 강수확률
                                         if (weatherItems.get(i).getCategory().equals("POP")) {
                                             weatherItems.get(i).getFcstValue();
-                                            LogUtil.e("33333333  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                            resultPOP = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("33333333  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
                                         }
 
+                                        // 강수형태
                                         if (weatherItems.get(i).getCategory().equals("PTY")) {
                                             weatherItems.get(i).getFcstValue();
-                                            LogUtil.e("44444444  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                            resultPTY = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("44444444  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
                                         }
 
+                                        // 1시간 기온
                                         if (weatherItems.get(i).getCategory().equals("TMP")) {
                                             weatherItems.get(i).getFcstValue();
-                                            LogUtil.e("55555555  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                            resultTMP = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("55555555  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
                                         }
-
                                     }
                                 }
+
+                                String finalResultREH = resultREH;
+                                String finalResultPOP = resultPOP;
+                                String finalResultTMP = resultTMP;
+
+                                /* 하늘상태 */
+                                switch (resultSky) {
+                                    case "1":
+                                        resultSky = "맑음";
+                                        break;
+                                    case "3":
+                                        resultSky = "구름 많음";
+                                        break;
+                                    case "4":
+                                        resultSky = "흐림";
+                                        break;
+                                }
+
+                                String finalResultSky = resultSky;
+
+                                /* 강수형태 */
+                                switch (resultPTY) {
+                                    case "0":
+                                        resultPTY = "없음";
+                                        break;
+                                    case "1":
+                                        resultPTY = "비";
+                                        break;
+                                    case "2":
+                                        resultPTY = "비/눈";
+                                        break;
+                                    case "3":
+                                        resultPTY = "눈";
+                                        break;
+                                    case "4":
+                                        resultPTY = "소나기";
+                                        break;
+                                }
+
+                                String finalSetResultPTY = resultPTY;
+
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        binding.tvSky.setText(finalResultSky);
+                                        binding.tvReh.setText("습도 : " + finalResultREH);
+                                        binding.tvPop.setText("강수 확률 : " + finalResultPOP);
+                                        binding.tvPty.setText("강수 형태 : " + finalSetResultPTY);
+                                        binding.tvTmp.setText("기온 : " + finalResultTMP);
+                                    }
+                                });
 
                             } else {
                                 /* 통신 실패 */
@@ -431,6 +499,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                         @Override
                         public void run() {
                             binding.clWeatherLoading.setVisibility(View.GONE);
+                            binding.liWeatherUpdate.setVisibility(View.VISIBLE);
                         }
                     }, 500);
 
@@ -448,6 +517,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         } else {
             NetworkUtil.networkErrorDialogShow((MainActivity) mainActivityContext, false);
             binding.clWeatherLoading.setVisibility(View.GONE);
+            binding.liWeatherUpdate.setVisibility(View.VISIBLE);
         }
     }
 
@@ -612,11 +682,9 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 context.startActivity(intent);
                 break;
-            case R.id.tv_weather_update:
-                Toast.makeText(context, "날씨 업데이트", Toast.LENGTH_SHORT).show();
-                break;
+            case R.id.li_weather_update:
             case R.id.cl_weather_retry:
-                Toast.makeText(context, "날씨 재요청", Toast.LENGTH_SHORT).show();
+                getWeatherData();
                 break;
         }
     }

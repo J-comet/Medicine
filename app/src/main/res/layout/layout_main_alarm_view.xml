@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_weather_content"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="160dp"
         android:background="@color/color_main_red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,39 +23,80 @@
             android:layout_marginTop="8dp"
             android:text="날씨 정보"
             android:textColor="@color/white"
-            android:textSize="16dp"
+            android:textSize="22dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="℃"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_tmp"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toEndOf="@+id/tv_tmp"
+            app:layout_constraintTop_toTopOf="@+id/tv_tmp" />
 
         <TextView
             android:id="@+id/tv_reh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="습도"
             android:textColor="@color/white"
-            android:textSize="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_tmp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_tmp" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="%"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_reh"
+            app:layout_constraintStart_toEndOf="@+id/tv_reh"
+            app:layout_constraintTop_toTopOf="@+id/tv_reh" />
 
         <TextView
             android:id="@+id/tv_pop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="강수확률"
             android:textColor="@color/white"
-            android:textSize="16dp"
-            app:layout_constraintStart_toStartOf="@+id/tv_reh"
-            app:layout_constraintTop_toBottomOf="@+id/tv_reh" />
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView19"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="%"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_pop"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toEndOf="@+id/tv_pop"
+            app:layout_constraintTop_toTopOf="@+id/tv_pop" />
 
         <TextView
             android:id="@+id/tv_pty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="강수형태"
+            android:layout_marginTop="8dp"
+            android:text="강수 형태"
             android:textColor="@color/white"
-            android:textSize="16dp"
+            android:textSize="18dp"
             app:layout_constraintStart_toStartOf="@+id/tv_pop"
             app:layout_constraintTop_toBottomOf="@+id/tv_pop" />
 
@@ -63,33 +104,66 @@
             android:id="@+id/tv_sky"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="하늘상태"
             android:textColor="@color/white"
-            android:textSize="16dp"
-            app:layout_constraintStart_toStartOf="@+id/tv_pop"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pty" />
+            android:textSize="18dp"
+            app:layout_constraintStart_toStartOf="@+id/tv_tmp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_reh" />
 
         <TextView
-            android:id="@+id/tv_weather_update"
+            android:id="@+id/tv_tmp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="업데이트"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:text="기온"
             android:textColor="@color/white"
-            android:textSize="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:textSize="18dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textView19"
+            app:layout_constraintStart_toStartOf="@+id/textView13"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <LinearLayout
+            android:id="@+id/li_weather_update"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/textView13"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView13">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_update"
+                app:tint="@color/white" />
+        </LinearLayout>
+
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/tv_weather_update"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            android:layout_marginEnd="8dp"-->
+        <!--            android:text="업데이트"-->
+        <!--            android:textColor="@color/white"-->
+        <!--            android:textSize="16dp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_weather_loading"
         android:layout_width="0dp"
-        android:layout_height="110dp"
+        android:layout_height="120dp"
         android:layout_marginTop="40dp"
-        android:visibility="gone"
         android:background="@color/color_main_red"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -111,18 +185,30 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_weather_retry"
         android:layout_width="0dp"
-        android:layout_height="110dp"
+        android:layout_height="120dp"
         android:layout_marginTop="25dp"
         android:background="@color/color_main_red"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/cl_weather_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_update"
+            app:layout_constraintBottom_toTopOf="@+id/textView21"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@color/white" />
+
         <TextView
+            android:id="@+id/textView21"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="재시도"
             android:textColor="@color/white"
             android:textSize="20dp"
