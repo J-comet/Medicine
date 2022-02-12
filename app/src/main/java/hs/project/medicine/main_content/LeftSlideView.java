@@ -54,7 +54,7 @@ public class LeftSlideView extends ConstraintLayout implements View.OnClickListe
         binding.llHome.setOnClickListener(this);
         binding.llSearch.setOnClickListener(this);
         binding.llMap.setOnClickListener(this);
-        binding.llUserList.setOnClickListener(this);
+//        binding.llUserList.setOnClickListener(this);
     }
 
     @Override

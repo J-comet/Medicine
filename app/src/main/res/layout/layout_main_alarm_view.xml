@@ -69,6 +69,18 @@
             app:layout_constraintStart_toStartOf="@+id/tv_pop"
             app:layout_constraintTop_toBottomOf="@+id/tv_pty" />
 
+        <TextView
+            android:id="@+id/tv_weather_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="업데이트"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

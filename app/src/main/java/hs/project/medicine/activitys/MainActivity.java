@@ -1,6 +1,9 @@
 package hs.project.medicine.activitys;
 
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +13,6 @@ import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
-
 
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
@@ -23,11 +24,19 @@ import hs.project.medicine.databinding.ActivityMainBinding;
 import hs.project.medicine.service.DayOfWeekCheckService;
 import hs.project.medicine.util.LogUtil;
 
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private ActivityMainBinding binding;
 
     public static Context mainActivityContext;
+
+    private final String[] arrGpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+
+    private static final int CODE_GPS_PERMISSION_ALL_GRANTED = 300;  // 모두허용
+    private static final int CODE_GPS_PERMISSION_FINE_DENIED = 200;  // 대략허용
+    private static final int CODE_GPS_PERMISSION_DENIED_TRUE = 100;  // 허용 거부한적 있는 유저
+    private static final int CODE_GPS_PERMISSION_FIRST = 1000;  // 처음 권한 요청하는 유저
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,91 +101,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }
                 }
 
-
-
-
             }
         });
-
-        /*binding.digitalClock.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String result = String.valueOf(s);
-                String[] splitText = result.split(":");
-
-                *//*if (result.contains("오후") || result.contains("PM")) {
-
-                    for (int i = 0; i < splitText.length; i++) {
-                        int time = -1;
-                        String splitResult = splitText[0].replace("오후", "").trim();
-                        splitResult = splitResult.replace("PM", "").trim();
-                        time = Integer.parseInt(splitResult) + 12;
-                        LogUtil.d("time = [" + time + "]");
-                    }
-
-                } else *//*
-
-
-                if (result.contains("오전") || result.contains("AM")) {
-                    int time = -1;
-                    boolean isSetAlarm = false;
-
-                    for (int i = 0; i < splitText.length; i++) {
-
-                        String splitResult = splitText[0].replace("오전", "").trim();
-                        splitResult = splitResult.replace("AM", "").trim();
-                        time = Integer.parseInt(splitResult);
-                        LogUtil.d("time = [" + time + "]");
-                    }
-
-                    if (time == 0) {
-                        isSetAlarm = true;
-                    } else {
-                        isSetAlarm = false;
-                    }
-
-                    if (time == 12) {
-                        LogUtil.d("밤열두시");
-//                        ((MainActivity) mainActivityContext).startDayOfWeekService();
-                    }
-
-                } else {
-                    *//*  24시간 형식 사용할 때 *//*
-
-                    int hour = -1;
-                    int minute = -1;
-
-                    for (int i = 0; i < splitText.length; i++) {
-                        hour = Integer.parseInt(splitText[0]);
-                        minute = Integer.parseInt(splitText[1]);
-                        LogUtil.d("hour = [" + hour + "]" + "minute = [" + minute + "]");
-                    }
-
-                    if (hour == 0 && minute == 0) {
-                        isSetAlarm = true;
-                    } else {
-                        isSetAlarm = false;
-                    }
-
-                    *//*  24 일 때 계속 실행됨 한번만 실행되도록 수정 필요  *//*
-                    if (isSetAlarm) {
-
-                        LogUtil.d("밤열두시");
-//                        ((MainActivity) mainActivityContext).startDayOfWeekService();
-                    }
-
-                }
-            }
-        });*/
     }
 
     @Override
@@ -244,13 +170,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 changeMainContent(Config.MAIN_BOTTOM_MENU.MAP);
             }
 
-            @Override
-            public void onUserListClick() {
-                if (isDrawerOpen()) {
-                    binding.dlSlide.closeDrawer(Gravity.LEFT);
-                }
-                changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
-            }
+//            @Override
+//            public void onUserListClick() {
+//                if (isDrawerOpen()) {
+//                    binding.dlSlide.closeDrawer(Gravity.LEFT);
+//                }
+//                changeMainContent(Config.MAIN_BOTTOM_MENU.USER_LIST);
+//            }
         });
 
         /* LeftSlideView 나와있을 때 하위 뷰 터치 막는 코드 */
