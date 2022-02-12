@@ -234,6 +234,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         binding.clNone.setOnClickListener(this);
         binding.liAddAlarm.setOnClickListener(this);
         binding.tvWeatherUpdate.setOnClickListener(this);
+        binding.clWeatherRetry.setOnClickListener(this);
 
         binding.clWeatherLoading.setVisibility(View.VISIBLE);
 
@@ -245,6 +246,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
         binding.clAlarmList.setVisibility(View.INVISIBLE);
         binding.clNone.setVisibility(View.INVISIBLE);
+        binding.clWeatherRetry.setVisibility(View.GONE);
 
         getAlarmList();
     }
@@ -290,87 +292,138 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                     String response = getRequest(Config.URL_GET_VILLAGE_FCST, HttpRequest.HttpType.GET, parameter);
                     LogUtil.e(response);
 
-                    try {
+                    if (response.contains("HTTP_ERROR")) {
 
-                        JSONObject resultObject = new JSONObject(response);
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.clWeatherRetry.setVisibility(View.VISIBLE);
+                                binding.clWeatherLoading.setVisibility(View.GONE);
+                            }
+                        });
+
+                    } else {
+                        try {
+
+                            JSONObject resultObject = new JSONObject(response);
 //                        LogUtil.e("resultObject.toString() =" + resultObject.toString());
 
-                        JSONObject responseObject = resultObject.getJSONObject("response");
-                        JSONObject headerObject = responseObject.getJSONObject("header");
-                        JSONObject bodyObject = responseObject.getJSONObject("body");
-                        JSONObject itemArrayObject = bodyObject.getJSONObject("items");
+                            JSONObject responseObject = resultObject.getJSONObject("response");
+                            JSONObject headerObject = responseObject.getJSONObject("header");
+                            JSONObject bodyObject = responseObject.getJSONObject("body");
+                            JSONObject itemArrayObject = bodyObject.getJSONObject("items");
 
-                        WeatherHeader header = new WeatherHeader();
-                        header.setResultCode(headerObject.getString("resultCode"));
-                        header.setResultMsg(headerObject.getString("resultMsg"));
+                            WeatherHeader header = new WeatherHeader();
+                            header.setResultCode(headerObject.getString("resultCode"));
+                            header.setResultMsg(headerObject.getString("resultMsg"));
 
-                        LogUtil.e(header.getResultCode());
+                            LogUtil.e(header.getResultCode());
 
-                        WeatherBody body = new WeatherBody();
-                        body.setDataType(bodyObject.getString("dataType"));
-                        body.setTotalCount(Integer.valueOf(bodyObject.getString("totalCount")));
-                        body.setPageNo(Integer.valueOf(bodyObject.getString("pageNo")));
-                        body.setNumOfRows(Integer.valueOf(bodyObject.getString("numOfRows")));
+                            WeatherBody body = new WeatherBody();
+                            body.setDataType(bodyObject.getString("dataType"));
+                            body.setTotalCount(Integer.valueOf(bodyObject.getString("totalCount")));
+                            body.setPageNo(Integer.valueOf(bodyObject.getString("pageNo")));
+                            body.setNumOfRows(Integer.valueOf(bodyObject.getString("numOfRows")));
 
-                        LogUtil.e("[" + body.getTotalCount() + "]");
+                            LogUtil.e("[" + body.getTotalCount() + "]");
 
-                        JSONArray itemArray = itemArrayObject.getJSONArray("item");
-                        List<WeatherItem> weatherItems = new ArrayList<>();
+                            JSONArray itemArray = itemArrayObject.getJSONArray("item");
+                            List<WeatherItem> weatherItems = new ArrayList<>();
 
-                        WeatherItems items = new WeatherItems();
+                            WeatherItems items = new WeatherItems();
 
-                        for (int i = 0; i < itemArray.length(); i++) {
+                            for (int i = 0; i < itemArray.length(); i++) {
 
-                            JSONObject object = itemArray.getJSONObject(i);
+                                JSONObject object = itemArray.getJSONObject(i);
 
-                            WeatherItem weatherItem = new WeatherItem();
+                                WeatherItem weatherItem = new WeatherItem();
 
-                            weatherItem.setBaseDate(object.getString("baseDate"));
-                            weatherItem.setBaseTime(object.getString("baseTime"));
-                            weatherItem.setCategory(object.getString("category"));
-                            weatherItem.setFcstDate(object.getString("fcstDate"));
-                            weatherItem.setFcstTime(object.getString("fcstTime"));
-                            weatherItem.setFcstValue(object.getString("fcstValue"));
-                            weatherItem.setNx(object.getInt("nx"));
-                            weatherItem.setNy(object.getInt("ny"));
+                                weatherItem.setBaseDate(object.getString("baseDate"));
+                                weatherItem.setBaseTime(object.getString("baseTime"));
+                                weatherItem.setCategory(object.getString("category"));
+                                weatherItem.setFcstDate(object.getString("fcstDate"));
+                                weatherItem.setFcstTime(object.getString("fcstTime"));
+                                weatherItem.setFcstValue(object.getString("fcstValue"));
+                                weatherItem.setNx(object.getInt("nx"));
+                                weatherItem.setNy(object.getInt("ny"));
 
-                            weatherItems.add(weatherItem);
-
-                            LogUtil.e("333333" + weatherItem.getCategory());
-                        }
-
-                        items.setItem(weatherItems);
-
-                        body.setItems(items);
-
-                        /* 통신 성공 */
-                        if (header.getResultCode().equals("00")) {
-
-                            for (int i = 0; i < weatherItems.size(); i++) {
-
-                                if (weatherItems.get(i).getCategory().equals("SKY")){
-                                    weatherItems.get(i).getFcstValue();
-                                }
-
+                                weatherItems.add(weatherItem);
 
 
                             }
 
-                        } else {
-                            /* 통신 실패 */
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, "공공데이터 포털사이트 점검 중 입니다", Toast.LENGTH_SHORT).show();
+                            items.setItem(weatherItems);
+
+                            body.setItems(items);
+
+                            /* 통신 성공 */
+                            if (header.getResultCode().equals("00")) {
+
+                                LogUtil.e("todayDate= " + getTodayDate());
+                                LogUtil.e("baseTime= " + getBaseTime());
+
+                                String splitTime = getBaseTime().substring(0, 2);
+                                LogUtil.e("splitTime= " + splitTime);
+
+                                int searchTime = Integer.parseInt(splitTime) + 1;
+
+                                String resultSearchTime = String.valueOf(searchTime) + "00";
+                                LogUtil.e("resultSearchTime= " + resultSearchTime);
+
+                                /* 24시일 때 표기법 수정 */
+                                if (resultSearchTime.equals("2400")) {
+                                    resultSearchTime = "0000";
                                 }
-                            });
 
+                                for (int i = 0; i < weatherItems.size(); i++) {
+
+                                    if (weatherItems.get(i).getFcstDate().equals(getTodayDate()) && weatherItems.get(i).getFcstTime().equals(resultSearchTime)) {
+
+
+                                        if (weatherItems.get(i).getCategory().equals("SKY")) {
+                                            weatherItems.get(i).getFcstValue();
+                                            LogUtil.e("111111  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                        }
+
+                                        if (weatherItems.get(i).getCategory().equals("REH")) {
+                                            weatherItems.get(i).getFcstValue();
+                                            LogUtil.e("2222222  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                        }
+
+                                        if (weatherItems.get(i).getCategory().equals("POP")) {
+                                            weatherItems.get(i).getFcstValue();
+                                            LogUtil.e("33333333  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                        }
+
+                                        if (weatherItems.get(i).getCategory().equals("PTY")) {
+                                            weatherItems.get(i).getFcstValue();
+                                            LogUtil.e("44444444  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                        }
+
+                                        if (weatherItems.get(i).getCategory().equals("TMP")) {
+                                            weatherItems.get(i).getFcstValue();
+                                            LogUtil.e("55555555  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                        }
+
+                                    }
+                                }
+
+                            } else {
+                                /* 통신 실패 */
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(context, "공공데이터 포털사이트 점검 중 입니다", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            LogUtil.e("파싱 에러");
                         }
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        LogUtil.e("파싱 에러");
                     }
 
 
@@ -561,6 +614,9 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 break;
             case R.id.tv_weather_update:
                 Toast.makeText(context, "날씨 업데이트", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.cl_weather_retry:
+                Toast.makeText(context, "날씨 재요청", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
