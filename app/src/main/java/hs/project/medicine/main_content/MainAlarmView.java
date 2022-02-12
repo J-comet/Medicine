@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import hs.project.medicine.Config;
@@ -58,7 +59,10 @@ import hs.project.medicine.adapter.AlarmAdapter;
 import hs.project.medicine.databinding.LayoutMainAlarmViewBinding;
 import hs.project.medicine.datas.Alarm;
 import hs.project.medicine.datas.medicine.MedicineHeader;
+import hs.project.medicine.datas.weather.WeatherBody;
 import hs.project.medicine.datas.weather.WeatherHeader;
+import hs.project.medicine.datas.weather.WeatherItem;
+import hs.project.medicine.datas.weather.WeatherItems;
 import hs.project.medicine.datas.weather.WeatherResponse;
 import hs.project.medicine.dialog.ModifyAlarmDialog;
 import hs.project.medicine.util.LocationUtil;
@@ -257,7 +261,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
         getNxNy();
 
-        LogUtil.e("Nx ="+ strNx + "Ny =" + strNy);
+        LogUtil.e("Nx =" + strNx + "Ny =" + strNy);
 
         String todayDate = getTodayDate();
         String currentTime = getBaseTime();
@@ -287,27 +291,77 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                     LogUtil.e(response);
 
                     try {
-                        JSONObject resultObject = new JSONObject(response);
-                        LogUtil.e("resultObject.toString() =" + resultObject.toString());
 
-                        JSONObject headerObject = resultObject.getJSONObject("header");
-//                        JSONObject bodyObject = resultObject.getJSONObject("body");
+                        JSONObject resultObject = new JSONObject(response);
+//                        LogUtil.e("resultObject.toString() =" + resultObject.toString());
+
+                        JSONObject responseObject = resultObject.getJSONObject("response");
+                        JSONObject headerObject = responseObject.getJSONObject("header");
+                        JSONObject bodyObject = responseObject.getJSONObject("body");
+                        JSONObject itemArrayObject = bodyObject.getJSONObject("items");
 
                         WeatherHeader header = new WeatherHeader();
                         header.setResultCode(headerObject.getString("resultCode"));
                         header.setResultMsg(headerObject.getString("resultMsg"));
 
-                        LogUtil.e("header =" + header.toString());
+                        LogUtil.e(header.getResultCode());
+
+                        WeatherBody body = new WeatherBody();
+                        body.setDataType(bodyObject.getString("dataType"));
+                        body.setTotalCount(Integer.valueOf(bodyObject.getString("totalCount")));
+                        body.setPageNo(Integer.valueOf(bodyObject.getString("pageNo")));
+                        body.setNumOfRows(Integer.valueOf(bodyObject.getString("numOfRows")));
+
+                        LogUtil.e("[" + body.getTotalCount() + "]");
+
+                        JSONArray itemArray = itemArrayObject.getJSONArray("item");
+                        List<WeatherItem> weatherItems = new ArrayList<>();
+
+                        WeatherItems items = new WeatherItems();
+
+                        for (int i = 0; i < itemArray.length(); i++) {
+
+                            JSONObject object = itemArray.getJSONObject(i);
+
+                            WeatherItem weatherItem = new WeatherItem();
+
+                            weatherItem.setBaseDate(object.getString("baseDate"));
+                            weatherItem.setBaseTime(object.getString("baseTime"));
+                            weatherItem.setCategory(object.getString("category"));
+                            weatherItem.setFcstDate(object.getString("fcstDate"));
+                            weatherItem.setFcstTime(object.getString("fcstTime"));
+                            weatherItem.setFcstValue(object.getString("fcstValue"));
+                            weatherItem.setNx(object.getInt("nx"));
+                            weatherItem.setNy(object.getInt("ny"));
+
+                            weatherItems.add(weatherItem);
+
+                            LogUtil.e("333333" + weatherItem.getCategory());
+                        }
+
+                        items.setItem(weatherItems);
+
+                        body.setItems(items);
 
                         /* 통신 성공 */
                         if (header.getResultCode().equals("00")) {
+
+                            for (int i = 0; i < weatherItems.size(); i++) {
+
+                                if (weatherItems.get(i).getCategory().equals("SKY")){
+                                    weatherItems.get(i).getFcstValue();
+                                }
+
+
+
+                            }
 
                         } else {
                             /* 통신 실패 */
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(context, "현재 공공데이터 포털사이트 점검 중", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "공공데이터 포털사이트 점검 중 입니다", Toast.LENGTH_SHORT).show();
                                 }
                             });
 
@@ -316,6 +370,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        LogUtil.e("파싱 에러");
                     }
 
 
