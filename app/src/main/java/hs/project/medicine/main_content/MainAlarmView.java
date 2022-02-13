@@ -297,6 +297,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         if (NetworkUtil.checkConnectedNetwork(context)) {
 
             getNxNy();
+            LogUtil.e("11111111111111111111");
 //            getLastLocationNxNy();
 
 
@@ -321,10 +322,9 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
         String finalTodayDate = todayDate;
 
-        Runnable runnable = new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-
                 Map<String, Object> parameter = new HashMap<>();
                 parameter.put("serviceKey", getResources().getString(R.string.api_key_public_data));
                 parameter.put("dataType", "JSON");
@@ -351,6 +351,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                     });
 
                 } else {
+
                     try {
 
                         JSONObject resultObject = new JSONObject(response);
@@ -375,36 +376,19 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                         LogUtil.e("[" + body.getTotalCount() + "]");
 
                         JSONArray itemArray = itemArrayObject.getJSONArray("item");
-                        List<WeatherItem> weatherItems = new ArrayList<>();
-
-                        WeatherItems items = new WeatherItems();
-
-                        for (int i = 0; i < itemArray.length(); i++) {
-
-                            JSONObject object = itemArray.getJSONObject(i);
-
-                            WeatherItem weatherItem = new WeatherItem();
-
-                            weatherItem.setBaseDate(object.getString("baseDate"));
-                            weatherItem.setBaseTime(object.getString("baseTime"));
-                            weatherItem.setCategory(object.getString("category"));
-                            weatherItem.setFcstDate(object.getString("fcstDate"));
-                            weatherItem.setFcstTime(object.getString("fcstTime"));
-                            weatherItem.setFcstValue(object.getString("fcstValue"));
-                            weatherItem.setNx(object.getInt("nx"));
-                            weatherItem.setNy(object.getInt("ny"));
-
-                            weatherItems.add(weatherItem);
-
-
-                        }
-
-                        items.setItem(weatherItems);
-
-                        body.setItems(items);
+//                        List<WeatherItem> weatherItems = new ArrayList<>();
+//                        WeatherItems items = new WeatherItems();
+//                        items.setItem(weatherItems);
+//                        body.setItems(items);
 
                         /* 통신 성공 */
                         if (header.getResultCode().equals("00")) {
+
+                            String resultSky = "";
+                            String resultREH = "";
+                            String resultPOP = "";
+                            String resultPTY = "";
+                            String resultTMP = "";
 
                             LogUtil.e("todayDate= " + getTodayDate());
                             LogUtil.e("baseTime= " + getBaseTime());
@@ -422,52 +406,52 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                 resultSearchTime = "0000";
                             }
 
-                            String resultSky = "";
-                            String resultREH = "";
-                            String resultPOP = "";
-                            String resultPTY = "";
-                            String resultTMP = "";
+                            for (int i = 0; i < itemArray.length(); i++) {
 
-                            for (int i = 0; i < weatherItems.size(); i++) {
+                                JSONObject object = itemArray.getJSONObject(i);
 
-                                if (weatherItems.get(i).getFcstDate().equals(getTodayDate()) && weatherItems.get(i).getFcstTime().equals(resultSearchTime)) {
+                                if (object.getString("fcstDate").equals(getTodayDate()) && object.getString("fcstTime").equals(resultSearchTime)) {
 
-                                    // 하늘상태
-                                    if (weatherItems.get(i).getCategory().equals("SKY")) {
-                                        weatherItems.get(i).getFcstValue();
-                                        resultSky = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("111111  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                    }
+                                    String category = object.getString("category");
 
-                                    // 습도
-                                    if (weatherItems.get(i).getCategory().equals("REH")) {
-                                        weatherItems.get(i).getFcstValue();
-                                        resultREH = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("2222222  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                    }
-
-                                    // 강수확률
-                                    if (weatherItems.get(i).getCategory().equals("POP")) {
-                                        weatherItems.get(i).getFcstValue();
-                                        resultPOP = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("33333333  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                    }
-
-                                    // 강수형태
-                                    if (weatherItems.get(i).getCategory().equals("PTY")) {
-                                        weatherItems.get(i).getFcstValue();
-                                        resultPTY = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("44444444  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                    }
-
-                                    // 1시간 기온
-                                    if (weatherItems.get(i).getCategory().equals("TMP")) {
-                                        weatherItems.get(i).getFcstValue();
-                                        resultTMP = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("55555555  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                    switch (category) {
+                                        case "SKY":
+                                            resultSky = object.getString("fcstValue");
+                                            break;
+                                        case "REH":
+                                            resultREH = object.getString("fcstValue");
+                                            break;
+                                        case "POP":
+                                            resultPOP = object.getString("fcstValue");
+                                            break;
+                                        case "PTY":
+                                            resultPTY = object.getString("fcstValue");
+                                            break;
+                                        case "TMP":
+                                            resultTMP = object.getString("fcstValue");
+                                            break;
                                     }
                                 }
                             }
+
+
+                            /*for (int i = 0; i < itemArray.length(); i++) {
+
+                                JSONObject object = itemArray.getJSONObject(i);
+
+                                WeatherItem weatherItem = new WeatherItem();
+
+                                weatherItem.setBaseDate(object.getString("baseDate"));
+                                weatherItem.setBaseTime(object.getString("baseTime"));
+                                weatherItem.setCategory(object.getString("category"));
+                                weatherItem.setFcstDate(object.getString("fcstDate"));
+                                weatherItem.setFcstTime(object.getString("fcstTime"));
+                                weatherItem.setFcstValue(object.getString("fcstValue"));
+                                weatherItem.setNx(object.getInt("nx"));
+                                weatherItem.setNy(object.getInt("ny"));
+
+                                weatherItems.add(weatherItem);
+                            }*/
 
                             String finalResultREH = resultREH;
                             String finalResultPOP = resultPOP;
@@ -570,10 +554,8 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                         binding.liWeatherUpdate.setVisibility(View.VISIBLE);
                     }
                 }, 500);
-
             }
-        };
-        new Thread(runnable).start();
+        }).start();
     }
 
     private void getNxNy() {
