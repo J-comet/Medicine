@@ -308,7 +308,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                     parameter.put("nx", nX);
                     parameter.put("ny", nY);
                     parameter.put("pageNo", 1);
-                    parameter.put("numOfRows", 500);
+                    parameter.put("numOfRows", 300);
 
 
                     String response = getRequest(Config.URL_GET_VILLAGE_FCST, HttpRequest.HttpType.GET, parameter);
