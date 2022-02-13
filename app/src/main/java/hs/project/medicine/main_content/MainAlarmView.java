@@ -93,6 +93,8 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
     private String strNy = "";
     private String currentLocation = "";
 
+//    private boolean isPermission = false;
+
     public MainAlarmView(@NonNull Context context) {
         super(context);
         this.context = context;
@@ -242,7 +244,6 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         binding.liWeatherUpdate.setOnClickListener(this);
         binding.clWeatherRetry.setOnClickListener(this);
 
-
     }
 
     public void setUpUI(boolean isLocationPermission) {
@@ -252,11 +253,13 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         binding.clNone.setVisibility(View.INVISIBLE);
         binding.clWeatherRetry.setVisibility(View.GONE);
 
-        getWeatherData();
+        if (isLocationPermission) {
+            getWeatherData();
+        } else {
+            ((MainActivity) mainActivityContext).permissionRequestDialog();
+        }
 
         getAlarmList();
-
-
     }
 
     private void changeColorLottieView() {
@@ -304,7 +307,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                     parameter.put("nx", nX);
                     parameter.put("ny", nY);
                     parameter.put("pageNo", 1);
-                    parameter.put("numOfRows", 1000);
+                    parameter.put("numOfRows", 500);
 
 
                     String response = getRequest(Config.URL_GET_VILLAGE_FCST, HttpRequest.HttpType.GET, parameter);
@@ -565,7 +568,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-        if(location != null) {
+        if (location != null) {
             strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
             strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
             currentLocation = LocationUtil.changeForAddress(context, location.getLatitude(), location.getLongitude());
@@ -659,40 +662,42 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("kk");
 
+        LogUtil.e(dateFormat.format(date) + "777777777777");
+
         switch (dateFormat.format(date)) {
-            case "0200":
-            case "0300":
-            case "0400":
+            case "02":
+            case "03":
+            case "04":
                 baseTime = "0200";
                 break;
-            case "0500":
-            case "0600":
-            case "0700":
+            case "05":
+            case "06":
+            case "07":
                 baseTime = "0500";
                 break;
-            case "0800":
-            case "0900":
+            case "08":
+            case "09":
             case "1000":
                 baseTime = "0800";
                 break;
-            case "1100":
-            case "1200":
-            case "1300":
+            case "11":
+            case "12":
+            case "13":
                 baseTime = "1100";
                 break;
-            case "1400":
-            case "1500":
-            case "1600":
+            case "14":
+            case "15":
+            case "16":
                 baseTime = "1400";
                 break;
-            case "1700":
-            case "1800":
-            case "1900":
+            case "17":
+            case "18":
+            case "19":
                 baseTime = "1700";
                 break;
-            case "2000":
-            case "2100":
-            case "2200":
+            case "20":
+            case "21":
+            case "22":
                 baseTime = "2000";
                 break;
             default:

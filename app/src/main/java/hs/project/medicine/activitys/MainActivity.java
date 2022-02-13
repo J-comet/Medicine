@@ -381,7 +381,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void permissionRequestDialog() {
+    public void permissionRequestDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("필수권한")
                 .setMessage("위치정보를 얻기 위해\n위치권한을 허용해주세요")
