@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,14 @@ import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.SimpleColorFilter;
 import com.airbnb.lottie.model.KeyPath;
 import com.airbnb.lottie.value.LottieValueCallback;
+import com.google.android.gms.internal.location.zzz;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraAnimation;
+import com.naver.maps.map.CameraUpdate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -263,6 +272,14 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         getAlarmList();
     }
 
+    /* 사용자가 GPS 활성화 시켰는지 확인 */
+    public boolean checkLocationServicesStatus() {
+        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
     private void changeColorLottieView() {
         int lotteColor = ContextCompat.getColor(getContext(), R.color.white);
         SimpleColorFilter filter = new SimpleColorFilter(lotteColor);
@@ -280,289 +297,283 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         if (NetworkUtil.checkConnectedNetwork(context)) {
 
             getNxNy();
+//            getLastLocationNxNy();
 
-            LogUtil.e("Nx =" + strNx + "Ny =" + strNy);
-
-            String todayDate = getTodayDate();
-            String currentTime = getBaseTime();
-            String nX = strNx;
-            String nY = strNy;
-
-            LogUtil.e("todayDate=" + todayDate + " currentTime=" + currentTime);
-
-            if (currentTime.equals("2300")) {
-                todayDate = getYesterday();
-            }
-
-            String finalTodayDate = todayDate;
-
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-
-                    Map<String, Object> parameter = new HashMap<>();
-                    parameter.put("serviceKey", getResources().getString(R.string.api_key_public_data));
-                    parameter.put("dataType", "JSON");
-                    parameter.put("base_date", finalTodayDate);
-                    parameter.put("base_time", currentTime);
-                    parameter.put("nx", nX);
-                    parameter.put("ny", nY);
-                    parameter.put("pageNo", 1);
-                    parameter.put("numOfRows", 300);
-
-
-                    String response = getRequest(Config.URL_GET_VILLAGE_FCST, HttpRequest.HttpType.GET, parameter);
-                    LogUtil.e(response);
-
-                    if (response.contains("HTTP_ERROR")) {
-
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                binding.clWeatherRetry.setVisibility(View.VISIBLE);
-                                binding.clWeatherLoading.setVisibility(View.GONE);
-                                binding.liWeatherUpdate.setVisibility(View.GONE);
-                            }
-                        });
-
-                    } else {
-                        try {
-
-                            JSONObject resultObject = new JSONObject(response);
-//                        LogUtil.e("resultObject.toString() =" + resultObject.toString());
-
-                            JSONObject responseObject = resultObject.getJSONObject("response");
-                            JSONObject headerObject = responseObject.getJSONObject("header");
-                            JSONObject bodyObject = responseObject.getJSONObject("body");
-                            JSONObject itemArrayObject = bodyObject.getJSONObject("items");
-
-                            WeatherHeader header = new WeatherHeader();
-                            header.setResultCode(headerObject.getString("resultCode"));
-                            header.setResultMsg(headerObject.getString("resultMsg"));
-
-                            LogUtil.e(header.getResultCode());
-
-                            WeatherBody body = new WeatherBody();
-                            body.setDataType(bodyObject.getString("dataType"));
-                            body.setTotalCount(Integer.valueOf(bodyObject.getString("totalCount")));
-                            body.setPageNo(Integer.valueOf(bodyObject.getString("pageNo")));
-                            body.setNumOfRows(Integer.valueOf(bodyObject.getString("numOfRows")));
-
-                            LogUtil.e("[" + body.getTotalCount() + "]");
-
-                            JSONArray itemArray = itemArrayObject.getJSONArray("item");
-                            List<WeatherItem> weatherItems = new ArrayList<>();
-
-                            WeatherItems items = new WeatherItems();
-
-                            for (int i = 0; i < itemArray.length(); i++) {
-
-                                JSONObject object = itemArray.getJSONObject(i);
-
-                                WeatherItem weatherItem = new WeatherItem();
-
-                                weatherItem.setBaseDate(object.getString("baseDate"));
-                                weatherItem.setBaseTime(object.getString("baseTime"));
-                                weatherItem.setCategory(object.getString("category"));
-                                weatherItem.setFcstDate(object.getString("fcstDate"));
-                                weatherItem.setFcstTime(object.getString("fcstTime"));
-                                weatherItem.setFcstValue(object.getString("fcstValue"));
-                                weatherItem.setNx(object.getInt("nx"));
-                                weatherItem.setNy(object.getInt("ny"));
-
-                                weatherItems.add(weatherItem);
-
-
-                            }
-
-                            items.setItem(weatherItems);
-
-                            body.setItems(items);
-
-                            /* 통신 성공 */
-                            if (header.getResultCode().equals("00")) {
-
-                                LogUtil.e("todayDate= " + getTodayDate());
-                                LogUtil.e("baseTime= " + getBaseTime());
-
-                                String splitTime = getBaseTime().substring(0, 2);
-                                LogUtil.e("splitTime= " + splitTime);
-
-                                int searchTime = Integer.parseInt(splitTime) + 1;
-
-                                String resultSearchTime = String.valueOf(searchTime) + "00";
-                                LogUtil.e("resultSearchTime= " + resultSearchTime);
-
-                                /* 24시일 때 표기법 수정 */
-                                if (resultSearchTime.equals("2400")) {
-                                    resultSearchTime = "0000";
-                                }
-
-                                String resultSky = "";
-                                String resultREH = "";
-                                String resultPOP = "";
-                                String resultPTY = "";
-                                String resultTMP = "";
-
-                                for (int i = 0; i < weatherItems.size(); i++) {
-
-                                    if (weatherItems.get(i).getFcstDate().equals(getTodayDate()) && weatherItems.get(i).getFcstTime().equals(resultSearchTime)) {
-
-                                        // 하늘상태
-                                        if (weatherItems.get(i).getCategory().equals("SKY")) {
-                                            weatherItems.get(i).getFcstValue();
-                                            resultSky = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("111111  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                        }
-
-                                        // 습도
-                                        if (weatherItems.get(i).getCategory().equals("REH")) {
-                                            weatherItems.get(i).getFcstValue();
-                                            resultREH = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("2222222  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                        }
-
-                                        // 강수확률
-                                        if (weatherItems.get(i).getCategory().equals("POP")) {
-                                            weatherItems.get(i).getFcstValue();
-                                            resultPOP = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("33333333  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                        }
-
-                                        // 강수형태
-                                        if (weatherItems.get(i).getCategory().equals("PTY")) {
-                                            weatherItems.get(i).getFcstValue();
-                                            resultPTY = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("44444444  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                        }
-
-                                        // 1시간 기온
-                                        if (weatherItems.get(i).getCategory().equals("TMP")) {
-                                            weatherItems.get(i).getFcstValue();
-                                            resultTMP = weatherItems.get(i).getFcstValue();
-//                                            LogUtil.e("55555555  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
-                                        }
-                                    }
-                                }
-
-                                String finalResultREH = resultREH;
-                                String finalResultPOP = resultPOP;
-                                String finalResultTMP = resultTMP;
-
-
-                                Drawable weatherResource = null;
-
-                                /* 강수형태 */
-                                switch (resultPTY) {
-                                    case "0": // 0 = 없음
-
-                                        /* 하늘상태 */
-                                        switch (resultSky) {
-                                            case "1":
-//                                                resultSky = "맑음";
-                                                weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_sunny);
-                                                break;
-                                            case "3":
-//                                                resultSky = "구름 많음";
-                                                weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_cloudy);
-                                                break;
-                                            case "4":
-//                                                resultSky = "흐림";
-                                                weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_blur);
-                                                break;
-                                            default:
-                                                weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_sunny);
-                                                break;
-                                        }
-
-//                                        String finalResultSky = resultSky;
-                                        break;
-
-                                    case "1":
-//                                        resultPTY = "비";
-                                        weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_rain);
-                                        break;
-                                    case "2":
-//                                        resultPTY = "비/눈";
-                                        weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_rain_snow);
-                                        break;
-                                    case "3":
-//                                        resultPTY = "눈";
-                                        weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_snow);
-                                        break;
-                                    case "4":
-//                                        resultPTY = "소나기";
-                                        weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_shower);
-                                        break;
-                                }
-
-                                Drawable finalResource = weatherResource;
-
-                                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        binding.tvLocation.setText(currentLocation);
-//                                        binding.tvSky.setText(finalResultSky);
-                                        binding.ivWeather.setImageDrawable(finalResource);
-                                        binding.tvReh.setText("습도 : " + finalResultREH);
-                                        binding.tvPop.setText("강수 확률 : " + finalResultPOP);
-//                                        binding.tvPty.setText("강수 형태 : " + finalSetResultPTY);
-                                        binding.tvTmp.setText("기온 : " + finalResultTMP);
-                                    }
-                                });
-
-                            } else {
-                                /* 통신 실패 */
-                                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(context, "공공데이터 포털사이트 점검 중 입니다", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-                            }
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            LogUtil.e("파싱 에러");
-
-                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    binding.clWeatherLoading.setVisibility(View.GONE);
-                                    binding.liWeatherUpdate.setVisibility(View.GONE);
-                                    binding.clWeatherRetry.setVisibility(View.VISIBLE);
-                                }
-                            }, 300);
-
-                        }
-                    }
-
-
-                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            binding.clWeatherLoading.setVisibility(View.GONE);
-                            binding.liWeatherUpdate.setVisibility(View.VISIBLE);
-                        }
-                    }, 500);
-
-//                    _MAIN_ACTIVITY.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            binding.clWeatherLoading.setVisibility(View.GONE);
-//                        }
-//                    });
-                }
-            };
-            new Thread(runnable).start();
 
         } else {
             NetworkUtil.networkErrorDialogShow((MainActivity) mainActivityContext, false);
             binding.clWeatherLoading.setVisibility(View.GONE);
             binding.liWeatherUpdate.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setWeatherData(String nX, String nY) {
+        LogUtil.e("Nx =" + nX + "Ny =" + nY);
+
+        String todayDate = getTodayDate();
+        String currentTime = getBaseTime();
+
+        LogUtil.e("todayDate=" + todayDate + " currentTime=" + currentTime);
+
+        if (currentTime.equals("2300")) {
+            todayDate = getYesterday();
+        }
+
+        String finalTodayDate = todayDate;
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                Map<String, Object> parameter = new HashMap<>();
+                parameter.put("serviceKey", getResources().getString(R.string.api_key_public_data));
+                parameter.put("dataType", "JSON");
+                parameter.put("base_date", finalTodayDate);
+                parameter.put("base_time", currentTime);
+                parameter.put("nx", nX);
+                parameter.put("ny", nY);
+                parameter.put("pageNo", 1);
+                parameter.put("numOfRows", 300);
+
+
+                String response = getRequest(Config.URL_GET_VILLAGE_FCST, HttpRequest.HttpType.GET, parameter);
+                LogUtil.e(response);
+
+                if (response.contains("HTTP_ERROR")) {
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            binding.clWeatherRetry.setVisibility(View.VISIBLE);
+                            binding.clWeatherLoading.setVisibility(View.GONE);
+                            binding.liWeatherUpdate.setVisibility(View.GONE);
+                        }
+                    });
+
+                } else {
+                    try {
+
+                        JSONObject resultObject = new JSONObject(response);
+
+                        JSONObject responseObject = resultObject.getJSONObject("response");
+                        JSONObject headerObject = responseObject.getJSONObject("header");
+                        JSONObject bodyObject = responseObject.getJSONObject("body");
+                        JSONObject itemArrayObject = bodyObject.getJSONObject("items");
+
+                        WeatherHeader header = new WeatherHeader();
+                        header.setResultCode(headerObject.getString("resultCode"));
+                        header.setResultMsg(headerObject.getString("resultMsg"));
+
+                        LogUtil.e(header.getResultCode());
+
+                        WeatherBody body = new WeatherBody();
+                        body.setDataType(bodyObject.getString("dataType"));
+                        body.setTotalCount(Integer.valueOf(bodyObject.getString("totalCount")));
+                        body.setPageNo(Integer.valueOf(bodyObject.getString("pageNo")));
+                        body.setNumOfRows(Integer.valueOf(bodyObject.getString("numOfRows")));
+
+                        LogUtil.e("[" + body.getTotalCount() + "]");
+
+                        JSONArray itemArray = itemArrayObject.getJSONArray("item");
+                        List<WeatherItem> weatherItems = new ArrayList<>();
+
+                        WeatherItems items = new WeatherItems();
+
+                        for (int i = 0; i < itemArray.length(); i++) {
+
+                            JSONObject object = itemArray.getJSONObject(i);
+
+                            WeatherItem weatherItem = new WeatherItem();
+
+                            weatherItem.setBaseDate(object.getString("baseDate"));
+                            weatherItem.setBaseTime(object.getString("baseTime"));
+                            weatherItem.setCategory(object.getString("category"));
+                            weatherItem.setFcstDate(object.getString("fcstDate"));
+                            weatherItem.setFcstTime(object.getString("fcstTime"));
+                            weatherItem.setFcstValue(object.getString("fcstValue"));
+                            weatherItem.setNx(object.getInt("nx"));
+                            weatherItem.setNy(object.getInt("ny"));
+
+                            weatherItems.add(weatherItem);
+
+
+                        }
+
+                        items.setItem(weatherItems);
+
+                        body.setItems(items);
+
+                        /* 통신 성공 */
+                        if (header.getResultCode().equals("00")) {
+
+                            LogUtil.e("todayDate= " + getTodayDate());
+                            LogUtil.e("baseTime= " + getBaseTime());
+
+                            String splitTime = getBaseTime().substring(0, 2);
+                            LogUtil.e("splitTime= " + splitTime);
+
+                            int searchTime = Integer.parseInt(splitTime) + 1;
+
+                            String resultSearchTime = String.valueOf(searchTime) + "00";
+                            LogUtil.e("resultSearchTime= " + resultSearchTime);
+
+                            /* 24시일 때 표기법 수정 */
+                            if (resultSearchTime.equals("2400")) {
+                                resultSearchTime = "0000";
+                            }
+
+                            String resultSky = "";
+                            String resultREH = "";
+                            String resultPOP = "";
+                            String resultPTY = "";
+                            String resultTMP = "";
+
+                            for (int i = 0; i < weatherItems.size(); i++) {
+
+                                if (weatherItems.get(i).getFcstDate().equals(getTodayDate()) && weatherItems.get(i).getFcstTime().equals(resultSearchTime)) {
+
+                                    // 하늘상태
+                                    if (weatherItems.get(i).getCategory().equals("SKY")) {
+                                        weatherItems.get(i).getFcstValue();
+                                        resultSky = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("111111  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                    }
+
+                                    // 습도
+                                    if (weatherItems.get(i).getCategory().equals("REH")) {
+                                        weatherItems.get(i).getFcstValue();
+                                        resultREH = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("2222222  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                    }
+
+                                    // 강수확률
+                                    if (weatherItems.get(i).getCategory().equals("POP")) {
+                                        weatherItems.get(i).getFcstValue();
+                                        resultPOP = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("33333333  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                    }
+
+                                    // 강수형태
+                                    if (weatherItems.get(i).getCategory().equals("PTY")) {
+                                        weatherItems.get(i).getFcstValue();
+                                        resultPTY = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("44444444  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                    }
+
+                                    // 1시간 기온
+                                    if (weatherItems.get(i).getCategory().equals("TMP")) {
+                                        weatherItems.get(i).getFcstValue();
+                                        resultTMP = weatherItems.get(i).getFcstValue();
+//                                            LogUtil.e("55555555  " + weatherItems.get(i).getCategory() + "/" + weatherItems.get(i).getFcstValue());
+                                    }
+                                }
+                            }
+
+                            String finalResultREH = resultREH;
+                            String finalResultPOP = resultPOP;
+                            String finalResultTMP = resultTMP;
+
+
+                            Drawable weatherResource = null;
+
+                            /* 강수형태 */
+                            switch (resultPTY) {
+                                case "0": // 0 = 없음
+
+                                    /* 하늘상태 */
+                                    switch (resultSky) {
+                                        case "1":
+//                                                resultSky = "맑음";
+                                            weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_sunny);
+                                            break;
+                                        case "3":
+//                                                resultSky = "구름 많음";
+                                            weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_cloudy);
+                                            break;
+                                        case "4":
+//                                                resultSky = "흐림";
+                                            weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_blur);
+                                            break;
+                                        default:
+                                            weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_sunny);
+                                            break;
+                                    }
+
+//                                        String finalResultSky = resultSky;
+                                    break;
+
+                                case "1":
+//                                        resultPTY = "비";
+                                    weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_rain);
+                                    break;
+                                case "2":
+//                                        resultPTY = "비/눈";
+                                    weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_rain_snow);
+                                    break;
+                                case "3":
+//                                        resultPTY = "눈";
+                                    weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_snow);
+                                    break;
+                                case "4":
+//                                        resultPTY = "소나기";
+                                    weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_shower);
+                                    break;
+                            }
+
+                            Drawable finalResource = weatherResource;
+
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binding.tvLocation.setText(currentLocation);
+//                                        binding.tvSky.setText(finalResultSky);
+                                    binding.ivWeather.setImageDrawable(finalResource);
+                                    binding.tvReh.setText("습도 : " + finalResultREH);
+                                    binding.tvPop.setText("강수 확률 : " + finalResultPOP);
+//                                        binding.tvPty.setText("강수 형태 : " + finalSetResultPTY);
+                                    binding.tvTmp.setText("기온 : " + finalResultTMP);
+                                }
+                            });
+
+                        } else {
+                            /* 통신 실패 */
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "공공데이터 포털사이트 점검 중 입니다", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        LogUtil.e("파싱 에러");
+
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.clWeatherLoading.setVisibility(View.GONE);
+                                binding.liWeatherUpdate.setVisibility(View.GONE);
+                                binding.clWeatherRetry.setVisibility(View.VISIBLE);
+                            }
+                        }, 300);
+
+                    }
+                }
+
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.clWeatherLoading.setVisibility(View.GONE);
+                        binding.liWeatherUpdate.setVisibility(View.VISIBLE);
+                    }
+                }, 500);
+
+            }
+        };
+        new Thread(runnable).start();
     }
 
     private void getNxNy() {
@@ -583,28 +594,57 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-        if (location != null) {
-            strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
-            strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
-            currentLocation = LocationUtil.changeForAddress(context, location.getLatitude(), location.getLongitude());
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
 
-            String[] results = currentLocation.split("\\s");
-            LogUtil.e("results[0]=" + results[0]);
-            LogUtil.e("results[1]=" + results[1]);
-            LogUtil.e("results[2]=" + results[2]);
+                if (location != null) {
+                    strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
+                    strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
+                    currentLocation = LocationUtil.changeForAddress(context, location.getLatitude(), location.getLongitude());
 
-            currentLocation = results[1] + " " + results[2];
+                    String[] results = currentLocation.split("\\s");
+                    LogUtil.e("results[0]=" + results[0]);
+                    LogUtil.e("results[1]=" + results[1]);
+                    LogUtil.e("results[2]=" + results[2]);
 
-        } else {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    binding.clWeatherRetry.setVisibility(View.VISIBLE);
-                    binding.clWeatherLoading.setVisibility(View.GONE);
-                    binding.liWeatherUpdate.setVisibility(View.GONE);
+                    currentLocation = results[1] + " " + results[2];
+
+                    setWeatherData(strNx, strNy);
+
+                } else {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            binding.clWeatherRetry.setVisibility(View.VISIBLE);
+                            binding.clWeatherLoading.setVisibility(View.GONE);
+                            binding.liWeatherUpdate.setVisibility(View.GONE);
+                        }
+                    });
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFlushComplete(int requestCode) {
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+            }
+        };
+
+        // minTime = 1시간
+        // minDistance = 1km
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3600000, 1000, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3600000, 1000, locationListener);
     }
 
     private void getAlarmList() {
@@ -734,7 +774,33 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 break;
             case R.id.li_weather_update:
             case R.id.cl_weather_retry:
-                getWeatherData();
+
+                if (checkLocationServicesStatus()) {
+                    getWeatherData();
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("위치서비스");
+                    builder.setMessage("위치서비스를 활성화 해주세요");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    });
+                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            Toast.makeText(context, "위치서비스 비활성화 상태", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    builder.show();
+
+                }
+
                 break;
         }
     }
