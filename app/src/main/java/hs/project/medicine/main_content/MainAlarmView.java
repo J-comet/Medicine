@@ -654,11 +654,10 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                             alarmArrayList.add(alarm);
                         }
 
-                        alarmAdapter.addAll(alarmArrayList);
-
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
+                                alarmAdapter.addAll(alarmArrayList);
                                 binding.clAlarmList.setVisibility(View.VISIBLE);
                                 binding.clNone.setVisibility(View.GONE);
                             }
