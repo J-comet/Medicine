@@ -31,10 +31,14 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
 
-
         <activity
             android:name=".activitys.AlarmViewActivity"
-            android:exported="false" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.sec" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".not_used.UserDetailActivity"
             android:exported="false" />
@@ -72,7 +76,8 @@
 
         <receiver
             android:name=".receiver.AlarmReceiver"
-            android:exported="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.sec" />
             </intent-filter>

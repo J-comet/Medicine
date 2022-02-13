@@ -20,7 +20,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     PowerManager powerManager;
     private static PowerManager.WakeLock wakeLock;
-//    String get_state;
+    //    String get_state;
     private MediaPlayer mediaPlayer;
     private String strRingtoneUri;
 
@@ -29,7 +29,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         mContext = context;
         LogUtil.d("onReceive");
         strRingtoneUri = intent.getExtras().getString("uri");
-
         AlarmReceiverChk(context, intent);
     }
 
@@ -37,30 +36,28 @@ public class AlarmReceiver extends BroadcastReceiver {
         LogUtil.d("Alarm Receiver started!");
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 
-        if (wakeLock != null) {
-            return;
-        }
+//        if (wakeLock != null) {
+//            return;
+//        }
 
         wakeLock = powerManager.newWakeLock(
                 PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
                         PowerManager.ACQUIRE_CAUSES_WAKEUP |
                         PowerManager.ON_AFTER_RELEASE, "WAKELOCK");
 
-        wakeLock.acquire(10*60*1000L /*10 minutes*/);
+        wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
 
         /* 잠금화면 위에 액티비티가 안뜨는 중 손으로 잠금화면 풀어줘야 해제됨 */
         Intent alarmIntent = new Intent("android.intent.action.sec");
         alarmIntent.setClass(context, AlarmViewActivity.class);
-        alarmIntent.putExtra("uri", strRingtoneUri);
+//        alarmIntent.putExtra("uri", strRingtoneUri);
         alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(alarmIntent);
 
-
-//        Intent dataIntent = new Intent(context, AlarmViewActivity.class);
-//        dataIntent.putExtra("uri", strRingtoneUri);
-//        dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        context.startActivity(dataIntent);
-
+        /*Intent dataIntent = new Intent(context, AlarmViewActivity.class);
+        dataIntent.putExtra("uri", strRingtoneUri);
+        dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dataIntent);*/
 
         if (wakeLock != null) {
             new Handler().postDelayed(new Runnable() {
@@ -79,7 +76,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        dataIntent.putExtra("uri", strRingtoneUri);
 //        dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        context.startActivity(dataIntent);
-
 
 
 //        releaseCpuLock();

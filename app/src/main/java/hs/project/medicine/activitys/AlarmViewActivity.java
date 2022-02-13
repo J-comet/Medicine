@@ -46,6 +46,8 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
 
         startMediaPlayer(Uri.parse(getRingtoneUri));
 
+//        startMediaPlayer(Uri.parse("content://media/internal/audio/media/37"));
+
         long now = System.currentTimeMillis();
         Date date = new Date(now);
 
