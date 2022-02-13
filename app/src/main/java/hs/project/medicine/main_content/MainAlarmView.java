@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ColorFilter;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -448,50 +449,64 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                 String finalResultPOP = resultPOP;
                                 String finalResultTMP = resultTMP;
 
-                                /* 하늘상태 */
-                                switch (resultSky) {
-                                    case "1":
-                                        resultSky = "맑음";
-                                        break;
-                                    case "3":
-                                        resultSky = "구름 많음";
-                                        break;
-                                    case "4":
-                                        resultSky = "흐림";
-                                        break;
-                                }
 
-                                String finalResultSky = resultSky;
+                                Drawable weatherResource = null;
 
                                 /* 강수형태 */
                                 switch (resultPTY) {
-                                    case "0":
-                                        resultPTY = "없음";
+                                    case "0": // 0 = 없음
+
+                                        /* 하늘상태 */
+                                        switch (resultSky) {
+                                            case "1":
+//                                                resultSky = "맑음";
+                                                weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_sunny);
+                                                break;
+                                            case "3":
+//                                                resultSky = "구름 많음";
+                                                weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_cloudy);
+                                                break;
+                                            case "4":
+//                                                resultSky = "흐림";
+                                                weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_blur);
+                                                break;
+                                            default:
+                                                weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_sunny);
+                                                break;
+                                        }
+
+//                                        String finalResultSky = resultSky;
                                         break;
+
                                     case "1":
-                                        resultPTY = "비";
+//                                        resultPTY = "비";
+                                        weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_rain);
                                         break;
                                     case "2":
-                                        resultPTY = "비/눈";
+//                                        resultPTY = "비/눈";
+                                        weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_rain_snow);
                                         break;
                                     case "3":
-                                        resultPTY = "눈";
+//                                        resultPTY = "눈";
+                                        weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_snow);
                                         break;
                                     case "4":
-                                        resultPTY = "소나기";
+//                                        resultPTY = "소나기";
+                                        weatherResource = ContextCompat.getDrawable(context, R.drawable.ic_weather_shower);
                                         break;
                                 }
 
-                                String finalSetResultPTY = resultPTY;
+                                Drawable finalResource = weatherResource;
 
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     @Override
                                     public void run() {
                                         binding.tvLocation.setText(currentLocation);
-                                        binding.tvSky.setText(finalResultSky);
+//                                        binding.tvSky.setText(finalResultSky);
+                                        binding.ivWeather.setImageDrawable(finalResource);
                                         binding.tvReh.setText("습도 : " + finalResultREH);
                                         binding.tvPop.setText("강수 확률 : " + finalResultPOP);
-                                        binding.tvPty.setText("강수 형태 : " + finalSetResultPTY);
+//                                        binding.tvPty.setText("강수 형태 : " + finalSetResultPTY);
                                         binding.tvTmp.setText("기온 : " + finalResultTMP);
                                     }
                                 });

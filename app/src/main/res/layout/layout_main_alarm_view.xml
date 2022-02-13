@@ -19,9 +19,8 @@
             android:id="@+id/tv_location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="위치 정보"
             android:gravity="center"
+            android:text="위치 정보"
             android:textColor="@color/white"
             android:textSize="22dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,97 +32,93 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_sky"
+            app:layout_constraintBottom_toBottomOf="@+id/li_weather_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_sky"
-            app:layout_constraintTop_toTopOf="@+id/tv_sky">
+            app:layout_constraintStart_toEndOf="@+id/li_weather_content"
+            app:layout_constraintTop_toTopOf="@+id/li_weather_content">
 
             <TextView
                 android:id="@+id/textView20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
                 android:text="℃"
                 android:textColor="@color/white"
                 android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_tmp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toEndOf="@+id/tv_tmp"
                 app:layout_constraintTop_toTopOf="@+id/tv_tmp" />
 
             <TextView
                 android:id="@+id/tv_reh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
                 android:text="습도"
                 android:textColor="@color/white"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/tv_tmp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_tmp" />
+                app:layout_constraintEnd_toStartOf="@+id/textView19"
+                app:layout_constraintTop_toBottomOf="@+id/tv_pop" />
 
             <TextView
                 android:id="@+id/textView19"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
                 android:text="%"
                 android:textColor="@color/white"
                 android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_reh"
-                app:layout_constraintStart_toEndOf="@+id/tv_reh"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_reh" />
 
             <TextView
                 android:id="@+id/tv_pop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
                 android:text="강수확률"
                 android:textColor="@color/white"
                 android:textSize="18dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView19"
-                app:layout_constraintTop_toBottomOf="@+id/tv_location" />
+                app:layout_constraintEnd_toStartOf="@+id/textView22"
+                app:layout_constraintTop_toBottomOf="@+id/tv_tmp" />
 
             <TextView
                 android:id="@+id/textView22"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
                 android:text="%"
                 android:textColor="@color/white"
                 android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_pop"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toEndOf="@+id/tv_pop"
                 app:layout_constraintTop_toTopOf="@+id/tv_pop" />
 
-            <TextView
-                android:id="@+id/tv_pty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="강수 형태"
-                android:textColor="@color/white"
-                android:textSize="18dp"
-                app:layout_constraintStart_toStartOf="@+id/tv_pop"
-                app:layout_constraintTop_toBottomOf="@+id/tv_pop" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_pty"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:text="강수 형태"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="18dp"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/tv_pop"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/tv_pop" />-->
 
             <TextView
                 android:id="@+id/tv_tmp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
                 android:text="기온"
                 android:textColor="@color/white"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/textView19"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_location" />
+                app:layout_constraintEnd_toStartOf="@+id/textView20"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -144,18 +139,38 @@
                 app:tint="@color/white" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_sky"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:text="하늘상태"
-            android:textColor="@color/white"
-            android:textSize="18dp"
+        <LinearLayout
+            android:id="@+id/li_weather_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:background="@drawable/bg_circle_white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/constraintLayout9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_location" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_location">
+
+            <ImageView
+                android:id="@+id/iv_weather"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </LinearLayout>
+
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_sky"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="24dp"-->
+<!--            android:text="하늘상태"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="18dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/constraintLayout9"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/tv_location" />-->
 
 
         <!--        <TextView-->
