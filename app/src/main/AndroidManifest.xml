@@ -26,6 +26,12 @@
         android:theme="@style/Theme.Medicine"
         android:usesCleartextTraffic="true">
 
+        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
+
         <activity
             android:name=".activitys.AlarmViewActivity"
             android:exported="false" />
@@ -75,7 +81,7 @@
         <service
             android:name=".service.DayOfWeekCheckService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
 
     </application>
 

@@ -1,10 +1,23 @@
 <resources>
-    <string name="app_name">Medicine</string>
+    <string name="app_name">메디케어</string>
     <!--    <string name="api_key_kakao_map">8aec5e053654b53f321681814502dbfd</string>-->
     <string name="naver_client_id">0qu54c39mv</string>
     <string name="naver_client_secret">9AVxBiE1spfpgc5eoXzO316ZTv9peaFvcR6r5bTQ</string>
 
     <string name="api_key_public_data">9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D</string>
+
+    <string name="admob_app_id">ca-app-pub-2085619973553767~3542146847</string>
+    <string name="admob_banner_unit_id">ca-app-pub-2085619973553767/2444687598</string>
+
+    <!-- 애드몹 테스트 앱ID -->
+    <string name="test_admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+
+    <!-- 애드몹 테스트 배너ID -->
+    <string name="test_admob_banner_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
+    <!-- 애드몹 테스트 전면ID -->
+    <string name="test_admob_interstitial_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+
 
     <string name="str_main_text">사용자 정보</string>
 
