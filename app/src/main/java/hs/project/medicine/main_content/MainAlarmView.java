@@ -265,22 +265,22 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         binding.clWeatherRetry.setVisibility(View.GONE);
         binding.liWeatherUpdate.setVisibility(View.GONE);
 
-        getNxNy();
-
-        LogUtil.e("Nx =" + strNx + "Ny =" + strNy);
-
-        String todayDate = getTodayDate();
-        String currentTime = getBaseTime();
-        String nX = strNx;
-        String nY = strNy;
-
-        LogUtil.e("todayDate=" + todayDate + " currentTime=" + currentTime);
-
-        if (currentTime.equals("2300")) {
-            todayDate = getYesterday();
-        }
-
         if (NetworkUtil.checkConnectedNetwork(context)) {
+
+            getNxNy();
+
+            LogUtil.e("Nx =" + strNx + "Ny =" + strNy);
+
+            String todayDate = getTodayDate();
+            String currentTime = getBaseTime();
+            String nX = strNx;
+            String nY = strNy;
+
+            LogUtil.e("todayDate=" + todayDate + " currentTime=" + currentTime);
+
+            if (currentTime.equals("2300")) {
+                todayDate = getYesterday();
+            }
 
             String finalTodayDate = todayDate;
 
@@ -544,8 +544,21 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-        strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
-        strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
+        if(location != null) {
+            strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
+            strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
+        } else {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.clWeatherRetry.setVisibility(View.VISIBLE);
+                    binding.clWeatherLoading.setVisibility(View.GONE);
+                    binding.liWeatherUpdate.setVisibility(View.GONE);
+                }
+            });
+        }
+
+
     }
 
     private void getAlarmList() {
