@@ -12,6 +12,8 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,29 +49,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public static Context mainActivityContext;
 //    public static Activity MAIN_ACTIVITY;
 
-    private final String[] arrGpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-
     private static final int CODE_GPS_PERMISSION_ALL_GRANTED = 300;  // 모두허용
     private static final int CODE_GPS_PERMISSION_FINE_DENIED = 200;  // 대략허용
     private static final int CODE_GPS_PERMISSION_DENIED_TRUE = 100;  // 허용 거부한적 있는 유저
     private static final int CODE_GPS_PERMISSION_FIRST = 1000;  // 처음 권한 요청하는 유저
 
-    private boolean isLocationPermission = false;
-
-    //    위치서비스 꺼져있을 때 요청할 launcher
-    ActivityResultLauncher<Intent> gpsSettingRequest = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent intent = result.getData();
-                        LogUtil.e("intent :" + intent.toString());
-                    }
-                }
-            });
-
     //    권한 획득 launcher
-    ActivityResultLauncher<String[]> gpsPermissionRequest =
+    public ActivityResultLauncher<String[]> gpsPermissionRequest =
             registerForActivityResult(new ActivityResultContracts
                             .RequestMultiplePermissions(), result -> {
 
@@ -111,8 +97,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 LogUtil.e("정밀한위치");
 
 //                                위치권한 허용했을 때 실행할 코드
-                                isLocationPermission = true;
-                                binding.mainContentAlarm.setUpUI(isLocationPermission);
+                                binding.mainContentAlarm.hasPermission = true;
+                                binding.mainContentAlarm.setUpUI();
 
                             } else if (coarseLocationGranted != null && coarseLocationGranted && fineLocationGranted == false) {
                                 // Only approximate location access granted.
@@ -120,16 +106,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 LogUtil.e("대략적인위치");
 
 //                                위치권한 허용했을 때 실행할 코드
-                                isLocationPermission = true;
-                                binding.mainContentAlarm.setUpUI(isLocationPermission);
+                                binding.mainContentAlarm.hasPermission = true;
+                                binding.mainContentAlarm.setUpUI();
 
                             } else {
                                 // No location access granted.
                                 // 권한획득 거부
 
-                                isLocationPermission = false;
-                                binding.mainContentAlarm.setUpUI(isLocationPermission);
-                                Toast.makeText(this, "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
+                                binding.mainContentAlarm.hasPermission = false;
+                                binding.mainContentAlarm.setUpUI();
+                                Toast.makeText(this, "현재위치 정보를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
                                 LogUtil.e("위치권한거부");
                                 permissionRequestDialog();
                             }
@@ -147,14 +133,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 LogUtil.e("위치권한허용");
 
 //                                위치권한 허용했을 때 실행할 코드
-                                isLocationPermission = true;
-                                binding.mainContentAlarm.setUpUI(isLocationPermission);
+                                binding.mainContentAlarm.hasPermission = true;
+                                binding.mainContentAlarm.setUpUI();
                             } else {
                                 // No location access granted.
                                 // 권한획득 거부
-                                isLocationPermission = false;
-                                binding.mainContentAlarm.setUpUI(isLocationPermission);
-                                Toast.makeText(this, "현재위치를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
+                                binding.mainContentAlarm.hasPermission = false;
+                                binding.mainContentAlarm.setUpUI();
+                                Toast.makeText(this, "현재위치 정보를 가져오려면\n위치 권한은 필수 입니다", Toast.LENGTH_SHORT).show();
                                 LogUtil.e("위치권한거부");
                                 permissionRequestDialog();
                             }
@@ -235,48 +221,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onStart() {
         super.onStart();
 
-//        권한체크
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            permissionResultAction(gpsPermissionCheck());
-            isLocationPermission = false;
-
-            LogUtil.e("권한 없음");
+            binding.mainContentAlarm.hasPermission = false;
         } else {
-
-//            권한 획득한 사용자는 GPS 활성화 했는지 체크
-            if (checkLocationServicesStatus()) {
-                isLocationPermission = true;
-
-                LogUtil.e("GPS ON");
-
-            } else {
-                isLocationPermission = true;
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("위치서비스");
-                builder.setMessage("위치서비스를 활성화 해주세요");
-                builder.setCancelable(false);
-                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        gpsSettingRequest.launch(intent);
-                    }
-                });
-                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Toast.makeText(MainActivity.this, "위치서비스 비활성화 상태", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.show();
-            }
+            binding.mainContentAlarm.hasPermission = true;
         }
 
-        binding.mainContentAlarm.setUpUI(isLocationPermission);
+        binding.mainContentAlarm.setUpUI();
     }
 
     private void init() {
@@ -349,61 +301,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         });
     }
 
-    /* 사용자가 GPS 활성화 시켰는지 확인 */
-    public boolean checkLocationServicesStatus() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    /* 권한 얻은 후 행동할 메서드 */
-    private void permissionResultAction(int permissionResult) {
-
-        switch (permissionResult) {
-            case CODE_GPS_PERMISSION_ALL_GRANTED:  // 모두허용
-                LogUtil.d("위치권한 모두허용");
-//                Toast.makeText(MapActivity.this, "위치권한 모두허용", Toast.LENGTH_SHORT).show();
-                break;
-
-            case CODE_GPS_PERMISSION_FINE_DENIED:  // 대략허용
-                LogUtil.d("위치권한 대략허용");
-//                Toast.makeText(MapActivity.this, "위치권한 대략허용", Toast.LENGTH_SHORT).show();
-                break;
-
-            case CODE_GPS_PERMISSION_DENIED_TRUE:  // 권한 거부한적 있는 유저
-                permissionRequestDialog();
-                break;
-
-            case CODE_GPS_PERMISSION_FIRST:  // 처음 실행
-                gpsPermissionRequest.launch(arrGpsPermissions);
-                break;
-        }
-    }
-
-    public void permissionRequestDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("필수권한")
-                .setMessage("위치정보를 얻기 위해\n위치권한을 허용해주세요")
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getPackageName()));
-                        startActivity(intent);
-                    }
-                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Toast.makeText(MainActivity.this, "위치권한 거부", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder.show();
-    }
-
-    private int gpsPermissionCheck() {
+    public int gpsPermissionCheck() {
 
         int isPermission = -1;
 
@@ -458,7 +356,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (selectedContent) {
             case Config.MAIN_BOTTOM_MENU.HOME:
                 binding.mainContentAlarm.setVisibility(View.VISIBLE);
-                binding.mainContentAlarm.setUpUI(isLocationPermission);
+                binding.mainContentAlarm.setUpUI();
                 binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
                 break;
             case Config.MAIN_BOTTOM_MENU.SEARCH:
@@ -479,6 +377,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.USER_LIST);
                 break;*/
         }
+    }
+
+    private void permissionRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("필수권한")
+                .setMessage("위치정보를 얻기 위해\n위치권한을 허용해주세요")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getPackageName()));
+                        startActivity(intent);
+                    }
+                }).setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Toast.makeText(MainActivity.this, "위치권한 거부", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.show();
     }
 
 

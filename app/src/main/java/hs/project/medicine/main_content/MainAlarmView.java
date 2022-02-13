@@ -94,7 +94,6 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
     private ArrayList<Alarm> alarmArrayList;
     private AlarmAdapter alarmAdapter;
 
-    private String strNxNy = "null";
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location location;
@@ -103,7 +102,14 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
     private String strNy = "";
     private String currentLocation = "";
 
-//    private boolean isPermission = false;
+    private final String[] arrGpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+
+    private static final int CODE_GPS_PERMISSION_ALL_GRANTED = 300;  // 모두허용
+    private static final int CODE_GPS_PERMISSION_FINE_DENIED = 200;  // 대략허용
+    private static final int CODE_GPS_PERMISSION_DENIED_TRUE = 100;  // 허용 거부한적 있는 유저
+    private static final int CODE_GPS_PERMISSION_FIRST = 1000;  // 처음 권한 요청하는 유저
+
+    public boolean hasPermission = false;
 
     public MainAlarmView(@NonNull Context context) {
         super(context);
@@ -256,17 +262,18 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
     }
 
-    public void setUpUI(boolean isLocationPermission) {
+    public void setUpUI() {
         changeColorLottieView();
 
         binding.clAlarmList.setVisibility(View.INVISIBLE);
         binding.clNone.setVisibility(View.INVISIBLE);
         binding.clWeatherRetry.setVisibility(View.GONE);
 
-        if (isLocationPermission) {
+        if (hasPermission) {
             getWeatherData();
         } else {
-            ((MainActivity) mainActivityContext).permissionRequestDialog();
+            setWeatherData("61", "125");
+            currentLocation = "서울특별시 강남구";
         }
 
         getAlarmList();
@@ -297,9 +304,6 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         if (NetworkUtil.checkConnectedNetwork(context)) {
 
             getNxNy();
-            LogUtil.e("11111111111111111111");
-//            getLastLocationNxNy();
-
 
         } else {
             NetworkUtil.networkErrorDialogShow((MainActivity) mainActivityContext, false);
@@ -543,7 +547,6 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                 binding.clWeatherRetry.setVisibility(View.VISIBLE);
                             }
                         }, 300);
-
                     }
                 }
 
@@ -619,46 +622,65 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
     }
 
     private void getAlarmList() {
-        alarmArrayList = new ArrayList<>();
 
-        /* 저장되어 있는 알람리스트 가져오기 */
-        if (PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST) != null
-                && PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                alarmArrayList = new ArrayList<>();
 
-            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST));
+                /* 저장되어 있는 알람리스트 가져오기 */
+                if (PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST) != null
+                        && PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
 
-            try {
+                    JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(context, Config.PREFERENCE_KEY.ALARM_LIST));
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    Alarm alarm = new Alarm();
-                    JSONObject object = new JSONObject(jsonArray.getString(i));
-                    alarm.setName(object.getString("name"));
-                    alarm.setAmPm(object.getString("amPm"));
-                    alarm.setHour(object.getString("hour"));
-                    alarm.setMinute(object.getString("minute"));
-                    alarm.setVolume(object.getInt("volume"));
-                    alarm.setRingtoneName(object.getString("ringtoneName"));
-                    alarm.setRingtoneUri(Uri.parse(object.getString("ringtoneUri")));
-                    alarm.setDayOfWeek(object.getString("dayOfWeek"));
-                    alarm.setAlarmON(object.getBoolean("alarmON"));
+                    try {
 
-                    LogUtil.d("alarm /" + alarm.getName());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            Alarm alarm = new Alarm();
+                            JSONObject object = new JSONObject(jsonArray.getString(i));
+                            alarm.setName(object.getString("name"));
+                            alarm.setAmPm(object.getString("amPm"));
+                            alarm.setHour(object.getString("hour"));
+                            alarm.setMinute(object.getString("minute"));
+                            alarm.setVolume(object.getInt("volume"));
+                            alarm.setRingtoneName(object.getString("ringtoneName"));
+                            alarm.setRingtoneUri(Uri.parse(object.getString("ringtoneUri")));
+                            alarm.setDayOfWeek(object.getString("dayOfWeek"));
+                            alarm.setAlarmON(object.getBoolean("alarmON"));
 
-                    alarmArrayList.add(alarm);
+                            LogUtil.d("alarm /" + alarm.getName());
+
+                            alarmArrayList.add(alarm);
+                        }
+
+                        alarmAdapter.addAll(alarmArrayList);
+
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.clAlarmList.setVisibility(View.VISIBLE);
+                                binding.clNone.setVisibility(View.GONE);
+                            }
+                        });
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            binding.clNone.setVisibility(View.VISIBLE);
+                            binding.clAlarmList.setVisibility(View.GONE);
+                        }
+                    });
+
                 }
-
-                alarmAdapter.addAll(alarmArrayList);
-                binding.clAlarmList.setVisibility(View.VISIBLE);
-                binding.clNone.setVisibility(View.GONE);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-
-        } else {
-            binding.clNone.setVisibility(View.VISIBLE);
-            binding.clAlarmList.setVisibility(View.GONE);
-        }
+        }).start();
     }
 
     private String getYesterday() {
@@ -733,6 +755,92 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         return baseTime;
     }
 
+    private void permissionRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("필수권한")
+                .setMessage("현재 위치의 날씨정보를 얻기 위해\n위치권한을 허용해주세요")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + context.getPackageName()));
+                        context.startActivity(intent);
+                    }
+                });
+        builder.show();
+    }
+
+    /* 권한 얻은 후 행동할 메서드 */
+    private void permissionResultAction(int permissionResult) {
+
+        switch (permissionResult) {
+            case CODE_GPS_PERMISSION_ALL_GRANTED:  // 모두허용
+                LogUtil.d("위치권한 모두허용");
+//                Toast.makeText(MapActivity.this, "위치권한 모두허용", Toast.LENGTH_SHORT).show();
+                break;
+
+            case CODE_GPS_PERMISSION_FINE_DENIED:  // 대략허용
+                LogUtil.d("위치권한 대략허용");
+//                Toast.makeText(MapActivity.this, "위치권한 대략허용", Toast.LENGTH_SHORT).show();
+                break;
+
+            case CODE_GPS_PERMISSION_DENIED_TRUE:  // 권한 거부한적 있는 유저
+                permissionRequestDialog();
+                break;
+
+            case CODE_GPS_PERMISSION_FIRST:  // 처음 실행
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("필수권한")
+                        .setMessage("현재 위치의 날씨정보를 얻기 위해\n위치권한을 허용해주세요")
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                ((MainActivity) mainActivityContext).gpsPermissionRequest.launch(arrGpsPermissions);
+                            }
+                        });
+                builder.show();
+
+                break;
+        }
+    }
+
+    private void checkPermission() {
+
+//        권한체크
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionResultAction(((MainActivity) mainActivityContext).gpsPermissionCheck());
+
+            hasPermission = false;
+            LogUtil.e("권한 없음");
+        } else {
+
+//            권한 획득한 사용자는 GPS 활성화 했는지 체크
+            if (checkLocationServicesStatus()) {
+
+                hasPermission = true;
+                LogUtil.e("GPS ON");
+                getWeatherData();
+
+            } else {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("위치서비스");
+                builder.setMessage("위치서비스를 활성화 해주세요");
+                builder.setCancelable(false);
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                });
+
+                builder.show();
+            }
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -745,33 +853,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 break;
             case R.id.li_weather_update:
             case R.id.cl_weather_retry:
-
-                if (checkLocationServicesStatus()) {
-                    getWeatherData();
-                } else {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("위치서비스");
-                    builder.setMessage("위치서비스를 활성화 해주세요");
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    });
-                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            Toast.makeText(context, "위치서비스 비활성화 상태", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    builder.show();
-
-                }
-
+                checkPermission();
                 break;
         }
     }
