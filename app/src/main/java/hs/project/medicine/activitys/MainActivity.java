@@ -491,6 +491,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (selectedContent) {
             case Config.MAIN_BOTTOM_MENU.HOME:
                 binding.mainContentAlarm.setVisibility(View.VISIBLE);
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    binding.mainContentAlarm.hasPermission = false;
+                    return;
+                } else {
+                    binding.mainContentAlarm.hasPermission = true;
+                }
+
                 binding.mainContentAlarm.setUpUI();
                 binding.mainBottomView.menuStatus(Config.MAIN_BOTTOM_MENU.HOME);
                 break;
