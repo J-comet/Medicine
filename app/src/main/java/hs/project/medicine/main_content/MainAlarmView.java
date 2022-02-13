@@ -709,7 +709,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         LogUtil.e(dateFormat.format(date) + "777777777777");
 
         switch (dateFormat.format(date)) {
-            case "00":
+            case "24":
             case "01":
             case "02":
                 baseTime = "2300";
