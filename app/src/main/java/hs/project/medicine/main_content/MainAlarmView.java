@@ -4,11 +4,13 @@ import static android.content.Context.LOCATION_SERVICE;
 import static hs.project.medicine.HttpRequest.getRequest;
 import static hs.project.medicine.activitys.MainActivity.mainActivityContext;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.ColorFilter;
 import android.graphics.PointF;
 import android.location.Location;
@@ -28,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -88,6 +91,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
     private String strNx = "";
     private String strNy = "";
+    private String currentLocation = "";
 
     public MainAlarmView(@NonNull Context context) {
         super(context);
@@ -238,17 +242,21 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         binding.liWeatherUpdate.setOnClickListener(this);
         binding.clWeatherRetry.setOnClickListener(this);
 
-        getWeatherData();
+
     }
 
-    public void setUpUI() {
+    public void setUpUI(boolean isLocationPermission) {
         changeColorLottieView();
 
         binding.clAlarmList.setVisibility(View.INVISIBLE);
         binding.clNone.setVisibility(View.INVISIBLE);
         binding.clWeatherRetry.setVisibility(View.GONE);
 
+        getWeatherData();
+
         getAlarmList();
+
+
     }
 
     private void changeColorLottieView() {
@@ -476,6 +484,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     @Override
                                     public void run() {
+                                        binding.tvLocation.setText(currentLocation);
                                         binding.tvSky.setText(finalResultSky);
                                         binding.tvReh.setText("습도 : " + finalResultREH);
                                         binding.tvPop.setText("강수 확률 : " + finalResultPOP);
@@ -507,7 +516,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                     binding.liWeatherUpdate.setVisibility(View.GONE);
                                     binding.clWeatherRetry.setVisibility(View.VISIBLE);
                                 }
-                            },300);
+                            }, 300);
 
                         }
                     }
@@ -527,7 +536,6 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 //                            binding.clWeatherLoading.setVisibility(View.GONE);
 //                        }
 //                    });
-
                 }
             };
             new Thread(runnable).start();
@@ -539,14 +547,36 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         }
     }
 
-    @SuppressLint("MissingPermission")
     private void getNxNy() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    binding.clWeatherRetry.setVisibility(View.VISIBLE);
+                    binding.clWeatherLoading.setVisibility(View.GONE);
+                    binding.liWeatherUpdate.setVisibility(View.GONE);
+                }
+            });
+            return;
+        }
+
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         if(location != null) {
             strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
             strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
+            currentLocation = LocationUtil.changeForAddress(context, location.getLatitude(), location.getLongitude());
+
+            String[] results = currentLocation.split("\\s");
+            LogUtil.e("results[0]=" + results[0]);
+            LogUtil.e("results[1]=" + results[1]);
+            LogUtil.e("results[2]=" + results[2]);
+
+            currentLocation = results[1] + " " + results[2];
+
         } else {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
@@ -557,8 +587,6 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 }
             });
         }
-
-
     }
 
     private void getAlarmList() {
