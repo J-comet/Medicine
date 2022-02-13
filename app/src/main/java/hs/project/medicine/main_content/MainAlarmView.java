@@ -333,7 +333,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 parameter.put("nx", nX);
                 parameter.put("ny", nY);
                 parameter.put("pageNo", 1);
-                parameter.put("numOfRows", 300);
+                parameter.put("numOfRows", 100);
 
 
                 String response = getRequest(Config.URL_GET_VILLAGE_FCST, HttpRequest.HttpType.GET, parameter);
@@ -598,30 +598,19 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
             @Override
             public void onLocationChanged(@NonNull Location location) {
 
-                if (location != null) {
-                    strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
-                    strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
-                    currentLocation = LocationUtil.changeForAddress(context, location.getLatitude(), location.getLongitude());
+                strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
+                strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
+                currentLocation = LocationUtil.changeForAddress(context, location.getLatitude(), location.getLongitude());
 
-                    String[] results = currentLocation.split("\\s");
-                    LogUtil.e("results[0]=" + results[0]);
-                    LogUtil.e("results[1]=" + results[1]);
-                    LogUtil.e("results[2]=" + results[2]);
+                String[] results = currentLocation.split("\\s");
+                LogUtil.e("results[0]=" + results[0]);
+                LogUtil.e("results[1]=" + results[1]);
+                LogUtil.e("results[2]=" + results[2]);
 
-                    currentLocation = results[1] + " " + results[2];
+                currentLocation = results[1] + " " + results[2];
 
-                    setWeatherData(strNx, strNy);
+                setWeatherData(strNx, strNy);
 
-                } else {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            binding.clWeatherRetry.setVisibility(View.VISIBLE);
-                            binding.clWeatherLoading.setVisibility(View.GONE);
-                            binding.liWeatherUpdate.setVisibility(View.GONE);
-                        }
-                    });
-                }
             }
 
             @Override
