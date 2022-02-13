@@ -229,7 +229,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/color_main_red"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/cl_weather_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -319,7 +319,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cl_weather_content">
 
         <LinearLayout
-            android:id="@+id/li_add_alarm_2"
+            android:id="@+id/li_add_alarm_02"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:background="@drawable/bg_stroke_round_color_gray"
@@ -334,7 +334,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_add_alarm"
-                app:tint="@color/color_a09d9d" />
+                app:tint="@color/color_e2e2e2" />
 
         </LinearLayout>
 
@@ -344,14 +344,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="등록된 알람이 없습니다"
-            android:textColor="@color/color_a09d9d"
+            android:text="알람등록"
+            android:textColor="@color/color_e2e2e2"
             android:textSize="18dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/li_add_alarm_2" />
+            app:layout_constraintTop_toBottomOf="@+id/li_add_alarm_02" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

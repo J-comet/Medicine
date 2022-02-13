@@ -255,7 +255,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         binding.rvAlarmList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         binding.rvAlarmList.setAdapter(alarmAdapter);
 
-        binding.clNone.setOnClickListener(this);
+        binding.liAddAlarm02.setOnClickListener(this);
         binding.liAddAlarm.setOnClickListener(this);
         binding.liWeatherUpdate.setOnClickListener(this);
         binding.clWeatherRetry.setOnClickListener(this);
@@ -531,9 +531,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                     Toast.makeText(context, "공공데이터 포털사이트 점검 중 입니다", Toast.LENGTH_SHORT).show();
                                 }
                             });
-
                         }
-
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -711,45 +709,47 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         LogUtil.e(dateFormat.format(date) + "777777777777");
 
         switch (dateFormat.format(date)) {
+            case "00":
+            case "01":
             case "02":
+                baseTime = "2300";
+                break;
             case "03":
             case "04":
+            case "05":
                 baseTime = "0200";
                 break;
-            case "05":
             case "06":
             case "07":
+            case "08":
                 baseTime = "0500";
                 break;
-            case "08":
             case "09":
-            case "1000":
+            case "10":
+            case "11":
                 baseTime = "0800";
                 break;
-            case "11":
             case "12":
             case "13":
+            case "14":
                 baseTime = "1100";
                 break;
-            case "14":
             case "15":
             case "16":
+            case "17":
                 baseTime = "1400";
                 break;
-            case "17":
             case "18":
             case "19":
+            case "20":
                 baseTime = "1700";
                 break;
-            case "20":
             case "21":
             case "22":
+            case "23":
                 baseTime = "2000";
                 break;
-            default:
-                baseTime = "2300";
         }
-
         return baseTime;
     }
 
@@ -843,7 +843,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.cl_none:
+            case R.id.li_add_alarm_02:
             case R.id.li_add_alarm:
                 Intent intent = new Intent(context, AddAlarmActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
