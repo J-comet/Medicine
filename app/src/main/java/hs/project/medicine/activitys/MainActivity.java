@@ -237,7 +237,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             binding.mainContentAlarm.hasPermission = true;
         }
 
-        binding.mainContentAlarm.setUpUI();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                binding.mainContentAlarm.setUpUI();
+            }
+        });
+
     }
 
     private void init() {

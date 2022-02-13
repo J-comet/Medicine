@@ -341,7 +341,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
 
                 String response = getRequest(Config.URL_GET_VILLAGE_FCST, HttpRequest.HttpType.GET, parameter);
-                LogUtil.e(response);
+//                LogUtil.e(response);
 
                 if (response.contains("HTTP_ERROR")) {
 
@@ -394,16 +394,16 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                             String resultPTY = "";
                             String resultTMP = "";
 
-                            LogUtil.e("todayDate= " + getTodayDate());
-                            LogUtil.e("baseTime= " + getBaseTime());
+//                            LogUtil.e("todayDate= " + getTodayDate());
+//                            LogUtil.e("baseTime= " + getBaseTime());
 
                             String splitTime = getBaseTime().substring(0, 2);
-                            LogUtil.e("splitTime= " + splitTime);
+//                            LogUtil.e("splitTime= " + splitTime);
 
                             int searchTime = Integer.parseInt(splitTime) + 1;
 
                             String resultSearchTime = String.valueOf(searchTime) + "00";
-                            LogUtil.e("resultSearchTime= " + resultSearchTime);
+//                            LogUtil.e("resultSearchTime= " + resultSearchTime);
 
                             /* 24시일 때 표기법 수정 */
                             if (resultSearchTime.equals("2400")) {
@@ -582,7 +582,6 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
-
                 strNx = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).x).replace(".0", "");
                 strNy = String.valueOf(TransLocationUtil.convertGRID_GPS(TransLocationUtil.TO_GRID, location.getLatitude(), location.getLongitude()).y).replace(".0", "");
                 currentLocation = LocationUtil.changeForAddress(context, location.getLatitude(), location.getLongitude());
@@ -595,7 +594,6 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 currentLocation = results[1] + " " + results[2];
 
                 setWeatherData(strNx, strNy);
-
             }
 
             @Override
@@ -617,8 +615,8 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
         // minTime = 1시간
         // minDistance = 1km
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3600000, 1000, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3600000, 1000, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 1000, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 1000, locationListener);
     }
 
     private void getAlarmList() {
