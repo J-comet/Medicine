@@ -4,6 +4,7 @@ package hs.project.medicine.activitys;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,15 +40,23 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import hs.project.medicine.Config;
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
+import hs.project.medicine.datas.Alarm;
 import hs.project.medicine.main_content.LeftSlideView;
 import hs.project.medicine.main_content.MainBottomView;
 import hs.project.medicine.main_content.MapFragment;
 import hs.project.medicine.databinding.ActivityMainBinding;
 import hs.project.medicine.service.DayOfWeekCheckService;
 import hs.project.medicine.util.LogUtil;
+import hs.project.medicine.util.PreferenceUtil;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -61,6 +70,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final int CODE_GPS_PERMISSION_FINE_DENIED = 200;  // 대략허용
     private static final int CODE_GPS_PERMISSION_DENIED_TRUE = 100;  // 허용 거부한적 있는 유저
     private static final int CODE_GPS_PERMISSION_FIRST = 1000;  // 처음 권한 요청하는 유저
+
+    private ArrayList<Alarm> alarmArrayList;
 
     //    권한 획득 launcher
     public ActivityResultLauncher<String[]> gpsPermissionRequest =
@@ -167,8 +178,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startAdView();
         init();
 
-        startDayOfWeekService();
-
         binding.digitalClock.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -229,6 +238,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
+
+        /* 알람 리스트가 있을 때 실행 */
+        if (getAlarmList() != null && getAlarmList().size() > 0) {
+            if (!isServiceRunningCheck("hs.project.medicine.service.DayOfWeekCheckService")) {
+                startDayOfWeekService();
+            }
+        }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -314,6 +330,58 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 return true;
             }
         });
+    }
+
+    /* 서비스 동작 감지 */
+    private boolean isServiceRunningCheck(String serviceClass) {
+        ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.equals(service.service.getClassName())) {
+                LogUtil.d(serviceClass + " Running");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private ArrayList<Alarm> getAlarmList() {
+
+        alarmArrayList = new ArrayList<>();
+
+        /* 저장되어 있는 알람리스트 가져오기 */
+        if (PreferenceUtil.getJSONArrayPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.ALARM_LIST) != null
+                && PreferenceUtil.getJSONArrayPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.ALARM_LIST).size() > 0) {
+
+            JSONArray jsonArray = new JSONArray(PreferenceUtil.getJSONArrayPreference(MediApplication.ApplicationContext(), Config.PREFERENCE_KEY.ALARM_LIST));
+
+            try {
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Alarm alarm = new Alarm();
+                    JSONObject object = new JSONObject(jsonArray.getString(i));
+                    alarm.setName(object.getString("name"));
+                    alarm.setAmPm(object.getString("amPm"));
+                    alarm.setHour(object.getString("hour"));
+                    alarm.setMinute(object.getString("minute"));
+                    alarm.setVolume(object.getInt("volume"));
+                    alarm.setRingtoneName(object.getString("ringtoneName"));
+                    alarm.setRingtoneUri(Uri.parse(object.getString("ringtoneUri")));
+                    alarm.setDayOfWeek(object.getString("dayOfWeek"));
+                    alarm.setAlarmON(object.getBoolean("alarmON"));
+
+                    LogUtil.d("alarm /" + alarm.getName());
+
+                    alarmArrayList.add(alarm);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            alarmArrayList = new ArrayList<>();
+        }
+
+        return alarmArrayList;
     }
 
     private void startAdView() {
