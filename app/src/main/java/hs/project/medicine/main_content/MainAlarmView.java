@@ -80,6 +80,7 @@ import hs.project.medicine.datas.weather.WeatherItem;
 import hs.project.medicine.datas.weather.WeatherItems;
 import hs.project.medicine.datas.weather.WeatherResponse;
 import hs.project.medicine.dialog.ModifyAlarmDialog;
+import hs.project.medicine.service.DayOfWeekCheckService;
 import hs.project.medicine.util.LocationUtil;
 import hs.project.medicine.util.LogUtil;
 import hs.project.medicine.util.NetworkUtil;
@@ -182,6 +183,9 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                                 if (alarmArrayList.size() < 1) {
                                     binding.clNone.setVisibility(View.VISIBLE);
                                     binding.clAlarmList.setVisibility(View.GONE);
+
+                                    context.stopService(new Intent(MediApplication.ApplicationContext(), DayOfWeekCheckService.class));
+
                                 } else {
                                     binding.clNone.setVisibility(View.GONE);
                                     binding.clAlarmList.setVisibility(View.VISIBLE);
@@ -671,9 +675,10 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                         public void run() {
                             binding.clNone.setVisibility(View.VISIBLE);
                             binding.clAlarmList.setVisibility(View.GONE);
+
+                            context.stopService(new Intent(MediApplication.ApplicationContext(), DayOfWeekCheckService.class));
                         }
                     });
-
                 }
             }
         }).start();

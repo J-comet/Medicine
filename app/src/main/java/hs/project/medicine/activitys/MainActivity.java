@@ -244,6 +244,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             if (!isServiceRunningCheck("hs.project.medicine.service.DayOfWeekCheckService")) {
                 startDayOfWeekService();
             }
+        } else {
+            stopDayOfWeekService();
         }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -474,6 +476,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else {
             startService(new Intent(MediApplication.ApplicationContext(), DayOfWeekCheckService.class));
         }
+    }
+
+    private void stopDayOfWeekService() {
+        stopService(new Intent(MediApplication.ApplicationContext(), DayOfWeekCheckService.class));
     }
 
     private void changeMainContent(String selectedContent) {
