@@ -32,8 +32,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         AlarmReceiverChk(context, intent);
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     private void AlarmReceiverChk(final Context context, final Intent intent) {
         LogUtil.d("Alarm Receiver started!");
+
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 
 //        if (wakeLock != null) {
@@ -48,11 +50,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
 
         /* 잠금화면 위에 액티비티가 안뜨는 중 손으로 잠금화면 풀어줘야 해제됨 */
-        Intent alarmIntent = new Intent("android.intent.action.sec");
-        alarmIntent.setClass(context, AlarmViewActivity.class);
-//        alarmIntent.putExtra("uri", strRingtoneUri);
-        alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(alarmIntent);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Intent alarmIntent = new Intent("android.intent.action.sec");
+                alarmIntent.setClass(context, AlarmViewActivity.class);
+                alarmIntent.putExtra("uri", strRingtoneUri);
+                alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(alarmIntent);
+
+                LogUtil.d("Alarm Receiver Intent!");
+            }
+        }).start();
+
 
         /*Intent dataIntent = new Intent(context, AlarmViewActivity.class);
         dataIntent.putExtra("uri", strRingtoneUri);
@@ -66,7 +76,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                     wakeLock.release();
                     wakeLock = null;
                 }
-            }, 60000);
+            }, 1000 * 60 * 3);
 
         }
 
