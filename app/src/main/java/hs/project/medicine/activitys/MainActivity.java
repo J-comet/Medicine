@@ -495,7 +495,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     binding.mainContentAlarm.hasPermission = false;
-                    return;
                 } else {
                     binding.mainContentAlarm.hasPermission = true;
                 }
