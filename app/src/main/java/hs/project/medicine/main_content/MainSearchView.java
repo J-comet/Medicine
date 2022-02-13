@@ -151,7 +151,7 @@ public class MainSearchView extends ConstraintLayout {
                 Log.e("hs", "current pageNo:" + pageNo + "current numOfRows" + numOfRows);
 
                 Map<String, Object> parameter = new HashMap<>();
-                parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                parameter.put("serviceKey", getResources().getString(R.string.api_key_public_data));
                 parameter.put("pageNo", pageNo);
                 parameter.put("numOfRows", numOfRows);
                 parameter.put("type", type);

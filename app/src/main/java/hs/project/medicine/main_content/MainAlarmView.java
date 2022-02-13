@@ -289,7 +289,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                 public void run() {
 
                     Map<String, Object> parameter = new HashMap<>();
-                    parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                    parameter.put("serviceKey", getResources().getString(R.string.api_key_public_data));
                     parameter.put("dataType", "JSON");
                     parameter.put("base_date", finalTodayDate);
                     parameter.put("base_time", currentTime);

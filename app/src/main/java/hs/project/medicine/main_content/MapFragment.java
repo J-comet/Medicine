@@ -619,7 +619,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 public void run() {
 
                     Map<String, Object> parameter = new HashMap<>();
-                    parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                    parameter.put("serviceKey", getResources().getString(R.string.api_key_public_data));
                     parameter.put("Q0", Q0);  // ex) 서울특별시
                     parameter.put("Q1", Q1);  // ex) 강남구
 
@@ -690,7 +690,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
                 public void run() {
 
                     Map<String, Object> parameter = new HashMap<>();
-                    parameter.put("serviceKey", getResources().getString(R.string.api_key_easy_drug));
+                    parameter.put("serviceKey", getResources().getString(R.string.api_key_public_data));
                     parameter.put("Q0", Q0);  // ex) 서울특별시
                     parameter.put("Q1", Q1);  // ex) 강남구
 //                parameter.put("QT", pageNo);  // ex) 진료요일

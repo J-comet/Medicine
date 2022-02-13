@@ -4,7 +4,7 @@
     <string name="naver_client_id">0qu54c39mv</string>
     <string name="naver_client_secret">9AVxBiE1spfpgc5eoXzO316ZTv9peaFvcR6r5bTQ</string>
 
-    <string name="api_key_easy_drug">9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D</string>
+    <string name="api_key_public_data">9kam%2BiI3ibjMnJs3msCIG%2BP7tblP9JT8113lnL25tQ1MMoDrJ%2Fml3q6uvcNgVMBJI%2FSWGQtiy70VHymbS17bgw%3D%3D</string>
 
     <string name="str_main_text">사용자 정보</string>
 
