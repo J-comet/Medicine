@@ -81,6 +81,7 @@
                 android:layout_marginEnd="4dp"
                 android:text="강수확률"
                 android:textColor="@color/white"
+                android:textStyle="bold"
                 android:textSize="18dp"
                 app:layout_constraintEnd_toStartOf="@+id/textView22"
                 app:layout_constraintTop_toBottomOf="@+id/tv_tmp" />
