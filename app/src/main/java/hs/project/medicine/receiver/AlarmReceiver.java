@@ -23,6 +23,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     //    String get_state;
     private MediaPlayer mediaPlayer;
     private String strRingtoneUri;
+    private String strName;
     private int ringtoneVol = -1;
 
     @Override
@@ -31,8 +32,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         LogUtil.d("onReceive");
         ringtoneVol =  intent.getExtras().getInt("vol");
         strRingtoneUri = intent.getExtras().getString("uri");
+        strName = intent.getExtras().getString("name");
         
         Intent dataIntent = new Intent(context, AlarmViewActivity.class);
+        dataIntent.putExtra("name", strName);
         dataIntent.putExtra("uri", strRingtoneUri);
         dataIntent.putExtra("vol", ringtoneVol);
         dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

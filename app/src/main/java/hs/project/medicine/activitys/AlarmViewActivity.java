@@ -39,6 +39,7 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
 
     private ActivityAlarmViewBinding binding;
     private String getRingtoneUri;
+    private String getName;
     private int getRingtoneVol = -1;
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
@@ -93,8 +94,12 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
 
         // 노래 URI 받기
         getRingtoneUri = getIntent().getExtras().getString("uri");
-        LogUtil.d("uri=" + getRingtoneUri + " vol=" + getRingtoneVol);
 
+        // 알람이름 받기
+        getName = getIntent().getExtras().getString("name");
+        LogUtil.d("name=" + getName + " uri=" + getRingtoneUri + " vol=" + getRingtoneVol);
+
+        binding.tvName.setText(getName);
         startMediaPlayer(Uri.parse(getRingtoneUri));
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, getRingtoneVol, 0);
 
@@ -158,10 +163,17 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
 
                     minute = Integer.parseInt(String.format("%02d", minute));
 
-                    binding.tvTime.setText(amPm + "\n" + hour + " : " + minute);
+                    binding.tvTime.setText(hour + " : " + minute);
+                    binding.tvAmPm.setText(amPm);
                 }
             }
         });
+
+        if (DateFormat.is24HourFormat(MediApplication.ApplicationContext())) {
+            binding.tvAmPm.setVisibility(View.GONE);
+        } else {
+            binding.tvAmPm.setVisibility(View.VISIBLE);
+        }
 
         startAdView();
     }

@@ -238,6 +238,7 @@ public class DayOfWeekCheckService extends Service {
 
         // receiver 에 string 값 넘겨주기
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        alarmIntent.putExtra("name", alarm.getName());
         alarmIntent.putExtra("uri", alarm.getRingtoneUri().toString());
         alarmIntent.putExtra("vol", alarm.getVolume());
 
