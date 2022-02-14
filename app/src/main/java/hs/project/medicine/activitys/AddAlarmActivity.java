@@ -142,11 +142,26 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
                 }*/
 
 //                mRtCurrent.play();
-                if (strRingtoneUri == null) {
-                    startMediaPlayer(firstUriRingtone);
+
+                /* 실행중이라면 startMediaPlayer 실행 안하도록 수정 */
+                if (mediaPlayer.isPlaying()) {
+                    stopMediaPlayer();
+
+                    if (strRingtoneUri == null) {
+                        startMediaPlayer(firstUriRingtone);
+                    } else {
+                        startMediaPlayer(Uri.parse(strRingtoneUri));
+                    }
+
                 } else {
-                    startMediaPlayer(Uri.parse(strRingtoneUri));
+                    if (strRingtoneUri == null) {
+                        startMediaPlayer(firstUriRingtone);
+                    } else {
+                        startMediaPlayer(Uri.parse(strRingtoneUri));
+                    }
                 }
+
+
 
                 binding.ivPlayStop.setImageResource(R.drawable.ic_stop);
 
