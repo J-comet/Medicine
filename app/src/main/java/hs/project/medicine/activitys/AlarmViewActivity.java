@@ -28,6 +28,7 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
@@ -63,8 +64,10 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
             );
         }
 
-        /* 하단 네비게이션바 투명색 적용 */
-        getWindow().setNavigationBarColor(Color.WHITE);
+        /* 하단 네비게이션바 (유저가 터치시 네비바 올라옴)
+        투명색 적용 및 숨김처리 */
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         /* 잠금해제 코드 */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -85,37 +88,10 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
     private void init() {
         binding.clAlarmClear.setOnClickListener(this);
 
-//        String getState = getIntent().getExtras().getString("state");
-//        LogUtil.d("state=" + getState);
+//        SimpleDateFormat simpleTime = new SimpleDateFormat("hh : mm");
+//        String getTime = simpleTime.format(date);
 
-        // 음량값 받기
-        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        getRingtoneVol = getIntent().getExtras().getInt("vol");
-
-        // 노래 URI 받기
-        getRingtoneUri = getIntent().getExtras().getString("uri");
-
-        // 알람이름 받기
-        getName = getIntent().getExtras().getString("name");
-        LogUtil.d("name=" + getName + " uri=" + getRingtoneUri + " vol=" + getRingtoneVol);
-
-        binding.tvName.setText(getName);
-        startMediaPlayer(Uri.parse(getRingtoneUri));
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, getRingtoneVol, 0);
-
-//        startMediaPlayer(Uri.parse("content://media/internal/audio/media/37"));
-
-        long now = System.currentTimeMillis();
-        Date date = new Date(now);
-
-        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy년 MM월 dd일");
-        String getDate = simpleDate.format(date);
-
-        SimpleDateFormat simpleTime = new SimpleDateFormat("hh : mm");
-        String getTime = simpleTime.format(date);
-
-        binding.tvDate.setText(getDate);
-
+        Locale locale = getResources().getConfiguration().locale;
 
         binding.digitalClock.addTextChangedListener(new TextWatcher() {
             @Override
@@ -148,9 +124,9 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
                         seconds = Integer.parseInt(splitText[2]);
                     }
 
-                    minute = Integer.parseInt(String.format("%02d", minute));
-
-                    binding.tvTime.setText(hour + " : " + minute);
+//                    minute = Integer.parseInt(String.format("%02d", minute));
+//                    binding.tvTime.setText(hour + " : " + minute);
+                    binding.tvTime.setText(String.format(locale, "%01d : %02d", hour, minute));
 
                 } else {
 
@@ -161,13 +137,47 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
                         amPm = splitText[3];
                     }
 
-                    minute = Integer.parseInt(String.format("%02d", minute));
+//                    minute = Integer.parseInt(String.format("%02d", minute));
 
-                    binding.tvTime.setText(hour + " : " + minute);
+                    binding.tvTime.setText(String.format(locale, "%01d : %02d", hour, minute));
                     binding.tvAmPm.setText(amPm);
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        setData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startAdView();
+    }
+
+    private void setData() {
+        // 음량값 받기
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        getRingtoneVol = getIntent().getExtras().getInt("vol");
+
+        // 노래 URI 받기
+        getRingtoneUri = getIntent().getExtras().getString("uri");
+
+        // 알람이름 받기
+        getName = getIntent().getExtras().getString("name");
+        LogUtil.d("name=" + getName + " uri=" + getRingtoneUri + " vol=" + getRingtoneVol);
+
+//        startMediaPlayer(Uri.parse("content://media/internal/audio/media/37"));
+
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy년 MM월 dd일");
+        String getDate = simpleDate.format(date);
 
         if (DateFormat.is24HourFormat(MediApplication.ApplicationContext())) {
             binding.tvAmPm.setVisibility(View.GONE);
@@ -175,7 +185,10 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
             binding.tvAmPm.setVisibility(View.VISIBLE);
         }
 
-        startAdView();
+        binding.tvDate.setText(getDate);
+        binding.tvName.setText(getName);
+        startMediaPlayer(Uri.parse(getRingtoneUri));
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, getRingtoneVol, 0);
     }
 
     // 미디어플레이어 재생
