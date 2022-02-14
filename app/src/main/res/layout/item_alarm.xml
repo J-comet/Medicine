@@ -107,7 +107,7 @@
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:textColor="@drawable/selector_alarm"
-                android:textSize="13dp"
+                android:textSize="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/li_remove"
                 app:layout_constraintStart_toEndOf="@+id/tv_time"

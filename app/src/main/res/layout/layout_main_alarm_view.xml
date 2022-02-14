@@ -204,7 +204,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/color_main_red"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/cl_weather_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
