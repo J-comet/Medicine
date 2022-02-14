@@ -250,7 +250,7 @@ public class AddAlarmActivity extends BaseActivity implements View.OnClickListen
 
         if (sunday && monday && tuesday && wednesday && thursday && friday && saturday) {
             result = "매일";
-        } else if (!sunday && !saturday) {
+        } else if (!sunday && !saturday && monday && tuesday && wednesday && thursday && friday) {
             result = "주중";
         } else if (sunday && !monday && !tuesday && !wednesday && !thursday && !friday && saturday) {
             result = "주말";
