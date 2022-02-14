@@ -52,10 +52,10 @@ public class DayOfWeekCheckService extends Service {
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= 26) {
-            String CHANNEL_ID = "medicine";
+            String CHANNEL_ID = "medi-care";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
                     "메디케어",
-                    NotificationManager.IMPORTANCE_LOW);
+                    NotificationManager.IMPORTANCE_DEFAULT);
 
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
@@ -254,7 +254,7 @@ public class DayOfWeekCheckService extends Service {
         }
 
         // 알림 세팅 : AlarmManager 인스턴스에서 set 메소드를 실행시키는 것은 단발성 Alarm을 생성하는 것
-        // RTC_WAKEUP : UTC 표준시간을 기준으로 하는 명시적인 시간에 intent를 발생, 장치를 깨움
+        // RTC_WAKEUP : UTC 표준시간을 기준으로 하는 명시적인 시간에 intent 를 발생, 장치를 깨움
         if (Build.VERSION.SDK_INT < 23) {
             if (Build.VERSION.SDK_INT >= 19) {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);

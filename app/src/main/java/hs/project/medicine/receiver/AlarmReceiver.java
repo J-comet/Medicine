@@ -50,24 +50,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/);
 
         /* 잠금화면 위에 액티비티가 안뜨는 중 손으로 잠금화면 풀어줘야 해제됨 */
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Intent alarmIntent = new Intent("android.intent.action.sec");
-                alarmIntent.setClass(context, AlarmViewActivity.class);
-                alarmIntent.putExtra("uri", strRingtoneUri);
-                alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(alarmIntent);
-
-                LogUtil.d("Alarm Receiver Intent!");
-            }
-        }).start();
+//        Intent alarmIntent = new Intent("android.intent.action.sec");
+//        alarmIntent.setClass(context, AlarmViewActivity.class);
+//        alarmIntent.putExtra("uri", strRingtoneUri);
+//        alarmIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        context.startActivity(alarmIntent);
 
 
-        /*Intent dataIntent = new Intent(context, AlarmViewActivity.class);
+        Intent dataIntent = new Intent(context, AlarmViewActivity.class);
         dataIntent.putExtra("uri", strRingtoneUri);
         dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(dataIntent);*/
+        context.startActivity(dataIntent);
+
+        LogUtil.d("Alarm Receiver Intent!");
 
         if (wakeLock != null) {
             new Handler().postDelayed(new Runnable() {
