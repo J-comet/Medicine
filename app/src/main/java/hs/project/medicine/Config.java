@@ -7,6 +7,8 @@ public class Config {
     public static String URL_GET_NAVER_GEOCODE = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
     public static String URL_GET_VILLAGE_FCST = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst";  // 단기예보조회
 
+    public static String URL_PRIVACY = "https://sites.google.com/view/private-medicare/index";
+
     public interface MAIN_BOTTOM_MENU {
         String HOME = "home";
         String SEARCH = "search";

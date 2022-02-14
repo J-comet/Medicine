@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.VIBLATE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -27,13 +27,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Medicine"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".activitys.PrivacyActivity"
+            android:exported="false" />
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
-
-        <!--<activity
+        <!--
+<activity
             android:name="AlarmViewActivity"
             android:exported="false"
             android:launchMode="singleTop"
@@ -41,17 +43,16 @@
 &lt;!&ndash;            <intent-filter>&ndash;&gt;
 &lt;!&ndash;                <action android:name="android.intent.action.sec" />&ndash;&gt;
 &lt;!&ndash;            </intent-filter>&ndash;&gt;
-        </activity>-->
-
+        </activity>
+        -->
         <activity
             android:name=".activitys.AlarmViewActivity"
-            android:parentActivityName=".activitys.MainActivity"
             android:excludeFromRecents="true"
+            android:parentActivityName=".activitys.MainActivity"
+            android:showForAllUsers="true"
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
-            android:turnScreenOn="true"
-            android:showForAllUsers="true" />
-
+            android:turnScreenOn="true" />
         <activity
             android:name=".not_used.UserDetailActivity"
             android:exported="false" />
@@ -91,16 +92,16 @@
             android:name=".receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="false">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.sec" />-->
-<!--            </intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.sec" /> -->
+            <!-- </intent-filter> -->
         </receiver>
 
         <service
             android:name=".service.DayOfWeekCheckService"
             android:enabled="true"
             android:exported="true" />
-
     </application>
 
 </manifest>

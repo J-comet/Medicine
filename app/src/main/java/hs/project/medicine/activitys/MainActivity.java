@@ -316,6 +316,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 changeMainContent(Config.MAIN_BOTTOM_MENU.MAP);
             }
 
+            @Override
+            public void onPrivacy() {
+                if (isDrawerOpen()) {
+                    binding.dlSlide.closeDrawer(Gravity.LEFT);
+                }
+                startActivity(new Intent(MainActivity.this, PrivacyActivity.class));
+            }
+
 //            @Override
 //            public void onUserListClick() {
 //                if (isDrawerOpen()) {

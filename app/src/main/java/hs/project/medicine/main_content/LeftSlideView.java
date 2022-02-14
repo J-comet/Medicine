@@ -23,6 +23,7 @@ public class LeftSlideView extends ConstraintLayout implements View.OnClickListe
         void onHomeClick();
         void onSearchClick();
         void onMapClick();
+        void onPrivacy();
 //        void onUserListClick();
     }
 
@@ -54,7 +55,7 @@ public class LeftSlideView extends ConstraintLayout implements View.OnClickListe
         binding.llHome.setOnClickListener(this);
         binding.llSearch.setOnClickListener(this);
         binding.llMap.setOnClickListener(this);
-//        binding.llUserList.setOnClickListener(this);
+        binding.llPrivacy.setOnClickListener(this);
     }
 
     @Override
@@ -69,9 +70,9 @@ public class LeftSlideView extends ConstraintLayout implements View.OnClickListe
             case R.id.ll_map:
                 eventListener.onMapClick();
                 break;
-//            case R.id.ll_user_list:
-//                eventListener.onUserListClick();
-//                break;
+            case R.id.ll_privacy:
+                eventListener.onPrivacy();
+                break;
         }
 
     }

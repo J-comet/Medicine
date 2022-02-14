@@ -145,34 +145,34 @@
                 android:layout_height="1dp"
                 android:background="@color/color_e2e2e2" />
 
-<!--            <LinearLayout-->
-<!--                android:id="@+id/ll_user_list"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="60dp"-->
-<!--                android:paddingLeft="16dp"-->
-<!--                android:paddingRight="16dp"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:gravity="center_vertical">-->
+            <LinearLayout
+                android:id="@+id/ll_privacy"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:textSize="14dp"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:text="@string/str_bottom_menu_user_list" />-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14dp"
+                    android:textColor="@color/black"
+                    android:text="개인정보 처리방침" />
 
-<!--                <ImageView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:src="@drawable/ic_arrow_right" />-->
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_right" />
 
-<!--            </LinearLayout>-->
+            </LinearLayout>
 
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="1dp"-->
-<!--                android:background="@color/color_e2e2e2" />-->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_e2e2e2" />
 
         </LinearLayout>
 
