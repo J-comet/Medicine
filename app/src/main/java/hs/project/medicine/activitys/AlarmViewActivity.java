@@ -123,7 +123,43 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable s) {
+
                 binding.tvTime.setText(s.toString());
+
+                String result = String.valueOf(s);
+                String[] splitText = result.split(":");
+
+                int hour = -1;
+                int minute = -1;
+                int seconds = -1;
+                String amPm = "-1";
+
+                /*  24시간 형식을 사용 중인 사용자 일때 */
+                if (DateFormat.is24HourFormat(MediApplication.ApplicationContext())) {
+
+                    for (int i = 0; i < splitText.length; i++) {
+                        hour = Integer.parseInt(splitText[0]);
+                        minute = Integer.parseInt(splitText[1]);
+                        seconds = Integer.parseInt(splitText[2]);
+                    }
+
+                    minute = Integer.parseInt(String.format("%02d", minute));
+
+                    binding.tvTime.setText(hour + " : " + minute);
+
+                } else {
+
+                    for (int i = 0; i < splitText.length; i++) {
+                        hour = Integer.parseInt(splitText[0]);
+                        minute = Integer.parseInt(splitText[1]);
+                        seconds = Integer.parseInt(splitText[2]);
+                        amPm = splitText[3];
+                    }
+
+                    minute = Integer.parseInt(String.format("%02d", minute));
+
+                    binding.tvTime.setText(amPm + "\n" + hour + " : " + minute);
+                }
             }
         });
 
