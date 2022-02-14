@@ -26,23 +26,23 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true);
-            setTurnScreenOn(true);
-            KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-            km.requestDismissKeyguard(this, null);
-            LogUtil.d("AlarmViewActivity O_MR1");
-        } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                    | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                    | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-            LogUtil.d("AlarmViewActivity");
-        }
-
         super.onCreate(savedInstanceState);
         binding = ActivityAlarmViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(this.KEYGUARD_SERVICE);
+            keyguardManager.requestDismissKeyguard(this, null);
+        }
+        else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
 
         init();
     }

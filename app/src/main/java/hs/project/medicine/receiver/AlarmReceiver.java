@@ -29,7 +29,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         mContext = context;
         LogUtil.d("onReceive");
         strRingtoneUri = intent.getExtras().getString("uri");
-        AlarmReceiverChk(context, intent);
+        Intent dataIntent = new Intent(context, AlarmViewActivity.class);
+        dataIntent.putExtra("uri", strRingtoneUri);
+        dataIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(dataIntent);
+
+//        AlarmReceiverChk(context, intent);
     }
 
     @SuppressLint("InvalidWakeLockTag")

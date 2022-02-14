@@ -242,7 +242,9 @@ public class DayOfWeekCheckService extends Service {
 
         // receiver를 동작하게 하기 위해 PendingIntent의 인스턴스를 생성할 때, getBroadcast 라는 메소드를 사용
         // requestCode는 나중에 Alarm을 해제 할때 어떤 Alarm을 해제할지를 식별하는 코드
-        pendingIntent = PendingIntent.getBroadcast(this, requestCode, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        pendingIntent = PendingIntent.getBroadcast(this, requestCode, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        pendingIntent = PendingIntent.getBroadcast(this, requestCode, alarmIntent, 0);
 
         long currentTime = System.currentTimeMillis(); // 현재 시간
         //long triggerTime = SystemClock.elapsedRealtime() + 1000*60;

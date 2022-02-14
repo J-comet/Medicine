@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hs.project.medicine">
 
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -11,9 +10,12 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.VIBLATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -32,15 +34,24 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
 
-        <activity
-            android:name=".activitys.AlarmViewActivity"
+        <!--<activity
+            android:name="AlarmViewActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:showOnLockScreen="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.sec" />-->
-<!--            </intent-filter>-->
-        </activity>
+&lt;!&ndash;            <intent-filter>&ndash;&gt;
+&lt;!&ndash;                <action android:name="android.intent.action.sec" />&ndash;&gt;
+&lt;!&ndash;            </intent-filter>&ndash;&gt;
+        </activity>-->
+
+        <activity
+            android:name=".activitys.AlarmViewActivity"
+            android:parentActivityName=".activitys.MainActivity"
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:showForAllUsers="true" />
 
         <activity
             android:name=".not_used.UserDetailActivity"
