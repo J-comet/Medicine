@@ -55,7 +55,7 @@ public class DayOfWeekCheckService extends Service {
             String CHANNEL_ID = "medi-care";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
                     "메디케어",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_LOW);
 
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
@@ -236,9 +236,10 @@ public class DayOfWeekCheckService extends Service {
         calendar.set(Calendar.MINUTE, getMinuteTimePicker);
         calendar.set(Calendar.SECOND, 0);
 
-        // reveiver에 string 값 넘겨주기
+        // receiver 에 string 값 넘겨주기
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         alarmIntent.putExtra("uri", alarm.getRingtoneUri().toString());
+        alarmIntent.putExtra("vol", alarm.getVolume());
 
         // receiver를 동작하게 하기 위해 PendingIntent의 인스턴스를 생성할 때, getBroadcast 라는 메소드를 사용
         // requestCode는 나중에 Alarm을 해제 할때 어떤 Alarm을 해제할지를 식별하는 코드

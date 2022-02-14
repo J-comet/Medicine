@@ -3,6 +3,7 @@ package hs.project.medicine.activitys;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -31,7 +32,9 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
 
     private ActivityAlarmViewBinding binding;
     private String getRingtoneUri;
+    private int getRingtoneVol = -1;
     private MediaPlayer mediaPlayer;
+    private AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +63,16 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
 //        String getState = getIntent().getExtras().getString("state");
 //        LogUtil.d("state=" + getState);
 
+        // 음량값 받기
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        getRingtoneVol = getIntent().getExtras().getInt("vol");
+
+        // 노래 URI 받기
         getRingtoneUri = getIntent().getExtras().getString("uri");
-        LogUtil.d("uri=" + getRingtoneUri);
+        LogUtil.d("uri=" + getRingtoneUri + " vol=" + getRingtoneVol);
 
         startMediaPlayer(Uri.parse(getRingtoneUri));
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, getRingtoneVol, 0);
 
 //        startMediaPlayer(Uri.parse("content://media/internal/audio/media/37"));
 
