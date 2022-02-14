@@ -3,12 +3,18 @@ package hs.project.medicine.activitys;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -23,6 +29,7 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import hs.project.medicine.MediApplication;
 import hs.project.medicine.R;
 import hs.project.medicine.databinding.ActivityAlarmViewBinding;
 //import hs.project.medicine.service.RingtonePlayingService;
@@ -42,6 +49,23 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
         binding = ActivityAlarmViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        /* 전체화면 코드 시작 */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController insetsController = getWindow().getInsetsController();
+            if (insetsController != null) {
+                insetsController.hide(WindowInsets.Type.statusBars());
+            }
+        } else {
+            getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+            );
+        }
+
+        /* 하단 네비게이션바 투명색 적용 */
+        getWindow().setNavigationBarColor(Color.WHITE);
+
+        /* 잠금해제 코드 */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
             setTurnScreenOn(true);
@@ -86,7 +110,24 @@ public class AlarmViewActivity extends BaseActivity implements View.OnClickListe
         String getTime = simpleTime.format(date);
 
         binding.tvDate.setText(getDate);
-        binding.tvTime.setText(getTime);
+
+
+        binding.digitalClock.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                binding.tvTime.setText(s.toString());
+            }
+        });
+
+        startAdView();
     }
 
     // 미디어플레이어 재생
