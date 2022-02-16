@@ -407,7 +407,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                             int searchTime = Integer.parseInt(splitTime) + 1;
 
                             String resultSearchTime = String.valueOf(searchTime) + "00";
-//                            LogUtil.e("resultSearchTime= " + resultSearchTime);
+                            LogUtil.e("resultSearchTime= " + resultSearchTime);
 
                             /* 24시일 때 표기법 수정 */
                             if (resultSearchTime.equals("2400")) {
@@ -418,7 +418,7 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
 
                                 JSONObject object = itemArray.getJSONObject(i);
 
-                                if (object.getString("fcstDate").equals(getTodayDate()) && object.getString("fcstTime").equals(resultSearchTime)) {
+                                if (object.getString("fcstDate").equals(getTodayDate()) && object.getString("fcstTime").contains(resultSearchTime)) {
 
                                     String category = object.getString("category");
 
@@ -513,6 +513,11 @@ public class MainAlarmView extends ConstraintLayout implements View.OnClickListe
                             }
 
                             Drawable finalResource = weatherResource;
+
+                            LogUtil.d(currentLocation);
+                            LogUtil.d(finalResultREH);
+                            LogUtil.d(finalResultPOP);
+                            LogUtil.d(finalResultTMP);
 
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
