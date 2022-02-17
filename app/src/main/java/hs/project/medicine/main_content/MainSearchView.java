@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -274,6 +275,7 @@ public class MainSearchView extends ConstraintLayout {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(context, "알수없는 오류가 발생했습니다.\n다시 시도해주세요",Toast.LENGTH_LONG).show();
                 }
 
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
