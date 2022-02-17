@@ -33,12 +33,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.nativead.NativeAd;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -438,6 +442,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         });
 
+
+        /* 네이티브 광고 */
+        /*AdLoader.Builder builder = new AdLoader.Builder(
+                this, "ca-app-pub-3940256099942544/2247696110");
+
+        builder.forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+            @Override
+            public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
+                TemplateView template = findViewById(R.id.my_template);
+                template.setNativeAd(nativeAd);
+            }
+        });
+
+        AdLoader adLoader = builder.build();
+        adLoader.loadAd(new AdRequest.Builder().build());*/
     }
 
     public int gpsPermissionCheck() {

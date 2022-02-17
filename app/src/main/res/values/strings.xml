@@ -8,6 +8,7 @@
 
     <string name="admob_app_id">ca-app-pub-2085619973553767~3542146847</string>
     <string name="admob_banner_unit_id">ca-app-pub-2085619973553767/2444687598</string>
+    <string name="admob_native_unit_id">ca-app-pub-2085619973553767/5083734319</string>
 
     <!-- 애드몹 테스트 앱ID -->
     <string name="test_admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
@@ -17,6 +18,10 @@
 
     <!-- 애드몹 테스트 전면ID -->
     <string name="test_admob_interstitial_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+
+    <!-- 애드몹 테스트 네이티브ID -->
+    <string name="test_admob_native_unit_id">ca-app-pub-3940256099942544/2247696110</string>
+
 
 
     <string name="str_main_text">사용자 정보</string>

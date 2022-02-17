@@ -1,5 +1,6 @@
 package hs.project.medicine.activitys;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.graphics.PorterDuff;
@@ -10,6 +11,13 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.nativead.NativeAd;
 
 import org.jsoup.Jsoup;
 
@@ -30,9 +38,9 @@ public class MedicineDetailActivity extends BaseActivity {
         binding = ActivityMedicineDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        startNativeAdview();
         init();
         setData();
-
     }
 
     private void init() {
@@ -42,7 +50,27 @@ public class MedicineDetailActivity extends BaseActivity {
                 finish();
             }
         });
+    }
 
+    private void startNativeAdview() {
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        AdLoader.Builder builder = new AdLoader.Builder(
+                this, getResources().getString(R.string.admob_native_unit_id));
+
+        builder.forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+            @Override
+            public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
+                binding.myTemplate.setNativeAd(nativeAd);
+            }
+        });
+
+        AdLoader adLoader = builder.build();
+        adLoader.loadAd(new AdRequest.Builder().build());
     }
 
     private void setData() {
