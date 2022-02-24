@@ -275,7 +275,14 @@ public class MainSearchView extends ConstraintLayout {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "알수없는 오류가 발생했습니다.\n다시 시도해주세요",Toast.LENGTH_LONG).show();
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "알수없는 오류가 발생했습니다.\n다시 시도해주세요",Toast.LENGTH_LONG).show();
+                        }
+                    });
+
                 }
 
                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
