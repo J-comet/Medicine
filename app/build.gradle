@@ -65,4 +65,7 @@ dependencies {
 
     // numberPicker
     implementation 'io.github.ShawnLin013:number-picker:2.4.13'
+
+    // error = Targeting S+ (version 31 and above) requires that one of FLAG_IMMUTABLE or FLAG_MUTABLE be specified when creating a PendingIntent.
+    implementation 'androidx.work:work-runtime:2.7.1'
 }

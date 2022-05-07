@@ -60,7 +60,7 @@ public class MedicineDetailActivity extends BaseActivity {
         });
 
         AdLoader.Builder builder = new AdLoader.Builder(
-                this, getResources().getString(R.string.admob_native_unit_id));
+                this, getResources().getString(R.string.test_admob_native_unit_id));
 
         builder.forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
             @Override

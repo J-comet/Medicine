@@ -202,7 +202,7 @@ public class DayOfWeekCheckService extends Service {
 
             for (int i = 0; i < playAlarmList.size(); i++) {
                 Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-                PendingIntent removeIntent = PendingIntent.getBroadcast(getApplicationContext(), i, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent removeIntent = PendingIntent.getBroadcast(getApplicationContext(), i, intent, PendingIntent.FLAG_IMMUTABLE);
 
                 LogUtil.d(playAlarmList.get(i).getName() + " 제거");
                 alarmManager.cancel(removeIntent);
@@ -246,7 +246,7 @@ public class DayOfWeekCheckService extends Service {
         // requestCode는 나중에 Alarm을 해제 할때 어떤 Alarm을 해제할지를 식별하는 코드
 //        pendingIntent = PendingIntent.getBroadcast(this, requestCode, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        pendingIntent = PendingIntent.getBroadcast(this, requestCode, alarmIntent, 0);
+        pendingIntent = PendingIntent.getBroadcast(this, requestCode, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
 
         long currentTime = System.currentTimeMillis(); // 현재 시간
         //long triggerTime = SystemClock.elapsedRealtime() + 1000*60;
