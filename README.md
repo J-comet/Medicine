@@ -17,7 +17,7 @@ https://play.google.com/store/apps/details?id=hs.project.medicine
 
   1. 현재 날씨 조회
 
-  2. 알람 기능
+  2. 알림 기능
 
   3. 약 검색 기능
 
