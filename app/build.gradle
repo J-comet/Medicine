@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "hs.project.medicine"
         minSdk 21
-        targetSdk 31
+        targetSdk 33
         versionCode 6
         versionName "1.1.6"
 
@@ -22,8 +22,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     buildFeatures {
@@ -42,7 +42,8 @@ dependencies {
 
     /* 애드몹 */
 //    implementation 'com.google.android.gms:play-services-ads-lite:20.5.0'
-        implementation 'com.google.android.gms:play-services-ads-lite:19.6.0'
+//        implementation 'com.google.android.gms:play-services-ads-lite:19.6.0'
+    implementation 'com.google.android.gms:play-services-ads-lite:20.1.0'
     /* 애드몹 네이티브 템플릿 */
     implementation project(':nativetemplates')
 
