@@ -9,8 +9,8 @@ android {
         applicationId "hs.project.medicine"
         minSdk 21
         targetSdk 33
-        versionCode 7
-        versionName "1.1.7"
+        versionCode 8
+        versionName "1.1.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
